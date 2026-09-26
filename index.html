@@ -742,7 +742,7 @@ Karte links - Bewegungssteuerung rechts
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.086";
+window.multiplayerTestVersion = "0.087";
 
 /* Ende Testversion */
 /* =========================================================
@@ -3607,42 +3607,32 @@ function () {
                 }
 
 
-                /* -----------------------------------
-                Alle bekannten Avatare neu setzen
-                ----------------------------------- */
+/* -----------------------------------
+Sichtbare Avatare nach Größenänderung
+neu positionieren
+----------------------------------- */
 
-                for (
-                    const uid
-                    in window.avatarNachUid
-                ) {
+const firebaseUser =
+    window.firebaseAuth.currentUser;
 
-                    const canvas =
-                        window.avatarNachUid[
-                            uid
-                        ];
+window.sichtbareAvatareAktualisieren(
+    Object.keys(
+        window.avatarNachUid
+    ).map(
+        function (uid) {
 
-                    const position =
-                        window.multiplayerPositionen[
-                            uid
-                        ];
+            return {
+                uid: uid
+            };
 
+        } /* Ende UID umwandeln */
+    ),
+    window.multiplayerPositionen,
+    window.avatarNachUid,
+    firebaseUser
+);
 
-                    if (
-                        !canvas ||
-                        !position ||
-                        typeof position.x !== "number" ||
-                        typeof position.y !== "number"
-                    ) {
-                        continue;
-                    }
-
-
-                    window.spielfigurSetzen(
-                        canvas,
-                        position.x,
-                        position.y
-                    );
-                }
+/* Ende sichtbare Avatare nach Größenänderung */
             }
         );
 

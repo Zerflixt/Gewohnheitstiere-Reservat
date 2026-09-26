@@ -742,7 +742,7 @@ Karte links - Bewegungssteuerung rechts
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.078";
+window.multiplayerTestVersion = "0.086";
 
 /* Ende Testversion */
 /* =========================================================
@@ -872,6 +872,81 @@ function () {
 };
 
 /* Ende Kartenname anzeigen */
+/* =========================================================
+KARTENGRAFIK AKTUALISIEREN
+========================================================= */
+
+window.kartenGrafikAktualisieren =
+function () {
+
+    /* -----------------------------------
+    Aktuelle Karte bestimmen
+    ----------------------------------- */
+
+    const position =
+        window.aktuelleSpielerPosition;
+
+    if (
+        !position ||
+        !position.karte ||
+        !window.reservatKarten ||
+        !window.reservatKarten[position.karte]
+    ) {
+        return;
+    } /* Ende aktuelle Karte prüfen */
+
+
+    const karte =
+        window.reservatKarten[
+            position.karte
+        ];
+
+
+    /* -----------------------------------
+    Vorhandene Kartenebenen suchen
+    ----------------------------------- */
+
+    const kartenEbene1 =
+        document.getElementById(
+            "kartenEbene1"
+        );
+
+    const kartenEbene3 =
+        document.getElementById(
+            "kartenEbene3"
+        );
+
+
+    /* -----------------------------------
+    Ebene 1 aktualisieren
+    ----------------------------------- */
+
+    if (kartenEbene1) {
+
+        kartenEbene1.style.backgroundImage =
+            karte.ebene1
+                ? `url("${karte.ebene1}")`
+                : "none";
+
+    } /* Ende Kartenebene 1 */
+
+
+    /* -----------------------------------
+    Ebene 3 aktualisieren
+    ----------------------------------- */
+
+    if (kartenEbene3) {
+
+        kartenEbene3.style.backgroundImage =
+            karte.ebene3
+                ? `url("${karte.ebene3}")`
+                : "none";
+
+    } /* Ende Kartenebene 3 */
+
+}; /* Ende kartenGrafikAktualisieren */
+
+/* Ende Kartengrafik aktualisieren */
 /* -----------------------------------
 Kartendaten jetzt laden
 ----------------------------------- */
@@ -2125,140 +2200,46 @@ window.multiplayerPositionen =
         const firebaseUser =
             window.firebaseAuth.currentUser;
 
-
-        /* -----------------------------------
-        Alle bekannten Spieler setzen
-        ----------------------------------- */
-
-        for (
-            const eintrag
-            of multiplayerSpieler
-        ) {
-
-            const position =
-                positionen[
-                    eintrag.uid
-                ];
-
-            const canvas =
-                avatarNachUid[
-                    eintrag.uid
-                ];
 /* -----------------------------------
-Avatar-Z-Ebene bestimmen
+Eigene Position übernehmen
 ----------------------------------- */
 
 if (
-    canvas &&
-    position &&
-    typeof position.x === "number" &&
-    typeof position.y === "number"
+    firebaseUser &&
+    positionen[
+        firebaseUser.uid
+    ]
 ) {
 
-    /* -----------------------------------
-    Prüfen, ob der Avatar auf einem
-    Ebene-2-Feld steht
-    ----------------------------------- */
-
-    const istEbene2 =
-        window.istAvatarEbene2Feld(
-            position.karte,
-            position.x,
-            position.y
-        );
-
-
-    /* -----------------------------------
-    Eigener Spieler
-    ----------------------------------- */
-
-    if (
-        firebaseUser &&
-        eintrag.uid === firebaseUser.uid
-    ) {
-
-        if (istEbene2) {
-
-            canvas.style.zIndex =
-                window.reservatEbenen.avatar2Eigen;
-
-        } else {
-
-            canvas.style.zIndex =
-                window.reservatEbenen.avatar4Eigen;
-
-        } /* Ende Ebene 2 / Ebene 4 */
-
-    } else {
-
-        /* -----------------------------------
-        Andere Spieler
-        ----------------------------------- */
-
-        if (istEbene2) {
-
-            canvas.style.zIndex =
-                window.reservatEbenen.avatar2Andere;
-
-        } else {
-
-            canvas.style.zIndex =
-                window.reservatEbenen.avatar4Andere;
-
-        } /* Ende Ebene 2 / Ebene 4 */
-
-    } /* Ende eigener / anderer Spieler */
-
-} /* Ende Avatar-Z-Ebene */
-
-            if (
-                !position ||
-                !canvas
-            ) {
-                continue;
-            }
-
-
-            if (
-                typeof position.x !== "number" ||
-                typeof position.y !== "number"
-            ) {
-                continue;
-            }
-
-
-            window.spielfigurSetzen(
-                canvas,
-                position.x,
-                position.y
-            );
-        }
-
-
-        /* -----------------------------------
-        Eigene Position für Bewegung merken
-        ----------------------------------- */
-
-        if (
-            firebaseUser &&
-            positionen[
-                firebaseUser.uid
-            ]
-        ) {
-
-            const eigenePosition =
-                positionen[
-                    firebaseUser.uid
-                ];
-
+    const eigenePosition =
+        positionen[
+            firebaseUser.uid
+        ];
 
 window.aktuelleSpielerPosition = {
     karte: eigenePosition.karte,
     x: eigenePosition.x,
     y: eigenePosition.y
 };
+
 window.kartenNameAnzeigen();
-        }
+window.kartenGrafikAktualisieren();
+
+} /* Ende eigene Position übernehmen */
+
+
+/* -----------------------------------
+Sichtbare Avatare aktualisieren
+----------------------------------- */
+
+window.sichtbareAvatareAktualisieren(
+    multiplayerSpieler,
+    positionen,
+    avatarNachUid,
+    firebaseUser
+);
+
+/* Ende sichtbare Avatare aktualisieren */
 
 
         console.log(
@@ -2284,7 +2265,157 @@ window.kartenNameAnzeigen();
 };
 
 /* Ende Schnappschuss + Habitica-Avatar */
+/* =========================================================
+SICHTBARE AVATARE AKTUALISIEREN
+========================================================= */
 
+window.sichtbareAvatareAktualisieren =
+function (
+    multiplayerSpieler,
+    positionen,
+    avatarNachUid,
+    firebaseUser
+) {
+
+    /* -----------------------------------
+    Alle bekannten Spieler setzen
+    ----------------------------------- */
+
+    for (
+        const eintrag
+        of multiplayerSpieler
+    ) {
+
+        const position =
+            positionen[
+                eintrag.uid
+            ];
+
+        const canvas =
+            avatarNachUid[
+                eintrag.uid
+            ];
+
+
+        /* -----------------------------------
+        Avatar-Z-Ebene bestimmen
+        ----------------------------------- */
+
+        if (
+            canvas &&
+            position &&
+            typeof position.x === "number" &&
+            typeof position.y === "number"
+        ) {
+
+            const istEbene2 =
+                window.istAvatarEbene2Feld(
+                    position.karte,
+                    position.x,
+                    position.y
+                );
+
+
+            /* -----------------------------------
+            Eigener Spieler
+            ----------------------------------- */
+
+            if (
+                firebaseUser &&
+                eintrag.uid === firebaseUser.uid
+            ) {
+
+                if (istEbene2) {
+
+                    canvas.style.zIndex =
+                        window.reservatEbenen.avatar2Eigen;
+
+                } else {
+
+                    canvas.style.zIndex =
+                        window.reservatEbenen.avatar4Eigen;
+
+                } /* Ende Ebene 2 / Ebene 4 */
+
+            } else {
+
+                /* -----------------------------------
+                Andere Spieler
+                ----------------------------------- */
+
+                if (istEbene2) {
+
+                    canvas.style.zIndex =
+                        window.reservatEbenen.avatar2Andere;
+
+                } else {
+
+                    canvas.style.zIndex =
+                        window.reservatEbenen.avatar4Andere;
+
+                } /* Ende Ebene 2 / Ebene 4 */
+
+            } /* Ende eigener / anderer Spieler */
+
+        } /* Ende Avatar-Z-Ebene */
+
+
+        /* -----------------------------------
+        Avatarposition prüfen
+        ----------------------------------- */
+
+        if (
+            !position ||
+            !canvas
+        ) {
+            continue;
+        } /* Ende Position / Canvas prüfen */
+
+
+        if (
+            typeof position.x !== "number" ||
+            typeof position.y !== "number"
+        ) {
+            continue;
+        } /* Ende Koordinaten prüfen */
+
+/* -----------------------------------
+Prüfen, ob Spieler auf meiner
+aktuellen Karte steht
+----------------------------------- */
+
+const eigeneKarte =
+    window.aktuelleSpielerPosition?.karte;
+
+if (
+    eigeneKarte &&
+    position.karte !== eigeneKarte
+) {
+
+    if (canvas.parentElement) {
+
+        canvas.remove();
+
+    } /* Ende Canvas im Spielfeld */
+
+    continue;
+
+} /* Ende andere Karte */
+        /* -----------------------------------
+        Avatar auf Spielfeld setzen
+        ----------------------------------- */
+
+        window.spielfigurSetzen(
+            canvas,
+            position.x,
+            position.y
+        );
+
+    } /* Ende alle bekannten Spieler */
+
+}; /* Ende sichtbareAvatareAktualisieren */
+
+/* Ende sichtbare Avatare aktualisieren */
 /* =========================================================
 SPIELER BEWEGEN
 ========================================================= */
@@ -3547,40 +3678,64 @@ function () {
 
     spielfeld.innerHTML = "";
 
-/* -----------------------------------
-Kartenebenen anlegen
------------------------------------ */
-
-/* Kartenebene 1 */
+/*-----------------------------------*/
+/* Kartenebenen erzeugen             */
+/*-----------------------------------*/
 
 const kartenEbene1 =
-    document.createElement(
-        "div"
-    );
+    document.createElement("div");
 
 kartenEbene1.id =
     "kartenEbene1";
+
+const kartenEbene3 =
+    document.createElement("div");
+
+kartenEbene3.id =
+    "kartenEbene3";
+
+
+/*-----------------------------------*/
+/* Kartengrafiken aus JSON laden     */
+/*-----------------------------------*/
+
+const aktuelleKarte =
+    window.aktuelleSpielerPosition?.karte ||
+    "buecherei";
+
+const kartenDaten =
+    window.reservatKarten?.[aktuelleKarte];
+
+if (kartenDaten) {
+
+    if (kartenDaten.ebene1) {
+
+        kartenEbene1.style.backgroundImage =
+            `url("${kartenDaten.ebene1}")`;
+
+    } /* Ende Ebene 1 */
+
+    if (kartenDaten.ebene3) {
+
+        kartenEbene3.style.backgroundImage =
+            `url("${kartenDaten.ebene3}")`;
+
+    } /* Ende Ebene 3 */
+
+} /* Ende Kartendaten vorhanden */
+
 
 spielfeld.appendChild(
     kartenEbene1
 );
 
-
-/* Kartenebene 3 */
-
-const kartenEbene3 =
-    document.createElement(
-        "div"
-    );
-
-kartenEbene3.id =
-    "kartenEbene3";
-
 spielfeld.appendChild(
     kartenEbene3
 );
 
-/* Ende Kartenebenen anlegen */
+/* Ende Kartenebenen erzeugen */
+
+
 
 
     for (let y = 0; y < 10; y++) {

@@ -24,7 +24,16 @@
                 [3,6], [7,6], [8,6],
                 [5,7]
             ],
-            "sonderfelder": []
+            "sonderfelder": [
+    {
+        "position": [0, 3],
+        "trigger": "aktion",
+        "typ": "ortswechsel",
+        "text": "Zum Hafen gehen?",
+        "zielKarte": "hafen",
+        "zielPosition": [9, 3]
+    }
+]
         },
         "hafen": {
             "name": "Am Hafen",
@@ -45,14 +54,22 @@
             "avatarEbene2Felder": [
                 [4,0],
                 [5,2], [7,2],
-                [2,3],
                 [8,4],
                 [7,5],
                 [2,6],
                 [8,7],
                 [2,8], [3,8], [4,8], [6,8], [7,8]
             ],
-            "sonderfelder": []
+             "sonderfelder": [
+    {
+        "position": [9, 3],
+        "trigger": "aktion",
+        "typ": "ortswechsel",
+        "text": "Richtung Bücherei gehen?",
+        "zielKarte": "buecherei",
+        "zielPosition": [0, 3]
+    }
+	]
         }
     }
 }

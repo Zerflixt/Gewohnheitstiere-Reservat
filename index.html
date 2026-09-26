@@ -614,7 +614,83 @@ height: 42px;
     grid-column: 1;
     grid-row: 2;
 }
+/* -----------------------------------
+Kontext-Aktion in der Mitte
+----------------------------------- */
 
+.aktionstaste {
+    grid-column: 2;
+    grid-row: 2;
+
+	transform: translate(8px, 8px);
+
+    width: 48px;
+    height: 48px;
+
+    margin: 0;
+    padding: 0;
+
+    background: transparent;
+    border: none;
+    box-shadow: none;
+
+    cursor: default;
+
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+
+/* -----------------------------------
+Grafik der Kontext-Aktion
+----------------------------------- */
+
+.aktionstaste img {
+    width: 42px;
+    height: 42px;
+
+    display: block;
+    margin: auto;
+
+    object-fit: contain;
+
+    pointer-events: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+
+    opacity: 0.18;
+}
+/* -----------------------------------
+Aktive Kontext-Aktion
+----------------------------------- */
+
+.aktionstaste.aktiv {
+    cursor: pointer;
+}
+
+.aktionstaste.aktiv img {
+    opacity: 1;
+
+    filter:
+        drop-shadow(0 0 4px white)
+        drop-shadow(0 0 8px gold);
+}
+
+/* Ende aktive Kontext-Aktion */
+
+/* -----------------------------------
+Browserdarstellung für disabled
+neutral halten
+----------------------------------- */
+
+.aktionstaste:disabled {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+
+/* Ende Kontext-Aktion */
 
 /* -----------------------------------
    Rechts
@@ -742,7 +818,7 @@ Karte links - Bewegungssteuerung rechts
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.087";
+window.multiplayerTestVersion = "0.092";
 
 /* Ende Testversion */
 /* =========================================================
@@ -947,6 +1023,294 @@ function () {
 }; /* Ende kartenGrafikAktualisieren */
 
 /* Ende Kartengrafik aktualisieren */
+/* =========================================================
+SONDERFELD AN AKTUELLER POSITION ERMITTELN
+========================================================= */
+
+window.sonderfeldAnAktuellerPositionErmitteln =
+function () {
+
+    /* -----------------------------------
+    Aktuelle Spielerposition prüfen
+    ----------------------------------- */
+
+    const position =
+        window.aktuelleSpielerPosition;
+
+    if (
+        !position ||
+        !position.karte ||
+        typeof position.x !== "number" ||
+        typeof position.y !== "number"
+    ) {
+        return null;
+    } /* Ende Spielerposition prüfen */
+
+
+    /* -----------------------------------
+    Aktuelle Karte ermitteln
+    ----------------------------------- */
+
+    const karte =
+        window.reservatKarten?.[
+            position.karte
+        ];
+
+    if (
+        !karte ||
+        !Array.isArray(
+            karte.sonderfelder
+        )
+    ) {
+        return null;
+    } /* Ende Kartendaten prüfen */
+
+
+    /* -----------------------------------
+    Sonderfeld an Spielerposition suchen
+    ----------------------------------- */
+
+    const sonderfeld =
+        karte.sonderfelder.find(
+            function (eintrag) {
+
+                return (
+                    Array.isArray(
+                        eintrag.position
+                    ) &&
+                    eintrag.position[0] === position.x &&
+                    eintrag.position[1] === position.y
+                );
+
+            } /* Ende Sonderfeldvergleich */
+        );
+
+
+    return sonderfeld || null;
+
+}; /* Ende sonderfeldAnAktuellerPositionErmitteln */
+
+/* Ende Sonderfeld an aktueller Position ermitteln */
+/* =========================================================
+KONTEXT-AKTION AKTUALISIEREN
+========================================================= */
+
+window.kontextAktionAktualisieren =
+function () {
+
+    /* -----------------------------------
+    Bedienelemente suchen
+    ----------------------------------- */
+
+    const aktionButton =
+        document.getElementById(
+            "aktionButton"
+        );
+
+    const ereignisText =
+        document.getElementById(
+            "schnappschussTest"
+        );
+
+    if (!aktionButton) {
+        return;
+    } /* Ende A-Button prüfen */
+
+
+    /* -----------------------------------
+    Sonderfeld an aktueller Position
+    ermitteln
+    ----------------------------------- */
+
+    const sonderfeld =
+        window.sonderfeldAnAktuellerPositionErmitteln();
+
+
+    /* -----------------------------------
+    Aktions-Sonderfeld vorhanden
+    ----------------------------------- */
+
+    if (
+        sonderfeld &&
+        sonderfeld.trigger === "aktion"
+    ) {
+
+        aktionButton.disabled = false;
+
+        aktionButton.title =
+            sonderfeld.text ||
+            "Aktion ausführen";
+
+        aktionButton.classList.add(
+            "aktiv"
+        );
+
+        if (ereignisText) {
+
+            ereignisText.textContent =
+                sonderfeld.text ||
+                "Aktion verfügbar";
+
+        } /* Ende Ereignistext setzen */
+
+        return;
+
+    } /* Ende Aktions-Sonderfeld vorhanden */
+
+
+    /* -----------------------------------
+    Keine Aktion verfügbar
+    ----------------------------------- */
+
+    aktionButton.disabled = true;
+
+    aktionButton.title =
+        "Keine Aktion verfügbar";
+
+    aktionButton.classList.remove(
+        "aktiv"
+    );
+
+    if (ereignisText) {
+
+        ereignisText.textContent = "Gewohnheitstiere Reservat";
+
+    } /* Ende Ereignistext leeren */
+
+}; /* Ende kontextAktionAktualisieren */
+
+/* Ende Kontext-Aktion aktualisieren */
+/* =========================================================
+SONDERFELD-AKTION AUSFÜHREN
+========================================================= */
+
+window.sonderfeldAktionAusfuehren =
+async function () {
+
+    /* -----------------------------------
+    Aktuelles Sonderfeld ermitteln
+    ----------------------------------- */
+
+    const sonderfeld =
+        window.sonderfeldAnAktuellerPositionErmitteln();
+
+    if (
+        !sonderfeld ||
+        sonderfeld.trigger !== "aktion"
+    ) {
+        return;
+    } /* Ende Aktions-Sonderfeld prüfen */
+
+
+    /* -----------------------------------
+    Aktion nach Typ ausführen
+    ----------------------------------- */
+
+    switch (sonderfeld.typ) {
+
+        case "ortswechsel":
+
+            await window.ortswechselAusfuehren(
+                sonderfeld
+            );
+
+            break;
+
+        default:
+
+            console.warn(
+                "Unbekannter Sonderfeld-Typ:",
+                sonderfeld.typ
+            );
+
+            break;
+
+    } /* Ende Aktionstyp auswerten */
+
+}; /* Ende sonderfeldAktionAusfuehren */
+
+/* Ende Sonderfeld-Aktion ausführen */
+
+
+/* =========================================================
+ORTSWECHSEL AUSFÜHREN
+========================================================= */
+
+window.ortswechselAusfuehren =
+async function (sonderfeld) {
+
+    /* -----------------------------------
+    Voraussetzungen prüfen
+    ----------------------------------- */
+
+    const user =
+        window.firebaseAuth.currentUser;
+
+    if (
+        !user ||
+        !sonderfeld ||
+        !sonderfeld.zielKarte ||
+        !Array.isArray(
+            sonderfeld.zielPosition
+        ) ||
+        sonderfeld.zielPosition.length < 2
+    ) {
+
+        console.error(
+            "Ortswechsel nicht möglich:",
+            sonderfeld
+        );
+
+        return;
+
+    } /* Ende Voraussetzungen prüfen */
+
+
+    /* -----------------------------------
+    Zielposition bestimmen
+    ----------------------------------- */
+
+    const zielX =
+        sonderfeld.zielPosition[0];
+
+    const zielY =
+        sonderfeld.zielPosition[1];
+
+
+    /* -----------------------------------
+    Neue Position nach Firebase schreiben
+    ----------------------------------- */
+
+    const positionsRef =
+        window.firebaseRef(
+            window.firebaseDatabase,
+            "positions/" + user.uid
+        );
+
+
+    try {
+
+        await window.firebaseSet(
+            positionsRef,
+            {
+                karte: sonderfeld.zielKarte,
+                x: zielX,
+                y: zielY
+            }
+        );
+
+    } catch (fehler) {
+
+        console.error(
+            "Ortswechsel konnte nicht gespeichert werden:",
+            fehler
+        );
+
+    } /* Ende Firebase-Schreibversuch */
+
+}; /* Ende ortswechselAusfuehren */
+
+/* Ende Ortswechsel ausführen */
 /* -----------------------------------
 Kartendaten jetzt laden
 ----------------------------------- */
@@ -2224,6 +2588,7 @@ window.aktuelleSpielerPosition = {
 
 window.kartenNameAnzeigen();
 window.kartenGrafikAktualisieren();
+window.kontextAktionAktualisieren();
 
 } /* Ende eigene Position übernehmen */
 
@@ -4030,7 +4395,25 @@ function (zielPassage) {
                     alt=&quot;&quot;
                 &gt;
             &lt;/button&gt;
+&lt;!-- ---------------------------------------------
+     Kontext-Aktion A
+     --------------------------------------------- --&gt;
 
+&lt;button
+    id=&quot;aktionButton&quot;
+    class=&quot;aktionstaste&quot;
+    disabled
+    onclick=&quot;window.sonderfeldAktionAusfuehren()&quot;
+    aria-label=&quot;Aktion&quot;
+    title=&quot;Keine Aktion verfügbar&quot;
+&gt;
+    &lt;img
+        src=&quot;Daten/aktion_wolfsmaul_a_gold.png&quot;
+        alt=&quot;&quot;
+    &gt;
+&lt;/button&gt;
+
+&lt;!-- Ende Kontext-Aktion A --&gt;
 
             &lt;button
                 id=&quot;bewegungRechts&quot;

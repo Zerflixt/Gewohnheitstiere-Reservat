@@ -854,11 +854,88 @@ Reservat - Ladebildschirm
     display: block;
 }
 
-/* Ende Reservat - Ladebildschirm */</style><script role="script" id="twine-user-script" type="text/twine-javascript">/* =========================================================
+/* Ende Reservat - Ladebildschirm */
+/* -----------------------------------
+Reservat - Externer-Link-Dialog
+----------------------------------- */
+
+#reservatExternerLinkDialog {
+    position: absolute;
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    z-index: 1100;
+}
+
+#reservatExternerLinkDialog img {
+    width: 90%;
+    height: 90%;
+
+    object-fit: contain;
+
+    display: block;
+}
+/* -----------------------------------
+Valoria - Abbrechen-Schaltfläche
+----------------------------------- */
+
+#valoriaAbbrechenButton {
+    position: absolute;
+
+    left: 23%;
+    top: 61.3%;
+
+    width: 20%;
+    height: 8%;
+
+    z-index: 1101;
+
+    background: transparent;
+    border: none;
+
+    cursor: pointer;
+
+    font: inherit;
+    font-weight: bold;
+    color: #3a2715;
+}
+
+/* Ende Valoria - Abbrechen-Schaltfläche */
+/* -----------------------------------
+Valoria - Los-gehts-Schaltfläche
+----------------------------------- */
+
+#valoriaLosGehtsButton {
+    position: absolute;
+
+    left: 56%;
+    top: 61.3%;
+
+    width: 20%;
+    height: 8%;
+
+    z-index: 1101;
+
+    background: transparent;
+    border: none;
+
+    cursor: pointer;
+
+    font: inherit;
+    font-weight: bold;
+    color: #3a2715;
+}
+
+/* Ende Valoria - Los-gehts-Schaltfläche */
+
+/* Ende Reservat - Externer-Link-Dialog */</style><script role="script" id="twine-user-script" type="text/twine-javascript">/* =========================================================
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.112";
+window.multiplayerTestVersion = "0.115";
 
 /* Ende Testversion */
 /* =========================================================
@@ -1272,13 +1349,23 @@ async function () {
 
         switch (sonderfeld.typ) {
 
-            case "ortswechsel":
+                        case "ortswechsel":
 
                 await window.ortswechselAusfuehren(
                     sonderfeld
                 );
 
                 break;
+
+
+            case "externer_link":
+
+                window.externerLinkDialogAnzeigen(
+                    sonderfeld
+                );
+
+                break;
+
 
             default:
 
@@ -1305,7 +1392,215 @@ async function () {
 
 /* Ende Sonderfeld-Aktion ausführen */
 
+/* =========================================================
+EXTERNEN LINK - DIALOG ANZEIGEN
+========================================================= */
 
+window.externerLinkDialogAnzeigen =
+function (sonderfeld) {
+
+    /* -----------------------------------
+    Sonderfeld prüfen
+    ----------------------------------- */
+
+    if (
+        !sonderfeld ||
+        !sonderfeld.dialogGrafik
+    ) {
+
+        console.error(
+            "Dialog kann nicht angezeigt werden: " +
+            "Keine Dialoggrafik angegeben.",
+            sonderfeld
+        );
+
+        return;
+
+    } /* Ende Sonderfeld prüfen */
+
+
+    /* -----------------------------------
+    Eventuell vorhandenen Dialog entfernen
+    ----------------------------------- */
+
+    const alterDialog =
+        document.getElementById(
+            "reservatExternerLinkDialog"
+        );
+
+    if (alterDialog) {
+
+        alterDialog.remove();
+
+    } /* Ende vorhandener Dialog */
+
+
+    /* -----------------------------------
+    Dialog-Hintergrund erzeugen
+    ----------------------------------- */
+
+    const dialog =
+        document.createElement(
+            "div"
+        );
+
+    dialog.id =
+        "reservatExternerLinkDialog";
+
+
+    /* -----------------------------------
+    Dialoggrafik erzeugen
+    ----------------------------------- */
+
+    const grafik =
+        document.createElement(
+            "img"
+        );
+
+    grafik.src =
+        sonderfeld.dialogGrafik;
+
+    grafik.alt =
+        sonderfeld.text ||
+        "Dialog";
+
+
+    /* -----------------------------------
+    Grafik in Dialog einsetzen
+    ----------------------------------- */
+
+    dialog.appendChild(
+        grafik
+    );
+    /* -----------------------------------
+    Abbrechen-Schaltfläche erzeugen
+    ----------------------------------- */
+
+    const abbrechenButton =
+        document.createElement(
+            "button"
+        );
+
+    abbrechenButton.id =
+        "valoriaAbbrechenButton";
+
+    abbrechenButton.type =
+        "button";
+
+    abbrechenButton.textContent =
+        "Abbrechen";
+
+
+    /* -----------------------------------
+    Abbrechen-Schaltfläche auswerten
+    ----------------------------------- */
+
+    abbrechenButton.addEventListener(
+        "click",
+        function () {
+
+            dialog.remove();
+
+        } /* Ende Abbrechen-Klick */
+    );
+
+
+    /* -----------------------------------
+    Schaltfläche in Dialog einsetzen
+    ----------------------------------- */
+
+    dialog.appendChild(
+        abbrechenButton
+    );
+
+    /* Ende Abbrechen-Schaltfläche */
+    /* -----------------------------------
+    Los-gehts-Schaltfläche erzeugen
+    ----------------------------------- */
+
+    const losGehtsButton =
+        document.createElement(
+            "button"
+        );
+
+    losGehtsButton.id =
+        "valoriaLosGehtsButton";
+
+    losGehtsButton.type =
+        "button";
+
+    losGehtsButton.textContent =
+        "Los geht's!";
+
+    /* -----------------------------------
+    Externen Link öffnen
+    ----------------------------------- */
+
+    losGehtsButton.addEventListener(
+        "click",
+        function () {
+
+            if (!sonderfeld.link) {
+
+                console.error(
+                    "Externer Link fehlt.",
+                    sonderfeld
+                );
+
+                return;
+
+            } /* Ende Linkprüfung */
+
+
+window.open(
+    sonderfeld.link,
+    "eternalFit"
+);
+
+
+            dialog.remove();
+
+        } /* Ende Los-gehts-Klick */
+    );
+
+    /* Ende externen Link öffnen */
+    /* -----------------------------------
+    Schaltfläche in Dialog einsetzen
+    ----------------------------------- */
+
+    dialog.appendChild(
+        losGehtsButton
+    );
+
+    /* Ende Los-gehts-Schaltfläche */
+    /* -----------------------------------
+    Dialog ins Spielfeld einsetzen
+    ----------------------------------- */
+
+    const spielfeld =
+        document.getElementById(
+            "spielfeld"
+        );
+
+    if (!spielfeld) {
+
+        console.error(
+            "Dialog kann nicht angezeigt werden: " +
+            "Spielfeld nicht gefunden."
+        );
+
+        return;
+
+    } /* Ende Spielfeld prüfen */
+
+
+    spielfeld.appendChild(
+        dialog
+    );
+
+}; /* Ende externerLinkDialogAnzeigen */
+
+/* Ende Externen Link - Dialog anzeigen */
 /* =========================================================
 ORTSWECHSEL AUSFÜHREN
 ========================================================= */
@@ -3577,6 +3872,20 @@ SPIELER BEWEGEN
 
 window.spielerBewegen =
 async function (deltaX, deltaY) {
+    /* -----------------------------------
+    Offenen Dialog berücksichtigen
+    ----------------------------------- */
+
+    if (
+        document.getElementById(
+            "reservatExternerLinkDialog"
+        )
+    ) {
+
+        return;
+
+    } /* Ende Dialogprüfung */
+
 
     /* -----------------------------------
     Voraussetzungen prüfen

@@ -688,7 +688,23 @@ neutral halten
     border: none;
     box-shadow: none;
 }
+/* -----------------------------------
+Touch- und Fokuszustände neutralisieren
+----------------------------------- */
 
+.aktionstaste:focus,
+.aktionstaste:focus-visible,
+.aktionstaste:active,
+.aktionstaste.aktiv:focus,
+.aktionstaste.aktiv:focus-visible,
+.aktionstaste.aktiv:active {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* Ende Touch- und Fokuszustände */
 
 /* Ende Kontext-Aktion */
 
@@ -818,7 +834,7 @@ Karte links - Bewegungssteuerung rechts
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.092";
+window.multiplayerTestVersion = "0.095";
 
 /* Ende Testversion */
 /* =========================================================
@@ -1180,6 +1196,7 @@ function () {
 }; /* Ende kontextAktionAktualisieren */
 
 /* Ende Kontext-Aktion aktualisieren */
+
 /* =========================================================
 SONDERFELD-AKTION AUSFÜHREN
 ========================================================= */
@@ -1193,6 +1210,8 @@ async function () {
 
     const sonderfeld =
         window.sonderfeldAnAktuellerPositionErmitteln();
+
+
 
     if (
         !sonderfeld ||

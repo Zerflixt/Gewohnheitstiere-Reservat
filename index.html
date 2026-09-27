@@ -123,15 +123,6 @@ UND STORY-FLÄCHE FREIGEBEN
 
 /* Ende SugarCube-Seitenleiste */
 /* =========================================================
-FARBSCHEMA DES RESERVATS
-========================================================= */
-
-:root {
-    color-scheme: light;
-}
-
-/* Ende Farbschema des Reservats */
-/* =========================================================
 10 x 10 SPIELFELD
 ========================================================= */
 
@@ -886,9 +877,6 @@ container-type: inline-size;
     object-fit: contain;
 
     display: block;
-
-    position: relative;
-    z-index: 1;
 }
 /* -----------------------------------
 Valoria - Abbrechen-Schaltfläche
@@ -903,21 +891,16 @@ Valoria - Abbrechen-Schaltfläche
     width: 20%;
     height: 8%;
 
-    z-index: 2;
-	background: rgba(255, 255, 255, 0.01);
-    
+    z-index: 1101;
+
+    background: transparent;
     border: none;
 
     cursor: pointer;
 
     font-size: 3cqw;
     font-weight: bold;
-   color: #3a2715 !important;
--webkit-text-fill-color: #3a2715 !important;
-    text-shadow:
-        0 0 2px white,
-        0 0 4px white,
-        0 0 6px white;
+    color: #3a2715;
 }
 
 /* Ende Valoria - Abbrechen-Schaltfläche */
@@ -934,52 +917,25 @@ Valoria - Los-gehts-Schaltfläche
     width: 20%;
     height: 8%;
 
-    z-index: 2;
+    z-index: 1101;
 
-    background: rgba(255, 255, 255, 0.01);
+    background: transparent;
     border: none;
 
     cursor: pointer;
 
     font-size: 3cqw;
     font-weight: bold;
-    color: #3a2715 !important;
--webkit-text-fill-color: #3a2715 !important;
-    text-shadow:
-        0 0 2px #3a2715,
-        0 0 4px #3a2715,
-        0 0 6px #3a2715;
+    color: #3a2715;
 }
 
 /* Ende Valoria - Los-gehts-Schaltfläche */
-/* -----------------------------------
-Valoria-Schaltflächen - Zustände neutral
------------------------------------ */
 
-#valoriaAbbrechenButton:hover,
-#valoriaAbbrechenButton:focus,
-#valoriaAbbrechenButton:focus-visible,
-#valoriaAbbrechenButton:active,
-#valoriaLosGehtsButton:hover,
-#valoriaLosGehtsButton:focus,
-#valoriaLosGehtsButton:focus-visible,
-#valoriaLosGehtsButton:active {
-
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    outline: none !important;
-
-    color: #3a2715 !important;
-    -webkit-text-fill-color: #3a2715 !important;
-}
-
-/* Ende Valoria-Schaltflächen - Zustände neutral */
 /* Ende Reservat - Externer-Link-Dialog */</style><script role="script" id="twine-user-script" type="text/twine-javascript">/* =========================================================
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.124";
+window.multiplayerTestVersion = "0.127";
 
 /* Ende Testversion */
 /* =========================================================
@@ -1516,6 +1472,95 @@ function (sonderfeld) {
     dialog.appendChild(
         grafik
     );
+
+
+    /* -----------------------------------
+    Hilfsfunktion:
+    Beschriftung als Canvas erzeugen
+
+    Der Text wird dadurch zu Bildpixeln.
+    Samsung kann seine Farbe anschließend
+    nicht mehr als HTML-Text verändern.
+    ----------------------------------- */
+
+    function canvasBeschriftungErzeugen(
+        text
+    ) {
+
+        const canvas =
+            document.createElement(
+                "canvas"
+            );
+
+        /*
+        Interne Canvas-Auflösung.
+
+        Das sichtbare Canvas wird später
+        automatisch auf die Größe des
+        vorhandenen Buttons skaliert.
+        */
+
+        canvas.width = 400;
+        canvas.height = 120;
+
+
+        const context =
+            canvas.getContext(
+                "2d"
+            );
+
+
+        /* -----------------------------------
+        Textdarstellung
+        ----------------------------------- */
+
+        context.font = "bold 58px sans-serif";
+context.fillStyle = "#3a2715";
+
+context.shadowColor = "rgba(255, 255, 255, 0.95)";
+context.shadowBlur = 10;
+
+context.textAlign = "center";
+context.textBaseline = "middle";
+
+
+        /* -----------------------------------
+        Text exakt mittig zeichnen
+        ----------------------------------- */
+
+        context.fillText(
+            text,
+            canvas.width / 2,
+            canvas.height / 2
+        );
+
+
+        /* -----------------------------------
+        Canvas füllt den vorhandenen Button
+
+        Es bleibt selbst vollständig
+        transparent. Nur die Textpixel
+        werden gezeichnet.
+        ----------------------------------- */
+
+        canvas.style.width =
+            "100%";
+
+        canvas.style.height =
+            "100%";
+
+        canvas.style.display =
+            "block";
+
+        canvas.style.pointerEvents =
+            "none";
+
+
+        return canvas;
+
+    } /* Ende canvasBeschriftungErzeugen */
+
+
     /* -----------------------------------
     Abbrechen-Schaltfläche erzeugen
     ----------------------------------- */
@@ -1531,8 +1576,19 @@ function (sonderfeld) {
     abbrechenButton.type =
         "button";
 
-    abbrechenButton.textContent =
-        "Abbrechen";
+
+    /* -----------------------------------
+    Abbrechen als Canvas-Text einsetzen
+    ----------------------------------- */
+
+    const abbrechenText =
+        canvasBeschriftungErzeugen(
+            "Abbrechen"
+        );
+
+    abbrechenButton.appendChild(
+        abbrechenText
+    );
 
 
     /* -----------------------------------
@@ -1558,23 +1614,37 @@ function (sonderfeld) {
     );
 
     /* Ende Abbrechen-Schaltfläche */
+
+
     /* -----------------------------------
     Los-gehts-Schaltfläche erzeugen
     ----------------------------------- */
 
     const losGehtsButton =
         document.createElement(
-            "div"
+            "button"
         );
 
     losGehtsButton.id =
         "valoriaLosGehtsButton";
 
- /*   losGehtsButton.type =
-        "button"; */
+    losGehtsButton.type =
+        "button";
 
-    losGehtsButton.textContent =
-        "Los geht's!";
+
+    /* -----------------------------------
+    Los geht's als Canvas-Text einsetzen
+    ----------------------------------- */
+
+    const losGehtsText =
+        canvasBeschriftungErzeugen(
+            "Los geht's!"
+        );
+
+    losGehtsButton.appendChild(
+        losGehtsText
+    );
+
 
     /* -----------------------------------
     Externen Link öffnen
@@ -1596,10 +1666,10 @@ function (sonderfeld) {
             } /* Ende Linkprüfung */
 
 
-window.open(
-    sonderfeld.link,
-    "eternalFit"
-);
+            window.open(
+                sonderfeld.link,
+                "eternalFit"
+            );
 
 
             dialog.remove();
@@ -1608,6 +1678,8 @@ window.open(
     );
 
     /* Ende externen Link öffnen */
+
+
     /* -----------------------------------
     Schaltfläche in Dialog einsetzen
     ----------------------------------- */
@@ -1617,6 +1689,8 @@ window.open(
     );
 
     /* Ende Los-gehts-Schaltfläche */
+
+
     /* -----------------------------------
     Dialog ins Spielfeld einsetzen
     ----------------------------------- */

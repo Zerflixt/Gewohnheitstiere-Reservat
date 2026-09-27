@@ -832,7 +832,7 @@ Karte links - Bewegungssteuerung rechts
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.096";
+window.multiplayerTestVersion = "0.102";
 
 /* Ende Testversion */
 /* =========================================================
@@ -1198,9 +1198,21 @@ function () {
 /* =========================================================
 SONDERFELD-AKTION AUSFÜHREN
 ========================================================= */
-
 window.sonderfeldAktionAusfuehren =
 async function () {
+
+    /* -----------------------------------
+    Bereits laufende Aktion abfangen
+    ----------------------------------- */
+
+    if (
+        window.sonderfeldAktionLaeuft === true
+    ) {
+
+        return;
+
+    } /* Ende laufende Aktion prüfen */
+
 
     /* -----------------------------------
     Aktuelles Sonderfeld ermitteln
@@ -1209,40 +1221,59 @@ async function () {
     const sonderfeld =
         window.sonderfeldAnAktuellerPositionErmitteln();
 
-
-
     if (
         !sonderfeld ||
         sonderfeld.trigger !== "aktion"
     ) {
+
         return;
+
     } /* Ende Aktions-Sonderfeld prüfen */
 
 
     /* -----------------------------------
-    Aktion nach Typ ausführen
+    Aktion sperren
     ----------------------------------- */
 
-    switch (sonderfeld.typ) {
+    window.sonderfeldAktionLaeuft = true;
 
-        case "ortswechsel":
 
-            await window.ortswechselAusfuehren(
-                sonderfeld
-            );
+    try {
 
-            break;
+        /* -----------------------------------
+        Aktion nach Typ ausführen
+        ----------------------------------- */
 
-        default:
+        switch (sonderfeld.typ) {
 
-            console.warn(
-                "Unbekannter Sonderfeld-Typ:",
-                sonderfeld.typ
-            );
+            case "ortswechsel":
 
-            break;
+                await window.ortswechselAusfuehren(
+                    sonderfeld
+                );
 
-    } /* Ende Aktionstyp auswerten */
+                break;
+
+            default:
+
+                console.warn(
+                    "Unbekannter Sonderfeld-Typ:",
+                    sonderfeld.typ
+                );
+
+                break;
+
+        } /* Ende Aktionstyp auswerten */
+
+    } finally {
+
+        /* -----------------------------------
+        Aktion wieder freigeben
+        ----------------------------------- */
+
+        window.sonderfeldAktionLaeuft = false;
+
+    } /* Ende Aktionssperre */
 
 }; /* Ende sonderfeldAktionAusfuehren */
 
@@ -1257,34 +1288,78 @@ window.ortswechselAusfuehren =
 async function (sonderfeld) {
 
     /* -----------------------------------
-    Voraussetzungen prüfen
+    Benutzer prüfen
     ----------------------------------- */
 
     const user =
         window.firebaseAuth.currentUser;
 
+    if (!user) {
+
+        console.error(
+            "Ortswechsel nicht möglich: " +
+            "Kein Benutzer angemeldet."
+        );
+
+        return;
+
+    } /* Ende Benutzer prüfen */
+
+
+    /* -----------------------------------
+    Sonderfeld und Zielkarte prüfen
+    ----------------------------------- */
+
     if (
-        !user ||
         !sonderfeld ||
         !sonderfeld.zielKarte ||
-        !Array.isArray(
-            sonderfeld.zielPosition
-        ) ||
-        sonderfeld.zielPosition.length < 2
+        !window.reservatKarten ||
+        !window.reservatKarten[
+            sonderfeld.zielKarte
+        ]
     ) {
 
         console.error(
-            "Ortswechsel nicht möglich:",
+            "Ortswechsel nicht möglich: " +
+            "Zielkarte existiert nicht.",
             sonderfeld
         );
 
         return;
 
-    } /* Ende Voraussetzungen prüfen */
+    } /* Ende Zielkarte prüfen */
 
 
     /* -----------------------------------
-    Zielposition bestimmen
+    Zielposition prüfen
+    ----------------------------------- */
+
+    if (
+        !Array.isArray(
+            sonderfeld.zielPosition
+        ) ||
+        sonderfeld.zielPosition.length !== 2 ||
+        !Number.isInteger(
+            sonderfeld.zielPosition[0]
+        ) ||
+        !Number.isInteger(
+            sonderfeld.zielPosition[1]
+        )
+    ) {
+
+        console.error(
+            "Ortswechsel nicht möglich: " +
+            "Zielposition ist ungültig.",
+            sonderfeld
+        );
+
+        return;
+
+    } /* Ende Zielposition prüfen */
+
+
+    /* -----------------------------------
+    Zielkoordinaten bestimmen
     ----------------------------------- */
 
     const zielX =
@@ -1292,6 +1367,55 @@ async function (sonderfeld) {
 
     const zielY =
         sonderfeld.zielPosition[1];
+
+
+    /* -----------------------------------
+    Spielfeldgrenzen prüfen
+    ----------------------------------- */
+
+    if (
+        zielX < 0 ||
+        zielX > 9 ||
+        zielY < 0 ||
+        zielY > 9
+    ) {
+
+        console.error(
+            "Ortswechsel nicht möglich: " +
+            "Zielposition liegt außerhalb " +
+            "des Spielfelds.",
+            zielX,
+            zielY
+        );
+
+        return;
+
+    } /* Ende Spielfeldgrenzen prüfen */
+
+
+    /* -----------------------------------
+    Gesperrtes Zielfeld prüfen
+    ----------------------------------- */
+
+    if (
+        window.istFeldGesperrt(
+            sonderfeld.zielKarte,
+            zielX,
+            zielY
+        )
+    ) {
+
+        console.error(
+            "Ortswechsel nicht möglich: " +
+            "Zielfeld ist gesperrt.",
+            sonderfeld.zielKarte,
+            zielX,
+            zielY
+        );
+
+        return;
+
+    } /* Ende gesperrtes Zielfeld prüfen */
 
 
     /* -----------------------------------
@@ -1310,7 +1434,8 @@ async function (sonderfeld) {
         await window.firebaseSet(
             positionsRef,
             {
-                karte: sonderfeld.zielKarte,
+                karte:
+                    sonderfeld.zielKarte,
                 x: zielX,
                 y: zielY
             }
@@ -1319,13 +1444,16 @@ async function (sonderfeld) {
     } catch (fehler) {
 
         console.error(
-            "Ortswechsel konnte nicht gespeichert werden:",
+            "Ortswechsel konnte nicht " +
+            "gespeichert werden:",
             fehler
         );
 
     } /* Ende Firebase-Schreibversuch */
 
 }; /* Ende ortswechselAusfuehren */
+
+/* Ende Ortswechsel ausführen */
 
 /* Ende Ortswechsel ausführen */
 /* -----------------------------------
@@ -1594,8 +1722,27 @@ const {
     ref,
     get,
     onValue,
-    set
+    set,
+    serverTimestamp
 } =
+    await import(
+        "https://www.gstatic.com/firebasejs/12.17.1/firebase-database.js"
+    );
+
+window.firebaseRef =
+    ref;
+
+window.firebaseGet =
+    get;
+
+window.firebaseOnValue =
+    onValue;
+
+window.firebaseSet =
+    set;
+
+window.firebaseServerTimestamp =
+    serverTimestamp;
     await import(
         "https://www.gstatic.com/firebasejs/12.17.1/firebase-database.js"
     );
@@ -1758,7 +1905,66 @@ window.firebaseDatabase =
     }
 
 })();
+/* =========================================================
+RESERVAT - AKTIVITÄT MELDEN
+========================================================= */
 
+window.reservatAktivitaetMelden =
+async function () {
+
+    /* -----------------------------------
+    Angemeldeten Benutzer prüfen
+    ----------------------------------- */
+
+    const user =
+        window.firebaseAuth?.currentUser;
+
+    if (!user) {
+        return;
+    } /* Ende Benutzerprüfung */
+
+
+    /* -----------------------------------
+    Aktivitäts-Datensatz bestimmen
+    ----------------------------------- */
+
+    const aktivitaetsRef =
+        window.firebaseRef(
+            window.firebaseDatabase,
+            "activity/" +
+            user.uid +
+            "/letzteAktivitaet"
+        );
+
+
+    /* -----------------------------------
+    Server-Zeitstempel speichern
+    ----------------------------------- */
+
+    try {
+
+        await window.firebaseSet(
+            aktivitaetsRef,
+            window.firebaseServerTimestamp()
+        );
+
+        console.log(
+            "Reservat-Aktivität gemeldet."
+        );
+
+    } catch (fehler) {
+
+        console.error(
+            "Reservat-Aktivität konnte nicht " +
+            "gespeichert werden:",
+            fehler
+        );
+
+    } /* Ende Firebase-Schreibversuch */
+
+}; /* Ende reservatAktivitaetMelden */
+
+/* Ende Reservat - Aktivität melden */
 /* Ende Firebase */
 
 /* =========================================================
@@ -2903,7 +3109,14 @@ await window.firebaseSet(
         y: neuesY
     }
 );
+/* -----------------------------------
+Erfolgreiche Bewegung als Aktivität
+melden
+----------------------------------- */
 
+await window.reservatAktivitaetMelden();
+
+/* Ende Aktivität nach Bewegung */
     } catch (fehler) {
 
         console.error(

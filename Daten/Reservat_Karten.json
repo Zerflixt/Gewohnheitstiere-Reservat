@@ -68,6 +68,14 @@
         "text": "Richtung Bücherei gehen?",
         "zielKarte": "buecherei",
         "zielPosition": [0, 3]
+    },
+    {
+        "position": [2, 3],
+        "trigger": "aktion",
+        "typ": "externer_link",
+        "text": "Überfahrt nach Valoria",
+        "dialogGrafik": "Daten/valoria_dialog.png",
+        "link": "https://eternal-fit.vercel.app/"
     }
 	]
         }

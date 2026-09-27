@@ -826,13 +826,39 @@ Karte links - Bewegungssteuerung rechts
     /* -----------------------------------
     Steuerkreuz
     ----------------------------------- */
+}
 
+/* -----------------------------------
+Reservat - Ladebildschirm
+----------------------------------- */
 
-}</style><script role="script" id="twine-user-script" type="text/twine-javascript">/* =========================================================
+#reservatLadebildschirm {
+    position: absolute;
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #000;
+
+    z-index: 1000;
+}
+
+#reservatLadebildschirm img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    display: block;
+}
+
+/* Ende Reservat - Ladebildschirm */</style><script role="script" id="twine-user-script" type="text/twine-javascript">/* =========================================================
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.102";
+window.multiplayerTestVersion = "0.112";
 
 /* Ende Testversion */
 /* =========================================================
@@ -1965,6 +1991,46 @@ async function () {
 }; /* Ende reservatAktivitaetMelden */
 
 /* Ende Reservat - Aktivität melden */
+/* =========================================================
+RESERVAT - BETRETEN ALS AKTIVITÄT MELDEN
+========================================================= */
+
+$(document).on(
+    ":passageend",
+    async function () {
+
+        /* -----------------------------------
+        Nur beim Spielfeld reagieren
+        ----------------------------------- */
+
+        if (
+            SugarCube.State.passage !==
+            "Spielfeld"
+        ) {
+
+            return;
+
+        } /* Ende Passage prüfen */
+
+
+        /* -----------------------------------
+        Warten, bis Firebase bereit ist
+        ----------------------------------- */
+
+        await window.firebaseBereit;
+
+
+        /* -----------------------------------
+        Betreten des Reservats als Aktivität
+        melden
+        ----------------------------------- */
+
+        await window.reservatAktivitaetMelden();
+
+    } /* Ende Passageend-Ereignis */
+);
+
+/* Ende Reservat - Betreten melden */
 /* Ende Firebase */
 
 /* =========================================================
@@ -2495,7 +2561,81 @@ function (spieler) {
 /* -----------------------------------
 Avatar auf Canvas zeichnen
 ----------------------------------- */
+/* -----------------------------------
+Habitica-Zzz auf eigenes Canvas zeichnen
+----------------------------------- */
 
+window.zeichneHabiticaZzz =
+async function () {
+
+    /* -----------------------------------
+    Zzz-Datei über vorhandene
+    GitHub-Sprite-Suche finden
+    ----------------------------------- */
+
+    const adresse =
+        window.findeGitHubSpriteAdresse({
+            dateiname: "zzz.png"
+        });
+
+
+    /* -----------------------------------
+    Zzz-Bild laden
+    ----------------------------------- */
+
+    const bild =
+        new Image();
+
+    bild.crossOrigin =
+        "anonymous";
+
+    await new Promise(
+        function (resolve, reject) {
+
+            bild.onload =
+                resolve;
+
+            bild.onerror =
+                reject;
+
+            bild.src =
+                adresse;
+
+        } /* Ende Bild-Ladevorgang */
+    );
+
+
+    /* -----------------------------------
+    Gleiches Koordinatensystem wie Avatar
+    ----------------------------------- */
+
+    const canvas =
+        document.createElement(
+            "canvas"
+        );
+
+    canvas.width = 141;
+    canvas.height = 147;
+
+
+    /* -----------------------------------
+    Zzz exakt wie im erfolgreichen Test
+    bei 0,0 zeichnen
+    ----------------------------------- */
+
+    const context =
+        canvas.getContext("2d");
+
+    context.drawImage(
+        bild,
+        0,
+        0
+    );
+
+
+    return canvas;
+
+}; /* Ende zeichneHabiticaZzz */
 window.zeichneHabiticaAvatar =
 async function (spieler) {
 
@@ -2697,7 +2837,180 @@ alle Avatare neu positioniert werden.
 window.avatarNachUid =
     avatarNachUid;
 
+
+/* -----------------------------------
+Zzz-Overlays der Spieler merken
+----------------------------------- */
+
+window.zzzNachUid = {};
+
+/* Ende Zzz-Overlays merken */
+
+
 window.multiplayerPositionen = {};
+/* -----------------------------------
+Aktivitätsdaten aller Spieler merken
+----------------------------------- */
+
+window.multiplayerAktivitaeten = {};
+
+/* Ende Aktivitätsdaten merken */
+
+
+/* -----------------------------------
+Idle-Zeitgrenzen
+
+Nach 15 Minuten Inaktivität:
+Zzz anzeigen
+
+Nach 2 Stunden Inaktivität:
+Avatar und Zzz ausblenden
+----------------------------------- */
+
+window.idleGrenzeZzz =
+    30 * 60 * 1000;
+
+window.idleGrenzeAusblenden =
+    4 * 60 * 60 * 1000;
+
+/* Ende Idle-Zeitgrenzen */
+
+
+/* -----------------------------------
+Idle-Zustand eines Spielers bestimmen
+----------------------------------- */
+
+window.idleZustandBestimmen =
+function (letzteAktivitaet) {
+
+    /* -----------------------------------
+    Fehlenden Zeitstempel behandeln
+    ----------------------------------- */
+
+    if (
+        typeof letzteAktivitaet !== "number"
+    ) {
+
+        return "unbekannt";
+
+    } /* Ende Zeitstempel prüfen */
+
+
+    /* -----------------------------------
+    Vergangene Zeit berechnen
+    ----------------------------------- */
+
+    const vergangeneZeit =
+        Date.now() -
+        letzteAktivitaet;
+
+
+    /* -----------------------------------
+    12-Stunden-Grenze
+    TEST aktuell: 20 Sekunden
+    ----------------------------------- */
+
+    if (
+        vergangeneZeit >=
+        window.idleGrenzeAusblenden
+    ) {
+
+        return "weg";
+
+    } /* Ende Ausblenden prüfen */
+
+
+    /* -----------------------------------
+    1-Stunden-Grenze
+    TEST aktuell: 10 Sekunden
+    ----------------------------------- */
+
+    if (
+        vergangeneZeit >=
+        window.idleGrenzeZzz
+    ) {
+
+        return "schlafend";
+
+    } /* Ende Zzz prüfen */
+
+
+    return "aktiv";
+
+}; /* Ende idleZustandBestimmen */
+
+/* Ende Idle-Zustand bestimmen */
+/* -----------------------------------
+Idle-Zustände regelmäßig prüfen
+----------------------------------- */
+
+window.idleZustaendePruefen =
+function () {
+
+    /* -----------------------------------
+    Voraussetzungen prüfen
+    ----------------------------------- */
+
+    if (
+        !window.avatarNachUid ||
+        !window.multiplayerPositionen ||
+        !window.multiplayerAktivitaeten
+    ) {
+
+        return;
+
+    } /* Ende Voraussetzungen */
+
+
+    /* -----------------------------------
+    Angemeldeten Benutzer bestimmen
+    ----------------------------------- */
+
+    const firebaseUser =
+        window.firebaseAuth?.currentUser;
+
+    if (!firebaseUser) {
+        return;
+    } /* Ende Benutzerprüfung */
+
+
+    /* -----------------------------------
+    Sichtbarkeit aller Avatare anhand
+    ihrer aktuellen Idle-Zustände
+    aktualisieren
+    ----------------------------------- */
+
+    window.sichtbareAvatareAktualisieren(
+        Object.keys(
+            window.avatarNachUid
+        ).map(
+            function (uid) {
+
+                return {
+                    uid: uid
+                };
+
+            } /* Ende UID umwandeln */
+        ),
+        window.multiplayerPositionen,
+        window.avatarNachUid,
+        firebaseUser
+    );
+
+}; /* Ende idleZustaendePruefen */
+
+
+/* -----------------------------------
+Idle-Prüfung für Test starten
+----------------------------------- */
+
+window.idlePruefIntervall =
+    setInterval(
+        window.idleZustaendePruefen,
+        2 * 1000
+    );
+
+/* Ende Idle-Prüfintervall */
 
 for (const eintrag of multiplayerSpieler) {
 
@@ -2728,6 +3041,20 @@ for (const eintrag of multiplayerSpieler) {
     avatarNachUid[
         eintrag.uid
     ] = canvas;
+	/* -----------------------------------
+Zzz-Canvas für diesen Spieler
+vorbereiten
+----------------------------------- */
+
+const zzzCanvas =
+    await window.zeichneHabiticaZzz();
+
+window.zzzNachUid[
+    eintrag.uid
+] = zzzCanvas;
+
+/* Ende Zzz-Canvas vorbereiten */
+	
 }
 
 
@@ -2747,7 +3074,77 @@ if (avatarPlatz) {
     avatarPlatz.innerHTML = "";
 }
 
+/* -----------------------------------
+Aktivitäten aller Spieler beobachten
+----------------------------------- */
 
+const activityRef =
+    window.firebaseRef(
+        window.firebaseDatabase,
+        "activity"
+    );
+
+window.firebaseOnValue(
+
+    activityRef,
+
+    function (activitySnapshot) {
+
+        /* -----------------------------------
+        Activity-Daten übernehmen
+        ----------------------------------- */
+
+        if (activitySnapshot.exists()) {
+
+            window.multiplayerAktivitaeten =
+                activitySnapshot.val();
+
+        } else {
+
+            window.multiplayerAktivitaeten = {};
+
+        } /* Ende Activity-Daten übernehmen */
+
+
+        /* -----------------------------------
+        Testausgabe
+        ----------------------------------- */
+
+        console.log(
+            "Multiplayer-Aktivitäten:",
+            window.multiplayerAktivitaeten
+        );
+
+        /* Ende Testausgabe */
+/* -----------------------------------
+Eigenen Idle-Zustand testweise anzeigen
+----------------------------------- */
+
+const testUser =
+    window.firebaseAuth.currentUser;
+
+if (testUser) {
+
+    const testAktivitaet =
+        window.multiplayerAktivitaeten[
+            testUser.uid
+        ]?.letzteAktivitaet;
+
+    console.log(
+        "Eigener Idle-Zustand:",
+        window.idleZustandBestimmen(
+            testAktivitaet
+        )
+    );
+
+} /* Ende Idle-Test */
+
+/* Ende Idle-Testausgabe */
+    } /* Ende Activity-Listener */
+
+);
+
+/* Ende Aktivitäten aller Spieler beobachten */
 /* -----------------------------------
 Alle Positionen beobachten
 ----------------------------------- */
@@ -2814,7 +3211,26 @@ window.kartenGrafikAktualisieren();
 window.kontextAktionAktualisieren();
 
 } /* Ende eigene Position übernehmen */
+/* -----------------------------------
+Ladebildschirm entfernen
 
+Die eigene Firebase-Position ist jetzt
+bekannt und die richtige Karte wurde
+eingestellt.
+----------------------------------- */
+
+const ladebildschirm =
+    document.getElementById(
+        "reservatLadebildschirm"
+    );
+
+if (ladebildschirm) {
+
+    ladebildschirm.remove();
+
+} /* Ende Ladebildschirm vorhanden */
+
+/* Ende Ladebildschirm entfernen */
 
 /* -----------------------------------
 Sichtbare Avatare aktualisieren
@@ -2853,6 +3269,8 @@ window.sichtbareAvatareAktualisieren(
 };
 
 /* Ende Schnappschuss + Habitica-Avatar */
+
+
 /* =========================================================
 SICHTBARE AVATARE AKTUALISIEREN
 ========================================================= */
@@ -2883,7 +3301,78 @@ function (
             avatarNachUid[
                 eintrag.uid
             ];
+        /* -----------------------------------
+        Idle-Zustand des Spielers bestimmen
+        ----------------------------------- */
 
+        const letzteAktivitaet =
+            window.multiplayerAktivitaeten[
+                eintrag.uid
+            ]?.letzteAktivitaet;
+
+        const idleZustand =
+            window.idleZustandBestimmen(
+                letzteAktivitaet
+            );
+
+
+        /* -----------------------------------
+        Spieler ohne Activity-Daten
+
+        Noch nicht ausblenden, weil ältere
+        Reservat-Versionen keinen Zeitstempel
+        geschrieben haben.
+        ----------------------------------- */
+
+        if (idleZustand === "unbekannt") {
+
+            /* Avatar bleibt normal sichtbar. */
+
+        } /* Ende unbekannter Idle-Zustand */
+
+
+        /* -----------------------------------
+        Spieler ist zu lange inaktiv
+        ----------------------------------- */
+
+if (idleZustand === "weg") {
+
+    /* -----------------------------------
+    Zzz entfernen
+    ----------------------------------- */
+
+    const zzzCanvas =
+        window.zzzNachUid[
+            eintrag.uid
+        ];
+
+    if (
+        zzzCanvas &&
+        zzzCanvas.parentElement
+    ) {
+
+        zzzCanvas.remove();
+
+    } /* Ende Zzz im Spielfeld */
+
+
+    /* -----------------------------------
+    Avatar entfernen
+    ----------------------------------- */
+
+    if (
+        canvas &&
+        canvas.parentElement
+    ) {
+
+        canvas.remove();
+
+    } /* Ende Avatar im Spielfeld */
+
+
+    continue;
+
+} /* Ende Zustand weg */
 
         /* -----------------------------------
         Avatar-Z-Ebene bestimmen
@@ -2998,7 +3487,85 @@ if (
             position.x,
             position.y
         );
+/* -----------------------------------
+Zzz-Canvas entsprechend Idle-Zustand
+anzeigen oder entfernen
+----------------------------------- */
 
+const zzzCanvas =
+    window.zzzNachUid[
+        eintrag.uid
+    ];
+
+if (
+    idleZustand === "schlafend" &&
+    zzzCanvas
+) {
+
+    /* -----------------------------------
+    Exakt dieselbe Darstellung wie Avatar
+    übernehmen
+    ----------------------------------- */
+
+    zzzCanvas.style.position =
+        "absolute";
+
+    zzzCanvas.style.left =
+        canvas.style.left;
+
+    zzzCanvas.style.top =
+        canvas.style.top;
+
+    zzzCanvas.style.width =
+        canvas.style.width;
+
+    zzzCanvas.style.height =
+        canvas.style.height;
+
+    zzzCanvas.style.zIndex =
+        String(
+            Number(
+                canvas.style.zIndex || 0
+            ) + 1
+        );
+
+    zzzCanvas.style.pointerEvents =
+        "none";
+
+
+    /* -----------------------------------
+    Zzz ins gleiche Spielfeld einsetzen
+    ----------------------------------- */
+
+    if (
+        zzzCanvas.parentElement !==
+        canvas.parentElement
+    ) {
+
+        canvas.parentElement.appendChild(
+            zzzCanvas
+        );
+
+    } /* Ende Zzz einsetzen */
+
+} else {
+
+    /* -----------------------------------
+    Bei aktiv / unbekannt Zzz entfernen
+    ----------------------------------- */
+
+    if (
+        zzzCanvas &&
+        zzzCanvas.parentElement
+    ) {
+
+        zzzCanvas.remove();
+
+    } /* Ende Zzz entfernen */
+
+} /* Ende Schlafzustand */
+
+/* Ende Zzz-Canvas aktualisieren */
     } /* Ende alle bekannten Spieler */
 
 }; /* Ende sichtbareAvatareAktualisieren */
@@ -3100,7 +3667,33 @@ if (
 
 
     try {
+/* -----------------------------------
+Eigene Aktivität sofort lokal setzen
 
+Dadurch wird der Avatar bereits beim
+Bewegen wieder als aktiv behandelt,
+ohne auf den Firebase-Activity-Listener
+warten zu müssen.
+----------------------------------- */
+
+if (
+    !window.multiplayerAktivitaeten[
+        user.uid
+    ]
+) {
+
+    window.multiplayerAktivitaeten[
+        user.uid
+    ] = {};
+
+} /* Ende Activity-Eintrag anlegen */
+
+window.multiplayerAktivitaeten[
+    user.uid
+].letzteAktivitaet =
+    Date.now();
+
+/* Ende lokale Aktivität */
 await window.firebaseSet(
     positionsRef,
     {
@@ -4262,7 +4855,48 @@ function () {
 
 
     spielfeld.innerHTML = "";
+/* -----------------------------------
+Ladebildschirm erzeugen
+----------------------------------- */
 
+const ladebildschirm =
+    document.createElement(
+        "div"
+    );
+
+ladebildschirm.id =
+    "reservatLadebildschirm";
+
+
+/* -----------------------------------
+Ladegrafik einsetzen
+----------------------------------- */
+
+const ladebild =
+    document.createElement(
+        "img"
+    );
+
+ladebild.src =
+    "Daten/Gewohnheitstiere_Reservat_Ladebildschirm_mit_Text_1024x1024.png";
+
+ladebild.alt =
+    "Das Reservat wird geladen";
+
+ladebildschirm.appendChild(
+    ladebild
+);
+
+
+/* -----------------------------------
+Ladebildschirm ins Spielfeld einsetzen
+----------------------------------- */
+
+spielfeld.appendChild(
+    ladebildschirm
+);
+
+/* Ende Ladebildschirm erzeugen */
 /*-----------------------------------*/
 /* Kartenebenen erzeugen             */
 /*-----------------------------------*/

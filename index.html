@@ -689,22 +689,20 @@ neutral halten
     box-shadow: none;
 }
 /* -----------------------------------
-Touch- und Fokuszustände neutralisieren
+Dauerhaften Fokus neutralisieren
 ----------------------------------- */
 
 .aktionstaste:focus,
 .aktionstaste:focus-visible,
-.aktionstaste:active,
 .aktionstaste.aktiv:focus,
-.aktionstaste.aktiv:focus-visible,
-.aktionstaste.aktiv:active {
+.aktionstaste.aktiv:focus-visible {
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
     outline: none !important;
 }
 
-/* Ende Touch- und Fokuszustände */
+/* Ende dauerhaften Fokus neutralisieren */
 
 /* Ende Kontext-Aktion */
 
@@ -834,7 +832,7 @@ Karte links - Bewegungssteuerung rechts
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.095";
+window.multiplayerTestVersion = "0.096";
 
 /* Ende Testversion */
 /* =========================================================

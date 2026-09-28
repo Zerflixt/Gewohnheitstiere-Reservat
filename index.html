@@ -775,7 +775,17 @@ Orden - Browser-Effekte abschalten
 }
 
 /* Ende Orden - Browser-Effekte */
+/* -----------------------------------
+Orden - leuchtet beim Drücken
+----------------------------------- */
 
+.ordenTaste:active img {
+    filter:
+        drop-shadow(0 0 4px white)
+        drop-shadow(0 0 8px gold) !important;
+}
+
+/* Ende Orden - leuchtet beim Drücken */
 /* Orden-Grafik */
 
 .ordenTaste img {
@@ -1064,7 +1074,7 @@ Valoria - Los-gehts-Schaltfläche
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.136";
+window.multiplayerTestVersion = "0.139";
 
 /* Ende Testversion */
 /* =========================================================
@@ -2771,6 +2781,232 @@ async function () {
 
 /* Ende Valoria - Besuch registrieren */
 /* =========================================================
+ORDEN - ANZEIGE AKTUALISIEREN
+========================================================= */
+
+window.ordenAnzeigeAktualisieren =
+function (orden) {
+    /* -----------------------------------
+    Aktuellen Ordenszustand merken
+    ----------------------------------- */
+
+    window.eigeneOrden =
+        orden || {};
+
+    /* Ende aktuellen Ordenszustand merken */
+    /* -----------------------------------
+    Zuordnung Firebase → Schaltfläche
+    ----------------------------------- */
+
+    const ordenZuordnung = {
+
+        resilienz:
+            "ordenResilienz",
+
+        mega:
+            "ordenMega",
+
+        ratefuchs:
+            "ordenRatefuchs",
+
+        steigerung:
+            "ordenSteigerung"
+
+    };
+
+
+    /* -----------------------------------
+    Alle vier Orden aktualisieren
+    ----------------------------------- */
+
+    for (
+        const ordenName
+        in ordenZuordnung
+    ) {
+
+        const button =
+            document.getElementById(
+                ordenZuordnung[ordenName]
+            );
+
+        if (!button) {
+            continue;
+        }/* Ende Button-Prüfung */
+
+
+        const bild =
+            button.querySelector(
+                "img"
+            );
+
+        if (!bild) {
+            continue;
+        }/* Ende Bild-Prüfung */
+
+
+        const vorhanden =
+            orden?.[ordenName] === true;
+
+
+        /* -----------------------------------
+        Vorhandener Orden
+        ----------------------------------- */
+
+        if (vorhanden) {
+
+            bild.style.filter =
+                "none";
+
+            bild.style.opacity =
+                "1";
+
+        } else {
+
+            /* -----------------------------------
+            Nicht vorhandener Orden
+            ----------------------------------- */
+
+            bild.style.filter =
+                "grayscale(100%)";
+
+            bild.style.opacity =
+                "0.35";
+
+        }/* Ende vorhanden / nicht vorhanden */
+
+    }/* Ende alle Orden */
+
+};/* Ende ordenAnzeigeAktualisieren */
+
+/* =========================================================
+ORDEN - ANKLICKEN
+========================================================= */
+
+window.ordenAnklicken =
+function (ordenName) {
+
+    const ereignisText =
+        document.getElementById(
+            "schnappschussTest"
+        );
+
+    if (!ereignisText) {
+        return;
+    }/* Ende Ereignisfeld-Prüfung */
+
+
+    const vorhanden =
+        window.eigeneOrden?.[
+            ordenName
+        ] === true;
+
+
+    /* -----------------------------------
+    Passenden Spruch bestimmen
+    ----------------------------------- */
+
+    const sprueche = {
+
+        resilienz: {
+            vorhanden:
+                "Klasse, ich habe aktuell den Resilienz-Orden!",
+            fehlt:
+                "Ach ja, ich wollte noch die Resilienz Übung machen."
+        },
+
+        mega: {
+            vorhanden:
+                "Klasse, ich habe aktuell den MEGA-Orden!",
+            fehlt:
+                "Den MEGA-Orden habe ich aktuell noch nicht."
+        },
+
+        ratefuchs: {
+            vorhanden:
+                "Klasse, ich habe aktuell den Ratefuchs-Orden!",
+            fehlt:
+                "Am Rätsel habe ich noch nicht teilgenommen."
+        },
+
+        steigerung: {
+            vorhanden:
+                "Klasse, ich habe aktuell den Steigerungs-Orden!",
+            fehlt:
+                "Zuletzt konnte ich mich nicht steigern."
+        }
+
+    };
+
+
+    const ordenSpruch =
+        sprueche[ordenName];
+
+    if (!ordenSpruch) {
+        return;
+    }/* Ende Orden-Prüfung */
+
+
+    ereignisText.textContent =
+        vorhanden
+            ? ordenSpruch.vorhanden
+            : ordenSpruch.fehlt;
+
+};/* Ende ordenAnklicken */
+
+/* Ende Orden - Anklicken */
+/* =========================================================
+ORDEN - FIREBASE BEOBACHTEN
+========================================================= */
+
+window.ordenBeobachten =
+function () {
+
+    const user =
+        window.firebaseAuth?.currentUser;
+
+    if (!user) {
+        return;
+    }/* Ende Benutzer-Prüfung */
+
+
+    const ordenRef =
+        window.firebaseRef(
+            window.firebaseDatabase,
+            "auszeichnungen/" +
+            user.uid +
+            "/orden"
+        );
+
+
+    /* -----------------------------------
+    Realtime-Listener starten
+    ----------------------------------- */
+
+    window.firebaseOnValue(
+        ordenRef,
+        function (snapshot) {
+
+            const orden =
+                snapshot.exists()
+                    ? snapshot.val()
+                    : {};
+
+            window.ordenAnzeigeAktualisieren(
+                orden
+            );
+
+            console.log(
+                "Eigene Orden:",
+                orden
+            );
+
+        }/* Ende Orden-Listener */
+    );
+
+};/* Ende ordenBeobachten */
+
+/* Ende Orden */
+/* =========================================================
 RESERVAT - BETRETEN ALS AKTIVITÄT MELDEN
 ========================================================= */
 
@@ -2806,6 +3042,13 @@ $(document).on(
 
         await window.reservatAktivitaetMelden();
 
+/* -----------------------------------
+Eigene Orden beobachten
+----------------------------------- */
+
+window.ordenBeobachten();
+
+/* Ende eigene Orden beobachten */
     } /* Ende Passageend-Ereignis */
 );
 
@@ -6059,6 +6302,7 @@ function (zielPassage) {
     id=&quot;ordenResilienz&quot;
     class=&quot;ordenTaste orden-resilienz&quot;
     type=&quot;button&quot;
+	onclick=&quot;window.ordenAnklicken(&#39;resilienz&#39;)&quot;
     aria-label=&quot;Resilienz-Orden&quot;
     title=&quot;Resilienz&quot;
 &gt;
@@ -6073,6 +6317,7 @@ function (zielPassage) {
     id=&quot;ordenMega&quot;
     class=&quot;ordenTaste orden-mega&quot;
     type=&quot;button&quot;
+	onclick=&quot;window.ordenAnklicken(&#39;mega&#39;)&quot;
     aria-label=&quot;MEGA-Orden&quot;
     title=&quot;MEGA&quot;
 &gt;
@@ -6087,6 +6332,7 @@ function (zielPassage) {
     id=&quot;ordenRatefuchs&quot;
     class=&quot;ordenTaste orden-ratefuchs&quot;
     type=&quot;button&quot;
+	onclick=&quot;window.ordenAnklicken(&#39;ratefuchs&#39;)&quot;
     aria-label=&quot;Ratefuchs-Orden&quot;
     title=&quot;Ratefuchs&quot;
 &gt;
@@ -6101,6 +6347,7 @@ function (zielPassage) {
     id=&quot;ordenSteigerung&quot;
     class=&quot;ordenTaste orden-steigerung&quot;
     type=&quot;button&quot;
+	onclick=&quot;window.ordenAnklicken(&#39;steigerung&#39;)&quot;
     aria-label=&quot;Steigerungs-Orden&quot;
     title=&quot;Steigerung&quot;
 &gt;

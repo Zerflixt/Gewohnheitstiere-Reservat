@@ -935,7 +935,7 @@ Valoria - Los-gehts-Schaltfläche
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.127";
+window.multiplayerTestVersion = "0.128";
 
 /* Ende Testversion */
 /* =========================================================
@@ -3882,11 +3882,35 @@ if (
     position.karte !== eigeneKarte
 ) {
 
+    /* -----------------------------------
+    Avatar von anderer Karte entfernen
+    ----------------------------------- */
+
     if (canvas.parentElement) {
 
         canvas.remove();
 
     } /* Ende Canvas im Spielfeld */
+
+
+    /* -----------------------------------
+    Zzz von anderer Karte entfernen
+    ----------------------------------- */
+
+    const zzzCanvas =
+        window.zzzNachUid[
+            eintrag.uid
+        ];
+
+    if (
+        zzzCanvas &&
+        zzzCanvas.parentElement
+    ) {
+
+        zzzCanvas.remove();
+
+    } /* Ende Zzz im Spielfeld */
+
 
     continue;
 

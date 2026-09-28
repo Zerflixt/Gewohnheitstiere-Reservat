@@ -475,7 +475,7 @@ box-sizing: border-box;
     box-sizing: border-box;
 
     /* Abstand rechts und zur Versionsanzeige unten */
-    padding-right: 16px;
+    padding-right: 0px;
     padding-bottom: 24px;
 }
 
@@ -487,23 +487,32 @@ box-sizing: border-box;
 #bewegungssteuerung {
     display: grid;
 
-    grid-template-columns:
-        48px 48px 48px;
+grid-template-columns:
+    64px 64px 64px;
 
-    grid-template-rows:
-        48px 48px 48px;
+grid-template-rows:
+    64px 64px 64px;
 
-    width: 144px;
-    height: 144px;
+width: 192px;
+height: 192px;
 
     /*
     Freien Platz oben verwenden = nach unten.
     Freien Platz links verwenden = nach rechts.
     */
-    margin: auto 0 0 auto;
+    margin: 0 0 0 auto;
+
+    /*
+    Grauer Rahmen um die komplette
+    Bewegungssteuerung.
+    */
+    border: 2px solid #888;
 
     padding: 0;
     gap: 0;
+
+    box-sizing: border-box;
+	
 }
 
 
@@ -517,6 +526,7 @@ box-sizing: border-box;
 
     margin: 0;
     padding: 0;
+	transform: translate(-2px, -2px);
 	background: transparent;
 border: none;
 box-shadow: none;
@@ -622,7 +632,7 @@ Kontext-Aktion in der Mitte
     grid-column: 2;
     grid-row: 2;
 
-	transform: translate(8px, 8px);
+	transform: translate(6px, 6px);
 
     width: 48px;
     height: 48px;
@@ -935,7 +945,7 @@ Valoria - Los-gehts-Schaltfläche
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.128";
+window.multiplayerTestVersion = "0.133";
 
 /* Ende Testversion */
 /* =========================================================
@@ -1652,7 +1662,11 @@ context.textBaseline = "middle";
 
     losGehtsButton.addEventListener(
         "click",
-        function () {
+        async function () {
+
+            /* -----------------------------------
+            Link prüfen
+            ----------------------------------- */
 
             if (!sonderfeld.link) {
 
@@ -1666,11 +1680,35 @@ context.textBaseline = "middle";
             } /* Ende Linkprüfung */
 
 
+            /* -----------------------------------
+            Eternal Fit sofort öffnen
+
+            Der Link wird absichtlich VOR der
+            Firebase-Zählung geöffnet.
+
+            Dadurch kann ein Firebase-Problem
+            die Reise nach Valoria nicht verhindern.
+            ----------------------------------- */
+
             window.open(
                 sonderfeld.link,
                 "eternalFit"
             );
 
+
+            /* -----------------------------------
+            Valoria-Besuch registrieren
+
+            Innerhalb von 12 Stunden verändert
+            die Funktion die Daten nicht.
+            ----------------------------------- */
+
+            window.valoriaBesuchRegistrieren();
+
+
+            /* -----------------------------------
+            Dialog schließen
+            ----------------------------------- */
 
             dialog.remove();
 
@@ -2404,6 +2442,215 @@ async function () {
 }; /* Ende reservatAktivitaetMelden */
 
 /* Ende Reservat - Aktivität melden */
+
+/* =========================================================
+VALORIA - BESUCH REGISTRIEREN
+========================================================= */
+
+window.valoriaBesuchRegistrieren =
+async function () {
+
+    /* -----------------------------------
+    Angemeldeten Benutzer prüfen
+    ----------------------------------- */
+
+    const user =
+        window.firebaseAuth?.currentUser;
+
+    if (!user) {
+
+        console.error(
+            "Valoria-Besuch konnte nicht gespeichert werden: " +
+            "Kein Benutzer angemeldet."
+        );
+
+        return;
+
+    } /* Ende Benutzerprüfung */
+
+
+    /* -----------------------------------
+    Valoria-Datensatz des Spielers
+    bestimmen
+    ----------------------------------- */
+
+    const valoriaRef =
+        window.firebaseRef(
+            window.firebaseDatabase,
+            "valoria/" + user.uid
+        );
+
+
+    try {
+
+        /* -----------------------------------
+        Vorhandene Valoria-Daten lesen
+        ----------------------------------- */
+
+        const snapshot =
+            await window.firebaseGet(
+                valoriaRef
+            );
+
+        const vorhandeneDaten =
+            snapshot.exists()
+                ? snapshot.val()
+                : null;
+
+
+        /* -----------------------------------
+        Aktuellen Zeitpunkt bestimmen
+        ----------------------------------- */
+
+        const jetzt =
+            Date.now();
+
+
+        /* -----------------------------------
+        12-Stunden-Grenze
+        ----------------------------------- */
+
+        const zwoelfStunden =
+            12 * 60 * 60 * 1000;
+
+
+        /* -----------------------------------
+        Prüfen, ob bereits ein gewerteter
+        Besuch vorhanden ist
+        ----------------------------------- */
+
+        if (
+            vorhandeneDaten &&
+            typeof vorhandeneDaten.letzterBesuch ===
+                "number"
+        ) {
+
+            const vergangeneZeit =
+                jetzt -
+                vorhandeneDaten.letzterBesuch;
+
+
+            /* -----------------------------------
+            Noch innerhalb der 12 Stunden
+            ----------------------------------- */
+
+            if (
+                vergangeneZeit <
+                zwoelfStunden
+            ) {
+
+                console.log(
+                    "Valoria-Besuch nicht gezählt. " +
+                    "12-Stunden-Grenze noch nicht erreicht."
+                );
+
+                return;
+
+            } /* Ende 12-Stunden-Sperre */
+
+        } /* Ende vorhandenen Besuch prüfen */
+
+
+        /* -----------------------------------
+        Bisherige Anzahl bestimmen
+        ----------------------------------- */
+
+        const bisherigeAnzahl =
+            (
+                vorhandeneDaten &&
+                typeof vorhandeneDaten.anzahl ===
+                    "number"
+            )
+                ? vorhandeneDaten.anzahl
+                : 0;
+
+
+        /* -----------------------------------
+        Bisherige Besuchshistorie übernehmen
+        ----------------------------------- */
+
+        let letzteBesuche = [];
+
+        if (
+            vorhandeneDaten &&
+            Array.isArray(
+                vorhandeneDaten.letzteBesuche
+            )
+        ) {
+
+            letzteBesuche =
+                vorhandeneDaten.letzteBesuche;
+
+        } /* Ende vorhandene Historie */
+
+
+        /* -----------------------------------
+        Neuen Besuch vorne einfügen
+        ----------------------------------- */
+
+        letzteBesuche.unshift(
+            jetzt
+        );
+
+
+        /* -----------------------------------
+        Nur die letzten drei Besuche behalten
+        ----------------------------------- */
+
+        letzteBesuche =
+            letzteBesuche.slice(
+                0,
+                3
+            );
+
+
+        /* -----------------------------------
+        Neuen Valoria-Datensatz bauen
+        ----------------------------------- */
+
+        const neueDaten = {
+
+            anzahl:
+                bisherigeAnzahl + 1,
+
+            letzterBesuch:
+                jetzt,
+
+            letzteBesuche:
+                letzteBesuche
+
+        };
+
+
+        /* -----------------------------------
+        Neuen Datensatz speichern
+        ----------------------------------- */
+
+        await window.firebaseSet(
+            valoriaRef,
+            neueDaten
+        );
+
+
+        console.log(
+            "Valoria-Besuch gezählt:",
+            neueDaten
+        );
+
+
+    } catch (fehler) {
+
+        console.error(
+            "Valoria-Besuch konnte nicht " +
+            "verarbeitet werden:",
+            fehler
+        );
+
+    } /* Ende Firebase-Verarbeitung */
+
+}; /* Ende valoriaBesuchRegistrieren */
+
+/* Ende Valoria - Besuch registrieren */
 /* =========================================================
 RESERVAT - BETRETEN ALS AKTIVITÄT MELDEN
 ========================================================= */

@@ -734,7 +734,120 @@ Dauerhaften Fokus neutralisieren
     grid-column: 2;
     grid-row: 3;
 }
+/* -----------------------------------
+Orden im Steuerkreuz
+----------------------------------- */
 
+.ordenTaste {
+    width: 64px;
+    height: 64px;
+
+    margin: 0;
+    padding: 0;
+
+    background: transparent;
+    border: none;
+    box-shadow: none;
+
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+	
+	outline: none;
+}
+/* -----------------------------------
+Orden - Browser-Effekte abschalten
+----------------------------------- */
+
+.ordenTaste:hover,
+.ordenTaste:focus,
+.ordenTaste:focus-visible,
+.ordenTaste:active {
+    background: transparent;
+    border: none;
+    outline: none;
+    box-shadow: none;
+}
+
+/* Ende Orden - Browser-Effekte */
+
+/* Orden-Grafik */
+
+.ordenTaste img {
+    max-width: 68px;
+    max-height: 68px;
+
+    width: auto;
+    height: auto;
+
+    display: block;
+
+    object-fit: contain;
+
+    pointer-events: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+}
+/* -----------------------------------
+Orden - noch nicht erhalten
+----------------------------------- */
+
+.ordenTaste img {
+    filter: grayscale(100%);
+    opacity: 0.35;
+}
+
+/* Ende Orden - noch nicht erhalten */
+
+
+/* -----------------------------------
+Orden - erhalten
+----------------------------------- */
+
+.ordenTaste.erhalten img {
+    filter: none;
+    opacity: 1;
+}
+
+/* Ende Orden - erhalten */
+
+/* Oben links: Resilienz */
+
+.orden-resilienz {
+    grid-column: 1;
+    grid-row: 1;
+    transform: translate(8px, 8px);
+}
+
+
+/* Oben rechts: MEGA */
+
+.orden-mega {
+    grid-column: 3;
+    grid-row: 1;
+    transform: translate(-12px, 8px);
+}
+
+/* Unten links: Ratefuchs */
+
+.orden-ratefuchs {
+    grid-column: 1;
+    grid-row: 3;
+    transform: translate(8px, -10px);
+}
+/* Unten rechts: Steigerung */
+
+.orden-steigerung {
+    grid-column: 3;
+    grid-row: 3;
+    transform: translate(-12px, -10px);
+}
+/* Ende Orden im Steuerkreuz */
 /* Ende Bewegungssteuerung */
 /* =========================================================
 HANDY QUERFORMAT
@@ -951,7 +1064,7 @@ Valoria - Los-gehts-Schaltfläche
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.133";
+window.multiplayerTestVersion = "0.136";
 
 /* Ende Testversion */
 /* =========================================================
@@ -5938,7 +6051,66 @@ function (zielPassage) {
              --------------------------------------------- --&gt;
 
         &lt;div id=&quot;bewegungssteuerung&quot;&gt;
+&lt;!-- ---------------------------------------------
+     Orden in den vier Ecken des Steuerkreuzes
+     --------------------------------------------- --&gt;
 
+&lt;button
+    id=&quot;ordenResilienz&quot;
+    class=&quot;ordenTaste orden-resilienz&quot;
+    type=&quot;button&quot;
+    aria-label=&quot;Resilienz-Orden&quot;
+    title=&quot;Resilienz&quot;
+&gt;
+    &lt;img
+        src=&quot;Daten/Orden_Resilienz_256.png&quot;
+        alt=&quot;&quot;
+    &gt;
+&lt;/button&gt;
+
+
+&lt;button
+    id=&quot;ordenMega&quot;
+    class=&quot;ordenTaste orden-mega&quot;
+    type=&quot;button&quot;
+    aria-label=&quot;MEGA-Orden&quot;
+    title=&quot;MEGA&quot;
+&gt;
+    &lt;img
+        src=&quot;Daten/Orden_Mega_256.png&quot;
+        alt=&quot;&quot;
+    &gt;
+&lt;/button&gt;
+
+
+&lt;button
+    id=&quot;ordenRatefuchs&quot;
+    class=&quot;ordenTaste orden-ratefuchs&quot;
+    type=&quot;button&quot;
+    aria-label=&quot;Ratefuchs-Orden&quot;
+    title=&quot;Ratefuchs&quot;
+&gt;
+    &lt;img
+        src=&quot;Daten/Orden_Ratefuchs_256.png&quot;
+        alt=&quot;&quot;
+    &gt;
+&lt;/button&gt;
+
+
+&lt;button
+    id=&quot;ordenSteigerung&quot;
+    class=&quot;ordenTaste orden-steigerung&quot;
+    type=&quot;button&quot;
+    aria-label=&quot;Steigerungs-Orden&quot;
+    title=&quot;Steigerung&quot;
+&gt;
+    &lt;img
+        src=&quot;Daten/Orden_Steigerung_256.png&quot;
+        alt=&quot;&quot;
+    &gt;
+&lt;/button&gt;
+
+&lt;!-- Ende Orden im Steuerkreuz --&gt;
             &lt;button
                 id=&quot;bewegungOben&quot;
                 class=&quot;bewegungstaste oben&quot;

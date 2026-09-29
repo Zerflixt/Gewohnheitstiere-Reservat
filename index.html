@@ -1204,11 +1204,65 @@ Valoria - Los-gehts-Schaltfläche
     cursor: default;
 }
 
-/* Ende Wartungspassage */</style><script role="script" id="twine-user-script" type="text/twine-javascript">/* =========================================================
+/* Ende Wartungspassage */
+/* -----------------------------------
+Verbindung unterbrochen - Sperrschicht
+----------------------------------- */
+
+#verbindungSperrschicht {
+    position: absolute;
+    inset: 0;
+
+    z-index: 100;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0, 0, 0, 0.55);
+
+    pointer-events: auto;
+}
+
+
+/* -----------------------------------
+Verbindung unterbrochen - Schild
+----------------------------------- */
+
+#verbindungSperrschicht img {
+    width: 80%;
+    height: auto;
+
+    max-width: 420px;
+
+    display: block;
+
+    object-fit: contain;
+
+    pointer-events: none;
+}
+
+/* Ende Verbindung unterbrochen - Schild */
+
+/* Ende Verbindung unterbrochen - Sperrschicht */
+
+
+/* -----------------------------------
+Spielsteuerung bei Verbindungssperre
+deaktivieren
+----------------------------------- */
+
+#spielsteuerung.reservat-gesperrt {
+    pointer-events: none;
+	filter: grayscale(100%);
+	opacity: 0.45;
+}
+
+/* Ende gesperrte Spielsteuerung */</style><script role="script" id="twine-user-script" type="text/twine-javascript">/* =========================================================
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.151";
+window.multiplayerTestVersion = "0.158";
 
 /* Ende Testversion */
 /* =========================================================
@@ -3015,6 +3069,65 @@ function () {
 }; /* Ende firebaseStatusgrafikenVorladen */
 
 /* Ende Firebase-Statusgrafiken vorladen */
+/* =========================================================
+SPIEL BEI FEHLENDER FIREBASE-VERBINDUNG SPERREN
+========================================================= */
+
+window.verbindungssperreAktualisieren =
+function () {
+
+    const gesperrt =
+        window.firebaseIstVerbunden !== true;
+
+    window.spielEingabenGesperrt =
+        gesperrt;
+
+
+    /* -----------------------------------
+    Sperrschicht auf der Karte
+    ----------------------------------- */
+
+    const sperrschicht =
+        document.getElementById(
+            "verbindungSperrschicht"
+        );
+
+    if (sperrschicht) {
+
+        sperrschicht.style.display =
+            gesperrt
+                ? "flex"
+                : "none";
+
+        sperrschicht.setAttribute(
+            "aria-hidden",
+            gesperrt
+                ? "false"
+                : "true"
+        );
+
+    } /* Ende Sperrschicht */
+
+
+/* -----------------------------------
+Spielsteuerung sperren
+----------------------------------- */
+
+const spielsteuerung =
+    document.getElementById(
+        "spielsteuerung"
+    );
+
+if (spielsteuerung) {
+
+    spielsteuerung.classList.toggle(
+        "reservat-gesperrt",
+        gesperrt
+    );
+
+} /* Ende Spielsteuerung */
+
+}; /* Ende verbindungssperreAktualisieren */
 window.firebaseVerbindungBeobachten =
 function () {
 
@@ -3031,11 +3144,21 @@ function () {
             const verbunden =
                 snapshot.val() === true;
 
-            window.firebaseIstVerbunden =
-                verbunden;
+window.firebaseIstVerbunden =
+    verbunden;
 
-            const anzeige =
-                document.getElementById(
+
+/* -----------------------------------
+Verbindungssperre aktualisieren
+----------------------------------- */
+
+window.verbindungssperreAktualisieren();
+
+/* Ende Verbindungssperre aktualisieren */
+
+
+const anzeige =
+    document.getElementById(
                     "firebaseVerbindungsstatus"
                 );
 
@@ -5194,7 +5317,7 @@ document.addEventListener(
         Nur auf dem Spielfeld reagieren
         ----------------------------------- */
 
-        if (
+               if (
             SugarCube.State.passage !==
             "Spielfeld"
         ) {
@@ -5203,8 +5326,48 @@ document.addEventListener(
 
 
         /* -----------------------------------
+        Spiel eventuell zentral gesperrt
+        ----------------------------------- */
+
+        if (
+            window.spielEingabenGesperrt === true
+        ) {
+
+            return;
+
+        } /* Ende Eingabesperre prüfen */
+
+
+        /* -----------------------------------
         Pfeiltasten auswerten
         ----------------------------------- */
+
+        /* -----------------------------------
+        Reservat-Bedienung gesperrt
+        ----------------------------------- */
+
+        if (
+            window.reservatBedienungGesperrt ===
+            true
+        ) {
+
+            if (
+                ereignis.key === "ArrowUp" ||
+                ereignis.key === "ArrowDown" ||
+                ereignis.key === "ArrowLeft" ||
+                ereignis.key === "ArrowRight"
+            ) {
+
+                ereignis.preventDefault();
+
+            } /* Ende Pfeiltaste prüfen */
+
+            return;
+
+        } /* Ende Bedienungssperre */
+
+
+  
 
         switch (ereignis.key) {
 
@@ -6456,9 +6619,61 @@ spielfeld.appendChild(
 );
 
 /* Ende Kartenebenen erzeugen */
+/* -----------------------------------
+Verbindungssperrschicht erzeugen
+----------------------------------- */
+
+const verbindungSperrschicht =
+    document.createElement(
+        "div"
+    );
+
+verbindungSperrschicht.id =
+    "verbindungSperrschicht";
+
+verbindungSperrschicht.setAttribute(
+    "aria-hidden",
+    "true"
+);
 
 
+/* -----------------------------------
+Schild einsetzen
+----------------------------------- */
 
+const verbindungSchild =
+    document.createElement(
+        "img"
+    );
+
+verbindungSchild.src =
+    "Daten/Verbindung_unterbrochen.png";
+
+verbindungSchild.alt =
+    "Verbindung zum Server unterbrochen...";
+
+verbindungSperrschicht.appendChild(
+    verbindungSchild
+);
+
+
+/* -----------------------------------
+Sperrschicht ins Spielfeld einsetzen
+----------------------------------- */
+
+spielfeld.appendChild(
+    verbindungSperrschicht
+);
+
+/* Ende Verbindungssperrschicht erzeugen */
+
+/* -----------------------------------
+Aktuellen Verbindungszustand anwenden
+----------------------------------- */
+
+window.verbindungssperreAktualisieren();
+
+/* Ende Verbindungszustand anwenden */
 
     for (let y = 0; y < 10; y++) {
 
@@ -6735,6 +6950,10 @@ function (zielPassage) {
 
     &lt;!-- Kartenebene 3: Vordergrund --&gt;
     &lt;div id=&quot;kartenEbene3&quot;&gt;&lt;/div&gt;
+
+
+
+
 
 &lt;/div&gt;
 

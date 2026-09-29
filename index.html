@@ -1208,7 +1208,7 @@ Valoria - Los-gehts-Schaltfläche
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.150";
+window.multiplayerTestVersion = "0.151";
 
 /* Ende Testversion */
 /* =========================================================
@@ -2987,7 +2987,34 @@ function () {
 /* =========================================================
 FIREBASE - VERBINDUNGSSTATUS BEOBACHTEN
 ========================================================= */
+/* -----------------------------------
+   Firebase-Statusgrafiken vorladen
+   ----------------------------------- */
 
+window.firebaseStatusgrafikenVorladen =
+function () {
+
+    const dateien = [
+        "Daten/Firebase_CONNECTED_gruen.png",
+        "Daten/Firebase_NOT_CONNECTED_rot.png",
+        "Daten/Firebase_WARTUNG_ENTWICKLER_blau.png"
+    ];
+
+    dateien.forEach(
+        function (datei) {
+
+            const bild =
+                new Image();
+
+            bild.src =
+                datei;
+
+        } /* Ende einzelne Statusgrafik */
+    );
+
+}; /* Ende firebaseStatusgrafikenVorladen */
+
+/* Ende Firebase-Statusgrafiken vorladen */
 window.firebaseVerbindungBeobachten =
 function () {
 
@@ -3382,11 +3409,24 @@ $(document).on(
         ----------------------------------- */
 
         await window.firebaseBereit;
-		/* -----------------------------------
+
+
+/* -----------------------------------
+Firebase-Statusgrafiken vorladen
+----------------------------------- */
+
+window.firebaseStatusgrafikenVorladen();
+
+/* Ende Firebase-Statusgrafiken vorladen */
+
+
+/* -----------------------------------
 Firebase-Verbindung beobachten
 ----------------------------------- */
 
 window.firebaseVerbindungBeobachten();
+
+
 
 /* Ende Firebase-Verbindung beobachten */
 /* -----------------------------------

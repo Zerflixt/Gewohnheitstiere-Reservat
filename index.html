@@ -1184,7 +1184,7 @@ Valoria - Los-gehts-Schaltfläche
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.145";
+window.multiplayerTestVersion = "0.146";
 
 /* Ende Testversion */
 /* =========================================================
@@ -3005,7 +3005,21 @@ if (
     );
 
 } /* Ende Wartungsbeginn */
+/* -----------------------------------
+Button auf Wartungsseite aktualisieren
+----------------------------------- */
 
+const wartungNeuLaden =
+    document.getElementById(
+        "wartungNeuLaden"
+    );
+
+if (wartungNeuLaden) {
+
+    wartungNeuLaden.disabled =
+        aktiv;
+
+} /* Ende Wartungsbutton aktualisieren */
         }/* Ende Wartungsmodus-Listener */
 		
 		

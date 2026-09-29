@@ -262,6 +262,30 @@ Symbole rechts
     gap: 4px;
 }
 
+
+/* -----------------------------------
+Firebase-Verbindungsstatus
+----------------------------------- */
+
+#firebaseVerbindungsstatus {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#firebaseVerbindungsIcon {
+    width: 42px;
+    height: 42px;
+
+    display: block;
+
+    object-fit: contain;
+}
+/* Ende Firebase-Verbindungsstatus */
+
+
 /* Ende Spielfeld-Kopf */
 /* =========================================================
 STATUS- / EREIGNISZEILE
@@ -1184,7 +1208,7 @@ Valoria - Los-gehts-Schaltfläche
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.147";
+window.multiplayerTestVersion = "0.150";
 
 /* Ende Testversion */
 /* =========================================================
@@ -2960,10 +2984,72 @@ function () {
 
 };/* Ende reservatNeuBetreten */
 
-
 /* =========================================================
-WARTUNGSMODUS - FIREBASE BEOBACHTEN
+FIREBASE - VERBINDUNGSSTATUS BEOBACHTEN
 ========================================================= */
+
+window.firebaseVerbindungBeobachten =
+function () {
+
+    const verbindungRef =
+        window.firebaseRef(
+            window.firebaseDatabase,
+            ".info/connected"
+        );
+
+    window.firebaseOnValue(
+        verbindungRef,
+        function (snapshot) {
+
+            const verbunden =
+                snapshot.val() === true;
+
+            window.firebaseIstVerbunden =
+                verbunden;
+
+            const anzeige =
+                document.getElementById(
+                    "firebaseVerbindungsstatus"
+                );
+
+            if (!anzeige) {
+                return;
+            }
+
+           const icon =
+    document.getElementById(
+        "firebaseVerbindungsIcon"
+    );
+
+if (!icon) {
+    return;
+}
+
+if (verbunden) {
+
+    icon.src =
+        "Daten/Firebase_CONNECTED_gruen.png";
+
+    anzeige.title =
+        "Firebase verbunden";
+
+} else {
+
+    icon.src =
+        "Daten/Firebase_NOT_CONNECTED_rot.png";
+
+    anzeige.title =
+        "Firebase nicht verbunden";
+
+} /* Ende Verbindungsstatus anzeigen */
+
+        }/* Ende Firebase-Verbindungslistener */
+    );
+
+};/* Ende firebaseVerbindungBeobachten */
+
+/* Ende Firebase-Verbindungsstatus */
+
 /* =========================================================
 WARTUNGSMODUS - FIREBASE BEOBACHTEN
 ========================================================= */
@@ -3296,6 +3382,13 @@ $(document).on(
         ----------------------------------- */
 
         await window.firebaseBereit;
+		/* -----------------------------------
+Firebase-Verbindung beobachten
+----------------------------------- */
+
+window.firebaseVerbindungBeobachten();
+
+/* Ende Firebase-Verbindung beobachten */
 /* -----------------------------------
 Wartungsmodus beobachten
 ----------------------------------- */
@@ -6095,6 +6188,7 @@ const feldMitteY =
    Spielfeld-Größe beobachten
    ----------------------------------- */
 
+
 window.spielfeldGroesseBeobachten =
 function () {
 
@@ -6108,49 +6202,88 @@ function () {
     }
 
 
+    /* -----------------------------------
+    Geplante Aktualisierung merken
+
+    Dadurch können viele schnelle
+    Resize-Meldungen zu einer einzigen
+    Aktualisierung zusammengefasst werden.
+    ----------------------------------- */
+
+    let aktualisierungGeplant = false;
+
+
     const beobachter =
         new ResizeObserver(
             function () {
 
                 /* -----------------------------------
-                Voraussetzungen prüfen
+                Nicht mehrfach für denselben
+                Browser-Frame einplanen
                 ----------------------------------- */
 
-                if (
-                    !window.avatarNachUid ||
-                    !window.multiplayerPositionen
-                ) {
+                if (aktualisierungGeplant) {
                     return;
                 }
 
+                aktualisierungGeplant = true;
 
-/* -----------------------------------
-Sichtbare Avatare nach Größenänderung
-neu positionieren
------------------------------------ */
 
-const firebaseUser =
-    window.firebaseAuth.currentUser;
+                /* -----------------------------------
+                Avatar-Aktualisierung aus dem
+                ResizeObserver heraus verschieben
+                ----------------------------------- */
 
-window.sichtbareAvatareAktualisieren(
-    Object.keys(
-        window.avatarNachUid
-    ).map(
-        function (uid) {
+                requestAnimationFrame(
+                    function () {
 
-            return {
-                uid: uid
-            };
+                        aktualisierungGeplant = false;
 
-        } /* Ende UID umwandeln */
-    ),
-    window.multiplayerPositionen,
-    window.avatarNachUid,
-    firebaseUser
-);
 
-/* Ende sichtbare Avatare nach Größenänderung */
-            }
+                        /* -----------------------------------
+                        Voraussetzungen prüfen
+                        ----------------------------------- */
+
+                        if (
+                            !window.avatarNachUid ||
+                            !window.multiplayerPositionen
+                        ) {
+                            return;
+                        }
+
+
+                        /* -----------------------------------
+                        Sichtbare Avatare nach Größenänderung
+                        neu positionieren
+                        ----------------------------------- */
+
+                        const firebaseUser =
+                            window.firebaseAuth.currentUser;
+
+                        window.sichtbareAvatareAktualisieren(
+                            Object.keys(
+                                window.avatarNachUid
+                            ).map(
+                                function (uid) {
+
+                                    return {
+                                        uid: uid
+                                    };
+
+                                } /* Ende UID umwandeln */
+                            ),
+                            window.multiplayerPositionen,
+                            window.avatarNachUid,
+                            firebaseUser
+                        );
+
+                        /* Ende sichtbare Avatare
+                           nach Größenänderung */
+
+                    } /* Ende Animation-Frame */
+                );
+
+            } /* Ende ResizeObserver-Callback */
         );
 
 
@@ -6161,7 +6294,8 @@ window.sichtbareAvatareAktualisieren(
     beobachter.observe(
         spielfeld
     );
-};
+
+}; /* Ende spielfeldGroesseBeobachten */
 
 /* Ende Spielfeld-Größe beobachten */
 /* Ende Spielfigur positionieren */
@@ -6490,7 +6624,20 @@ function (zielPassage) {
              --------------------------------------------- --&gt;
 
         &lt;div id=&quot;kopfSymbole&quot;&gt;
+&lt;!-- Firebase-Verbindungsstatus --&gt;
 
+&lt;div
+    id=&quot;firebaseVerbindungsstatus&quot;
+    title=&quot;Firebase-Verbindung&quot;
+&gt;
+    &lt;img
+        id=&quot;firebaseVerbindungsIcon&quot;
+        src=&quot;Daten/Firebase_NOT_CONNECTED_rot.png&quot;
+        alt=&quot;&quot;
+    &gt;
+&lt;/div&gt;
+
+&lt;!-- Ende Firebase-Verbindungsstatus --&gt;
 
             &lt;!-- Vollbild --&gt;
 

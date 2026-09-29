@@ -1184,7 +1184,7 @@ Valoria - Los-gehts-Schaltfläche
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.146";
+window.multiplayerTestVersion = "0.147";
 
 /* Ende Testversion */
 /* =========================================================
@@ -2949,6 +2949,21 @@ async function () {
 }; /* Ende valoriaBesuchRegistrieren */
 
 /* Ende Valoria - Besuch registrieren */
+/* =========================================================
+RESERVAT NACH WARTUNG NEU BETRETEN
+========================================================= */
+
+window.reservatNeuBetreten =
+function () {
+
+    window.location.reload();
+
+};/* Ende reservatNeuBetreten */
+
+
+/* =========================================================
+WARTUNGSMODUS - FIREBASE BEOBACHTEN
+========================================================= */
 /* =========================================================
 WARTUNGSMODUS - FIREBASE BEOBACHTEN
 ========================================================= */
@@ -6716,6 +6731,7 @@ function (zielPassage) {
             id=&quot;wartungNeuLaden&quot;
             type=&quot;button&quot;
             disabled
+            onclick=&quot;window.reservatNeuBetreten()&quot;
         &gt;
             Reservat neu betreten
         &lt;/button&gt;

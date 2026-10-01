@@ -1952,9 +1952,71 @@ Liegt unten im schwarzen Portalbereich.
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.198";
+window.multiplayerTestVersion = "0.202";
 
 /* Ende Testversion */
+
+/* =========================================================
+RESERVAT - VERSIONEN VERGLEICHEN
+========================================================= */
+
+window.reservatVersionVergleichen =
+function (versionA, versionB) {
+
+    /* -----------------------------------
+    Versionsnummern zerlegen
+    ----------------------------------- */
+
+    const teileA =
+        String(versionA)
+            .split(".")
+            .map(Number);
+
+    const teileB =
+        String(versionB)
+            .split(".")
+            .map(Number);
+
+    /* Ende Versionsnummern zerlegen */
+
+
+    /* -----------------------------------
+    Versionsbestandteile vergleichen
+    ----------------------------------- */
+
+    const anzahl =
+        Math.max(
+            teileA.length,
+            teileB.length
+        );
+
+    for (let i = 0; i < anzahl; i++) {
+
+        const wertA =
+            teileA[i] || 0;
+
+        const wertB =
+            teileB[i] || 0;
+
+        if (wertA < wertB) {
+            return -1;
+        }
+
+        if (wertA > wertB) {
+            return 1;
+        }
+
+    }
+
+    /* Ende Versionsbestandteile vergleichen */
+
+
+    return 0;
+
+};/* Ende reservatVersionVergleichen */
+
+/* Ende Reservat - Versionen vergleichen */
+
 /* =========================================================
 RESERVAT - Z-EBENEN
 ========================================================= */
@@ -4487,6 +4549,170 @@ function () {
 
 /* Ende Entwicklerzugang erkennen */
 /* =========================================================
+MINDESTVERSION - FIREBASE BEOBACHTEN
+========================================================= */
+
+window.mindestversionBeobachten =
+function () {
+
+    /* -----------------------------------
+    Bereits gestarteten Listener erkennen
+    ----------------------------------- */
+
+    if (
+        window.mindestversionListenerGestartet === true
+    ) {
+
+        return;
+
+    }
+
+    /* Ende Listener bereits gestartet */
+
+
+    /* -----------------------------------
+    Listener als gestartet merken
+    ----------------------------------- */
+
+    window.mindestversionListenerGestartet =
+        true;
+
+    /* Ende Listener als gestartet merken */
+
+
+    /* -----------------------------------
+    Firebase-Pfad vorbereiten
+    ----------------------------------- */
+
+    const versionRef =
+        window.firebaseRef(
+            window.firebaseDatabase,
+            "system/mindestversion"
+        );
+
+    /* Ende Firebase-Pfad vorbereiten */
+
+
+    /* -----------------------------------
+    Mindestversion beobachten
+    ----------------------------------- */
+
+    window.firebaseOnValue(
+
+        versionRef,
+
+        function (snapshot) {
+
+            if (!snapshot.exists()) {
+
+                console.log(
+                    "Keine Mindestversion in Firebase gesetzt."
+                );
+
+                return;
+
+            }
+
+
+            const mindestversion =
+                String(snapshot.val());
+
+            const eigeneVersion =
+                String(
+                    window.multiplayerTestVersion
+                );
+
+            const vergleich =
+                window.reservatVersionVergleichen(
+                    eigeneVersion,
+                    mindestversion
+                );
+
+
+            console.log(
+                "Versionsprüfung:",
+                "eigene Version",
+                eigeneVersion,
+                "| Mindestversion",
+                mindestversion,
+                "| Ergebnis",
+                vergleich
+            );
+
+
+if (vergleich < 0) {
+
+    /* -----------------------------------
+    Bereits versuchten Reload prüfen
+    ----------------------------------- */
+
+    const reloadSchluessel =
+        "reservatReloadVersucht_" +
+        mindestversion;
+
+    const reloadBereitsVersucht =
+        sessionStorage.getItem(
+            reloadSchluessel
+        ) === "ja";
+
+    /* Ende Reload-Versuch prüfen */
+
+
+    /* -----------------------------------
+    Erster Versuch:
+    Reservat automatisch neu laden
+    ----------------------------------- */
+
+    if (!reloadBereitsVersucht) {
+
+        console.warn(
+            "Reservat-Version ist zu alt. " +
+            "Neue Version wird geladen."
+        );
+
+        sessionStorage.setItem(
+            reloadSchluessel,
+            "ja"
+        );
+
+        window.location.reload();
+
+        return;
+
+    }
+
+    /* Ende automatischer Reload */
+
+
+    /* -----------------------------------
+    Reload wurde bereits versucht
+    ----------------------------------- */
+
+    console.error(
+        "Reservat konnte nicht auf die " +
+        "geforderte Version " +
+        mindestversion +
+        " aktualisiert werden."
+    );
+
+    /* Ende fehlgeschlagener Aktualisierung */
+
+} else {
+
+    console.log(
+        "Reservat-Version ist ausreichend aktuell."
+    );
+
+}
+
+        }/* Ende Mindestversions-Listener */
+
+    );
+
+};/* Ende mindestversionBeobachten */
+
+/* Ende Mindestversion - Firebase beobachten */
+/* =========================================================
 WARTUNGSMODUS - FIREBASE BEOBACHTEN
 ========================================================= */
 
@@ -4887,7 +5113,13 @@ Wartungsmodus beobachten
 window.wartungsmodusBeobachten();
 
 /* Ende Wartungsmodus beobachten */
+/* -----------------------------------
+Mindestversion beobachten
+----------------------------------- */
 
+window.mindestversionBeobachten();
+
+/* Ende Mindestversion beobachten */
         /* -----------------------------------
         Betreten des Reservats als Aktivität
         melden

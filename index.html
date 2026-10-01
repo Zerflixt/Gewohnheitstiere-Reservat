@@ -1748,11 +1748,188 @@ Logout abbrechen
 }
 
 
-/* Ende Logout-Seite */</style><script role="script" id="twine-user-script" type="text/twine-javascript">/* =========================================================
+/* Ende Logout-Seite */
+/* =========================================================
+DATENSCHUTZ UND CREDITS
+Portal analog zu Login / PWChange / Logout
+========================================================= */
+
+#creditsDatenschutzSeite {
+    position: fixed;
+    inset: 0;
+
+    width: 100vw;
+    height: 100dvh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    box-sizing: border-box;
+}
+
+
+/* -----------------------------------
+Datenschutz- und Credits-Portal
+
+Die Grafik ist quadratisch.
+Aufbau analog zu Logout und PWChange.
+----------------------------------- */
+
+#creditsDatenschutzPortal {
+    position: relative;
+
+    width: max(
+        500px,
+        min(100vw, max(550px, 100dvh))
+    );
+
+    aspect-ratio: 1 / 1;
+
+    flex: 0 0 auto;
+}
+
+
+/* -----------------------------------
+Portal-Grafik
+----------------------------------- */
+
+#creditsDatenschutzBild {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: contain;
+
+    pointer-events: none;
+    user-select: none;
+}
+
+
+/* -----------------------------------
+Textbereich
+
+Liegt innerhalb der schwarzen Fläche
+der Portal-Grafik.
+----------------------------------- */
+
+#creditsDatenschutzInhalt {
+    position: absolute;
+
+    left: 50%;
+    top: 52%;
+
+    transform: translate(-50%, -50%);
+
+    width: 50%;
+    height: 54%;
+
+    box-sizing: border-box;
+
+    padding:
+        clamp(8px, 1.5cqw, 15px)
+        clamp(10px, 2cqw, 20px);
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    color: white;
+
+    font-size: clamp(11px, 1.55cqw, 15px);
+    line-height: 1.35;
+
+    text-align: left;
+
+    scrollbar-width: thin;
+}
+
+
+/* -----------------------------------
+Überschriften
+----------------------------------- */
+
+#creditsDatenschutzInhalt h2 {
+    margin:
+        0
+        0
+        clamp(5px, 1cqw, 10px)
+        0;
+
+    font-size: clamp(15px, 2.2cqw, 21px);
+
+    text-align: center;
+}
+
+#creditsDatenschutzInhalt h2:not(:first-child) {
+    margin-top: clamp(14px, 2.5cqw, 24px);
+}
+
+
+/* -----------------------------------
+Absätze
+----------------------------------- */
+
+#creditsDatenschutzInhalt p {
+    margin:
+        0
+        0
+        clamp(9px, 1.5cqw, 15px)
+        0;
+}
+
+
+/* -----------------------------------
+Links
+----------------------------------- */
+
+#creditsDatenschutzInhalt a {
+    color: #72f4ff;
+
+    text-decoration: underline;
+
+    overflow-wrap: anywhere;
+}
+
+#creditsDatenschutzInhalt a:hover {
+    color: white;
+}
+
+
+/* -----------------------------------
+Zurück-Button
+
+Liegt unten im schwarzen Portalbereich.
+----------------------------------- */
+
+#creditsZurueckButton {
+    position: absolute;
+
+    left: 50%;
+    top: 81%;
+
+    transform: translateX(-50%);
+
+    font-size: clamp(12px, 1.7cqw, 17px);
+
+    padding:
+        clamp(6px, 1cqw, 10px)
+        clamp(12px, 2cqw, 20px);
+
+    cursor: pointer;
+}
+
+
+/* Ende Datenschutz und Credits */</style><script role="script" id="twine-user-script" type="text/twine-javascript">/* =========================================================
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.184";
+window.multiplayerTestVersion = "0.189";
 
 /* Ende Testversion */
 /* =========================================================
@@ -7823,7 +8000,10 @@ function (zielPassage) {
     Login darf immer betreten werden
     ----------------------------------- */
 
-    if (zielPassage === "Login") {
+     if (
+        zielPassage === "Login" ||
+        zielPassage === "Credits und Datenschutz"
+    ) {
         return false;
     }
 
@@ -7896,6 +8076,19 @@ function (zielPassage) {
                 Schreib Zerflixt in Habitica an.&lt;br&gt;
                 Ich kann dein Passwort zurücksetzen.
             &lt;/div&gt;
+
+            &lt;!-- -----------------------------------
+            Credits und Datenschutz
+            ------------------------------------ --&gt;
+
+            &lt;button
+                id=&quot;loginCreditsButton&quot;
+               onclick=&quot;SugarCube.Engine.play(&#39;Credits und Datenschutz&#39;)&quot;
+            &gt;
+                Credits &amp; Datenschutz
+            &lt;/button&gt;
+
+            &lt;!-- Ende Credits und Datenschutz --&gt;
 
             &lt;p id=&quot;loginErgebnis&quot;&gt;
                 Anmeldung wird geprüft …
@@ -8338,6 +8531,20 @@ function (zielPassage) {
                 Abbrechen
             &lt;/button&gt;
 
+            &lt;!-- -----------------------------------
+            Credits und Datenschutz
+            ------------------------------------ --&gt;
+
+            &lt;button
+                id=&quot;logoutCreditsButton&quot;
+                type=&quot;button&quot;
+                onclick=&quot;SugarCube.Engine.play(&#39;Credits und Datenschutz&#39;)&quot;
+            &gt;
+                Credits &amp; Datenschutz
+            &lt;/button&gt;
+
+            &lt;!-- Ende Credits und Datenschutz --&gt;
+
         &lt;/div&gt;
 
         &lt;!-- Ende Logout-Bedienung --&gt;
@@ -8345,6 +8552,145 @@ function (zielPassage) {
     &lt;/div&gt;
 
     &lt;!-- Ende Logout-Portal --&gt;
+
+&lt;/div&gt;
+
+&lt;&lt;/nobr&gt;&gt;</tw-passagedata><tw-passagedata pid="6" name="Credits und Datenschutz" tags="" position="925,275" size="100,100">&lt;&lt;nobr&gt;&gt;
+
+&lt;div id=&quot;creditsDatenschutzSeite&quot;&gt;
+
+    &lt;!-- -----------------------------------
+    Datenschutz- und Credits-Portal
+    ------------------------------------ --&gt;
+
+    &lt;div id=&quot;creditsDatenschutzPortal&quot;&gt;
+
+        &lt;img
+            id=&quot;creditsDatenschutzBild&quot;
+            src=&quot;Daten/DatenschutzUndCredits.png&quot;
+            alt=&quot;Datenschutz und Credits&quot;
+        &gt;
+
+        &lt;!-- -----------------------------------
+        Textbereich im Portal
+        ------------------------------------ --&gt;
+
+        &lt;div id=&quot;creditsDatenschutzInhalt&quot;&gt;
+
+            &lt;h2&gt;Datenschutz&lt;/h2&gt;
+
+            &lt;p&gt;
+                Das Reservat ist ein privates,
+                nicht kommerzielles Gruppenprojekt
+                der „Gewohnheitstiere“.
+            &lt;/p&gt;
+
+            &lt;p&gt;
+                Für den Betrieb werden notwendige Daten
+                gespeichert. Dazu gehören insbesondere
+                dein Habitica-Name, deine interne
+                Benutzerkennung sowie Spiel- und
+                Positionsdaten im Reservat.
+            &lt;/p&gt;
+
+            &lt;p&gt;
+                Anmeldung und Datenspeicherung erfolgen
+                über Firebase. Das Reservat wird über
+                GitHub Pages bereitgestellt.
+            &lt;/p&gt;
+
+            &lt;p&gt;
+                Die Daten werden ausschließlich für den
+                Betrieb des Reservats verwendet und weder
+                verkauft noch zu Werbezwecken genutzt.
+            &lt;/p&gt;
+
+            &lt;p&gt;
+                Bei Fragen zum Datenschutz oder wenn du
+                die Löschung deiner Daten möchtest:
+                &lt;br&gt;
+                &lt;a href=&quot;mailto:zerflixt@outlook.de&quot;&gt;
+                    zerflixt@outlook.de
+                &lt;/a&gt;
+            &lt;/p&gt;
+
+
+            &lt;h2&gt;Credits&lt;/h2&gt;
+
+            &lt;p&gt;
+                Das Reservat der Gewohnheitstiere ist ein
+                privates, nicht kommerzielles Fan- und
+                Gruppenprojekt und steht in keiner
+                offiziellen Verbindung zu Habitica.
+            &lt;/p&gt;
+
+            &lt;p&gt;
+                Verwendete Grafiken und Inhalte aus dem
+                Habitica-Projekt stammen von
+                HabitRPG/Habitica und werden gemäß
+                CC BY-NC-SA 3.0 verwendet.
+            &lt;/p&gt;
+
+            &lt;p&gt;
+                &lt;a
+                    href=&quot;https://github.com/HabitRPG/habitica&quot;
+                    target=&quot;_blank&quot;
+                    rel=&quot;noopener noreferrer&quot;
+                &gt;
+                    HabitRPG/Habitica
+                &lt;/a&gt;
+
+                &lt;br&gt;
+
+                &lt;a
+                    href=&quot;https://creativecommons.org/licenses/by-nc-sa/3.0/&quot;
+                    target=&quot;_blank&quot;
+                    rel=&quot;noopener noreferrer&quot;
+                &gt;
+                    CC BY-NC-SA 3.0
+                &lt;/a&gt;
+            &lt;/p&gt;
+
+
+            &lt;h2&gt;Danke!&lt;/h2&gt;
+
+            &lt;p&gt;
+                Ein besonderes Dankeschön an
+                &lt;strong&gt;Anna-Nas&lt;/strong&gt; und
+                &lt;strong&gt;HOODWATCHER&lt;/strong&gt;
+                für Testen, Ideen und Unterstützung.
+            &lt;/p&gt;
+
+            &lt;p&gt;
+                Und natürlich danke an alle
+                &lt;strong&gt;Gewohnheitstiere&lt;/strong&gt;,
+                die mit Feedback, Fehlersuche und Ideen
+                geholfen haben, das Reservat entstehen
+                zu lassen. 🐾
+            &lt;/p&gt;
+
+        &lt;/div&gt;
+
+        &lt;!-- Ende Textbereich im Portal --&gt;
+
+
+        &lt;!-- -----------------------------------
+        Zurück
+        ------------------------------------ --&gt;
+
+        &lt;button
+            id=&quot;creditsZurueckButton&quot;
+            type=&quot;button&quot;
+            onclick=&quot;SugarCube.Engine.play(&#39;Logout&#39;)&quot;
+        &gt;
+            Zurück
+        &lt;/button&gt;
+
+        &lt;!-- Ende Zurück --&gt;
+
+    &lt;/div&gt;
+
+    &lt;!-- Ende Datenschutz- und Credits-Portal --&gt;
 
 &lt;/div&gt;
 

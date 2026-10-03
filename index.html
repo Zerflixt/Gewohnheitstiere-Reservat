@@ -1979,7 +1979,7 @@ Liegt unten im schwarzen Portalbereich.
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.227";
+window.multiplayerTestVersion = "0.228";
 
 /* Ende Testversion */
 /* =========================================================
@@ -8125,6 +8125,16 @@ await window.firebaseSet(
     }
 );
 /* -----------------------------------
+Kamera bei Zoom nachführen
+----------------------------------- */
+
+window.reservatKameraSpielerNachfuehren(
+    neuesX,
+    neuesY
+);
+
+/* Ende Kamera nachführen */
+/* -----------------------------------
 Erfolgreiche Bewegung als Aktivität
 melden
 ----------------------------------- */
@@ -9505,6 +9515,164 @@ function (neuerZoom) {
     window.reservatZoomZeichnen();
 
 }; /* Ende reservatZoomSetzen */
+
+/* =========================================================
+RESERVAT - KAMERA DEM SPIELER NACHFÜHREN
+
+Bei vergrößerter Karte bleibt der aktuelle
+Ausschnitt erhalten, solange der Spieler
+nicht zu nahe an einen sichtbaren Rand kommt.
+========================================================= */
+
+window.reservatKameraSpielerNachfuehren =
+function (spielerX, spielerY) {
+
+    const spielfeld =
+        document.getElementById(
+            "spielfeld"
+        );
+
+    if (!spielfeld) {
+        return;
+    }
+
+
+    /*
+    Bei 100 % Zoom ist immer die gesamte
+    Karte sichtbar. Eine Kamera ist dort
+    nicht notwendig.
+    */
+
+    if (
+        window.reservatZoomFaktor <=
+        window.reservatZoomMinimum
+    ) {
+        return;
+    }
+
+
+    const breite =
+        spielfeld.clientWidth;
+
+    const hoehe =
+        spielfeld.clientHeight;
+
+
+    /*
+    Mittelpunkt des Spielerfeldes innerhalb
+    der ungezoomten 10-x-10-Karte.
+    */
+
+    const spielerKartenX =
+        ((spielerX + 0.5) / 10) *
+        breite;
+
+    const spielerKartenY =
+        ((spielerY + 0.5) / 10) *
+        hoehe;
+
+
+    /*
+    Position des Spielers im momentan
+    sichtbaren, gezoomten Ausschnitt.
+    */
+
+    const spielerBildschirmX =
+        window.reservatZoomVersatzX +
+        spielerKartenX *
+        window.reservatZoomFaktor;
+
+    const spielerBildschirmY =
+        window.reservatZoomVersatzY +
+        spielerKartenY *
+        window.reservatZoomFaktor;
+
+
+    /*
+    Sicherheitsbereich:
+
+    Der Spieler darf sich innerhalb der
+    mittleren 60 % frei bewegen.
+
+    Erst in den äußeren 20 % folgt
+    die Kamera.
+    */
+
+    const randX =
+        breite * 0.20;
+
+    const randY =
+        hoehe * 0.20;
+
+    const minimumX =
+        randX;
+
+    const maximumX =
+        breite - randX;
+
+    const minimumY =
+        randY;
+
+    const maximumY =
+        hoehe - randY;
+
+
+    /*
+    Nur so weit verschieben, wie nötig ist,
+    um den Spieler wieder an die Grenze
+    des Sicherheitsbereichs zu bringen.
+    */
+
+    if (
+        spielerBildschirmX <
+        minimumX
+    ) {
+
+        window.reservatZoomVersatzX +=
+            minimumX -
+            spielerBildschirmX;
+
+    } else if (
+        spielerBildschirmX >
+        maximumX
+    ) {
+
+        window.reservatZoomVersatzX -=
+            spielerBildschirmX -
+            maximumX;
+    }
+
+
+    if (
+        spielerBildschirmY <
+        minimumY
+    ) {
+
+        window.reservatZoomVersatzY +=
+            minimumY -
+            spielerBildschirmY;
+
+    } else if (
+        spielerBildschirmY >
+        maximumY
+    ) {
+
+        window.reservatZoomVersatzY -=
+            spielerBildschirmY -
+            maximumY;
+    }
+
+
+    /*
+    Die vorhandene Zoomfunktion begrenzt
+    automatisch an den Kartenrändern.
+    */
+
+    window.reservatZoomZeichnen();
+
+};
+
+/* Ende Kamera dem Spieler nachführen */
 /* -----------------------------------
 Touch-Zoom initialisieren
 ----------------------------------- */

@@ -1956,7 +1956,7 @@ Liegt unten im schwarzen Portalbereich.
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.216";
+window.multiplayerTestVersion = "0.218";
 
 /* Ende Testversion */
 
@@ -7491,7 +7491,7 @@ if (idleZustand === "weg") {
 
                     canvas.addEventListener(
                         "click",
-                        function () {
+                        async function () {
 
                             /* -----------------------------------
                             Angeklikkten Spieler bestimmen
@@ -7582,17 +7582,126 @@ if (idleZustand === "weg") {
 
                             if (namen.length === 1) {
 
+                                /* -----------------------------------
+                                Orden des Spielers einmalig lesen
+                                ----------------------------------- */
+
+                                const ordenRef =
+                                    window.firebaseRef(
+                                        window.firebaseDatabase,
+                                        "auszeichnungen/" +
+                                        angeklickteUid +
+                                        "/orden"
+                                    );
+
+                                try {
+
+                                    const ordenSnapshot =
+                                        await window.firebaseGet(
+                                            ordenRef
+                                        );
+
+                                    const orden =
+                                        ordenSnapshot.exists()
+                                            ? ordenSnapshot.val()
+                                            : {};
+
+                                    const anzahlOrden =
+                                        [
+                                            orden.mega,
+                                            orden.ratefuchs,
+                                            orden.resilienz,
+                                            orden.steigerung
+                                        ].filter(
+                                            function (wert) {
+                                                return wert === true;
+                                            }
+                                        ).length;
+
+                                    /* Ende Orden zählen */
+
+
+                                    /* -----------------------------------
+                                    Ereignistext zusammensetzen
+                                    ----------------------------------- */
+
+                                    if (anzahlOrden === 4) {
+
+                                        ereignisText.textContent =
+                                            "Hier steht " +
+                                            namen[0] +
+                                            ". Wow, " +
+                                            namen[0] +
+                                            " hat alle 4 unserer Orden! Krass!";
+
+                                    } else if (anzahlOrden > 0) {
+
+                                        ereignisText.textContent =
+                                            "Hier steht " +
+                                            namen[0] +
+                                            ". Wow, " +
+                                            namen[0] +
+                                            " hat " +
+                                            anzahlOrden +
+                                            " unserer 4 Orden! Krass!";
+
+                                    } else {
+
+                                        ereignisText.textContent =
+                                            "Hier steht " +
+                                            namen[0] +
+                                            ".";
+
+                                    }
+
+                                    /* Ende Ereignistext */
+
+                                } catch (fehler) {
+
+                                    /* -----------------------------------
+                                    Bei Lesefehler wenigstens Namen zeigen
+                                    ----------------------------------- */
+
+                                    ereignisText.textContent =
+                                        "Hier steht " +
+                                        namen[0] +
+                                        ".";
+
+                                    console.warn(
+                                        "Orden des Spielers konnten nicht gelesen werden:",
+                                        fehler
+                                    );
+
+                                    /* Ende Lesefehler */
+
+                                }
+
+                            } else if (namen.length === 2) {
+
                                 ereignisText.textContent =
-                                    "Hier steht " +
+                                    "Hier stehen " +
                                     namen[0] +
+                                    " und " +
+                                    namen[1] +
+                                    ".";
+
+                            } else if (namen.length === 3) {
+
+                                ereignisText.textContent =
+                                    "Hier stehen " +
+                                    namen[0] +
+                                    ", " +
+                                    namen[1] +
+                                    " und " +
+                                    namen[2] +
                                     ".";
 
                             } else {
 
                                 ereignisText.textContent =
                                     "Hier stehen " +
-                                    namen.join(", ") +
-                                    ".";
+                                    namen.length +
+                                    " Gewohnheitstiere.";
 
                             }
 

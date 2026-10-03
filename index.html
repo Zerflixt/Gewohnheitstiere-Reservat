@@ -403,6 +403,13 @@ SPIELFIGUR AUF DEM SPIELFELD
 
 #spielfeld {
     position: relative;
+
+    /*
+    Alles, was durch den Karten-Zoom
+    über das Spielfeld hinausragt,
+    wird am Spielfeldrand abgeschnitten.
+    */
+    overflow: hidden;
 }
 /* =========================================================
 KARTENEBENEN
@@ -994,7 +1001,22 @@ unten links an der Karte
 
 
 }/* ENDE HANDY QUERFORMAT */
+/* =========================================================
+RESERVAT - ZOOM-EBENE
+========================================================= */
 
+#reservatZoomEbene {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+
+    transform-origin: 0 0;
+
+}
+
+/* Ende Reservat - Zoom-Ebene */
 /* -----------------------------------
 Reservat - Ladebildschirm
 ----------------------------------- */
@@ -1956,7 +1978,7 @@ Liegt unten im schwarzen Portalbereich.
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.218";
+window.multiplayerTestVersion = "0.224";
 
 /* Ende Testversion */
 
@@ -2415,9 +2437,17 @@ function () {
                 "25";
 
 
-            spielfeld.appendChild(
-                grafik
-            );
+const reservatZoomEbene =
+    document.getElementById(
+        "reservatZoomEbene"
+    );
+
+if (reservatZoomEbene) {
+
+    reservatZoomEbene.appendChild(
+        grafik
+    );
+}
 
         }
     );
@@ -9143,12 +9173,26 @@ const feldMitteY =
        Nur beim ersten Mal einfügen
        ----------------------------------- */
 
-    if (canvas.parentElement !== spielfeld) {
+		/* -----------------------------------
+		Avatar in die Zoom-Ebene einsetzen
+		----------------------------------- */
 
-        spielfeld.appendChild(
-            canvas
-        );
-    }
+		const reservatZoomEbene =
+			document.getElementById(
+				"reservatZoomEbene"
+			);
+
+		if (
+			reservatZoomEbene &&
+			canvas.parentElement !== reservatZoomEbene
+		) {
+
+			reservatZoomEbene.appendChild(
+				canvas
+			);
+		}
+
+		/* Ende Avatar in Zoom-Ebene einsetzen */
 };
 /* -----------------------------------
    Spielfeld-Größe beobachten
@@ -9280,6 +9324,580 @@ if (
 /* Ende Spielfeld-Größe beobachten */
 /* Ende Spielfigur positionieren */
 /* =========================================================
+RESERVAT - ZOOMSTEUERUNG
+========================================================= */
+
+/*
+Der Zoom betrifft ausschließlich die innere
+Reservat-Welt.
+
+1    = 100 %
+2.5  = 250 %
+*/
+
+window.reservatZoomFaktor = 1;
+
+window.reservatZoomMinimum = 1;
+window.reservatZoomMaximum = 2.5;
+
+window.reservatZoomVersatzX = 0;
+window.reservatZoomVersatzY = 0;
+
+
+/* -----------------------------------
+Zoom-Versatz begrenzen
+----------------------------------- */
+
+window.reservatZoomVersatzBegrenzen =
+function () {
+
+    const spielfeld =
+        document.getElementById(
+            "spielfeld"
+        );
+
+    if (!spielfeld) {
+        return;
+    }
+
+
+    const breite =
+        spielfeld.clientWidth;
+
+    const hoehe =
+        spielfeld.clientHeight;
+
+
+    /*
+    Bei 100 % gibt es nichts zu
+    verschieben.
+    */
+
+    if (window.reservatZoomFaktor <= 1) {
+
+        window.reservatZoomVersatzX = 0;
+        window.reservatZoomVersatzY = 0;
+
+        return;
+    }
+
+
+    /*
+    So weit darf die vergrößerte Welt
+    maximal nach links bzw. oben
+    verschoben werden.
+    */
+
+    const minimumX =
+        breite -
+        breite * window.reservatZoomFaktor;
+
+    const minimumY =
+        hoehe -
+        hoehe * window.reservatZoomFaktor;
+
+
+    window.reservatZoomVersatzX =
+        Math.min(
+            0,
+            Math.max(
+                minimumX,
+                window.reservatZoomVersatzX
+            )
+        );
+
+
+    window.reservatZoomVersatzY =
+        Math.min(
+            0,
+            Math.max(
+                minimumY,
+                window.reservatZoomVersatzY
+            )
+        );
+
+}; /* Ende reservatZoomVersatzBegrenzen */
+
+
+/* -----------------------------------
+Zoom darstellen
+----------------------------------- */
+
+window.reservatZoomZeichnen =
+function () {
+
+    const zoomEbene =
+        document.getElementById(
+            "reservatZoomEbene"
+        );
+
+    if (!zoomEbene) {
+        return;
+    }
+
+
+    window.reservatZoomVersatzBegrenzen();
+
+
+    zoomEbene.style.transform =
+        "translate3d(" +
+        window.reservatZoomVersatzX + "px, " +
+        window.reservatZoomVersatzY + "px, 0) " +
+        "scale(" +
+        window.reservatZoomFaktor +
+        ")";
+
+}; /* Ende reservatZoomZeichnen */
+
+
+/* -----------------------------------
+Zoomfaktor setzen
+----------------------------------- */
+
+window.reservatZoomSetzen =
+function (neuerZoom) {
+
+    window.reservatZoomFaktor =
+        Math.max(
+            window.reservatZoomMinimum,
+            Math.min(
+                window.reservatZoomMaximum,
+                neuerZoom
+            )
+        );
+
+
+    window.reservatZoomZeichnen();
+
+}; /* Ende reservatZoomSetzen */
+/* -----------------------------------
+Touch-Zoom initialisieren
+----------------------------------- */
+
+window.reservatTouchZoomInitialisieren =
+function () {
+
+    const spielfeld =
+        document.getElementById(
+            "spielfeld"
+        );
+
+    if (!spielfeld) {
+        return;
+    }
+
+
+    /*
+    Verhindert, dass die Touch-Steuerung
+    versehentlich mehrfach eingebaut wird.
+    */
+
+    if (
+        spielfeld.dataset.touchZoomAktiv ===
+        "ja"
+    ) {
+        return;
+    }
+
+    spielfeld.dataset.touchZoomAktiv =
+        "ja";
+
+
+    let zweiFingerZoom = null;
+    let zoomBeruehrungAktiv = false;
+    let fingerVerschieben = null;
+
+
+    /* -----------------------------------
+    Abstand zweier Finger
+    ----------------------------------- */
+
+    const fingerAbstand =
+    function (fingerA, fingerB) {
+
+        return Math.hypot(
+            fingerB.clientX -
+                fingerA.clientX,
+
+            fingerB.clientY -
+                fingerA.clientY
+        );
+
+    }; /* Ende fingerAbstand */
+
+
+    /* -----------------------------------
+    Mittelpunkt zweier Finger
+    ----------------------------------- */
+
+    const fingerMittelpunkt =
+    function (fingerA, fingerB) {
+
+        return {
+
+            x:
+                (
+                    fingerA.clientX +
+                    fingerB.clientX
+                ) / 2,
+
+            y:
+                (
+                    fingerA.clientY +
+                    fingerB.clientY
+                ) / 2
+        };
+
+    }; /* Ende fingerMittelpunkt */
+
+
+    /* -----------------------------------
+    Zwei-Finger-Zoom beginnen
+    ----------------------------------- */
+
+    const zweiFingerZoomBeginnen =
+    function (fingerA, fingerB) {
+
+        const mittelpunkt =
+            fingerMittelpunkt(
+                fingerA,
+                fingerB
+            );
+
+        const spielfeldRechteck =
+            spielfeld.getBoundingClientRect();
+
+        const punktX =
+            mittelpunkt.x -
+            spielfeldRechteck.left;
+
+        const punktY =
+            mittelpunkt.y -
+            spielfeldRechteck.top;
+
+
+        zoomBeruehrungAktiv = true;
+
+
+        zweiFingerZoom = {
+
+            startAbstand:
+                Math.max(
+                    1,
+                    fingerAbstand(
+                        fingerA,
+                        fingerB
+                    )
+                ),
+
+            startZoom:
+                window.reservatZoomFaktor,
+
+            inhaltX:
+                (
+                    punktX -
+                    window.reservatZoomVersatzX
+                ) /
+                window.reservatZoomFaktor,
+
+            inhaltY:
+                (
+                    punktY -
+                    window.reservatZoomVersatzY
+                ) /
+                window.reservatZoomFaktor
+        };
+
+    }; /* Ende zweiFingerZoomBeginnen */
+
+
+    /* -----------------------------------
+    Finger aufsetzen
+    ----------------------------------- */
+
+    spielfeld.addEventListener(
+        "touchstart",
+        function (ereignis) {
+
+            /*
+            Zwei Finger:
+            Pinch-Zoom beginnen.
+            */
+
+            if (
+                ereignis.touches.length >= 2
+            ) {
+
+                fingerVerschieben = null;
+
+                zweiFingerZoomBeginnen(
+                    ereignis.touches[0],
+                    ereignis.touches[1]
+                );
+
+                ereignis.preventDefault();
+
+                return;
+            }
+
+
+            /*
+            Nach einem Pinch warten wir,
+            bis alle Finger losgelassen
+            wurden.
+            */
+
+            if (zoomBeruehrungAktiv) {
+
+                fingerVerschieben = null;
+
+                ereignis.preventDefault();
+
+                return;
+            }
+
+
+            /*
+            Bei mehr als 100 % darf ein
+            Finger den Kartenausschnitt
+            verschieben.
+            */
+
+            if (
+                window.reservatZoomFaktor >
+                window.reservatZoomMinimum &&
+                ereignis.touches.length === 1
+            ) {
+
+                const finger =
+                    ereignis.touches[0];
+
+                fingerVerschieben = {
+
+                    startClientX:
+                        finger.clientX,
+
+                    startClientY:
+                        finger.clientY,
+
+                    startVersatzX:
+                        window.reservatZoomVersatzX,
+
+                    startVersatzY:
+                        window.reservatZoomVersatzY
+                };
+
+                ereignis.preventDefault();
+            }
+
+        },
+        {
+            passive: false
+        }
+    );
+
+
+    /* -----------------------------------
+    Finger bewegen
+    ----------------------------------- */
+
+    spielfeld.addEventListener(
+        "touchmove",
+        function (ereignis) {
+
+            /*
+            Zwei Finger:
+            Zoomfaktor und Mittelpunkt
+            berechnen.
+            */
+
+            if (
+                ereignis.touches.length >= 2
+            ) {
+
+                fingerVerschieben = null;
+
+
+                if (!zweiFingerZoom) {
+
+                    zweiFingerZoomBeginnen(
+                        ereignis.touches[0],
+                        ereignis.touches[1]
+                    );
+                }
+
+
+                const fingerA =
+                    ereignis.touches[0];
+
+                const fingerB =
+                    ereignis.touches[1];
+
+                const mittelpunkt =
+                    fingerMittelpunkt(
+                        fingerA,
+                        fingerB
+                    );
+
+                const spielfeldRechteck =
+                    spielfeld.getBoundingClientRect();
+
+                const punktX =
+                    mittelpunkt.x -
+                    spielfeldRechteck.left;
+
+                const punktY =
+                    mittelpunkt.y -
+                    spielfeldRechteck.top;
+
+
+                window.reservatZoomFaktor =
+                    Math.min(
+                        window.reservatZoomMaximum,
+                        Math.max(
+                            window.reservatZoomMinimum,
+
+                            zweiFingerZoom.startZoom *
+                            fingerAbstand(
+                                fingerA,
+                                fingerB
+                            ) /
+                            zweiFingerZoom.startAbstand
+                        )
+                    );
+
+
+                window.reservatZoomVersatzX =
+                    punktX -
+                    zweiFingerZoom.inhaltX *
+                    window.reservatZoomFaktor;
+
+
+                window.reservatZoomVersatzY =
+                    punktY -
+                    zweiFingerZoom.inhaltY *
+                    window.reservatZoomFaktor;
+
+
+                window.reservatZoomZeichnen();
+
+                ereignis.preventDefault();
+
+                return;
+            }
+
+
+            /*
+            Solange ein Pinch noch nicht
+            vollständig beendet wurde,
+            macht der letzte Finger nichts.
+            */
+
+            if (zoomBeruehrungAktiv) {
+
+                ereignis.preventDefault();
+
+                return;
+            }
+
+
+            /*
+            Ein Finger verschiebt die
+            bereits vergrößerte Karte.
+            */
+
+            if (
+                fingerVerschieben &&
+                ereignis.touches.length === 1
+            ) {
+
+                const finger =
+                    ereignis.touches[0];
+
+
+                window.reservatZoomVersatzX =
+
+                    fingerVerschieben.startVersatzX +
+
+                    finger.clientX -
+                    fingerVerschieben.startClientX;
+
+
+                window.reservatZoomVersatzY =
+
+                    fingerVerschieben.startVersatzY +
+
+                    finger.clientY -
+                    fingerVerschieben.startClientY;
+
+
+                window.reservatZoomZeichnen();
+
+                ereignis.preventDefault();
+            }
+
+        },
+        {
+            passive: false
+        }
+    );
+
+
+    /* -----------------------------------
+    Finger loslassen
+    ----------------------------------- */
+
+    const touchBeenden =
+    function (ereignis) {
+
+        if (zoomBeruehrungAktiv) {
+
+            if (
+                ereignis.touches.length === 0
+            ) {
+
+                zweiFingerZoom = null;
+                zoomBeruehrungAktiv = false;
+            }
+
+            fingerVerschieben = null;
+
+            ereignis.preventDefault();
+
+            return;
+        }
+
+
+        if (fingerVerschieben) {
+
+            fingerVerschieben = null;
+
+            ereignis.preventDefault();
+        }
+
+    }; /* Ende touchBeenden */
+
+
+    spielfeld.addEventListener(
+        "touchend",
+        touchBeenden,
+        {
+            passive: false
+        }
+    );
+
+
+    spielfeld.addEventListener(
+        "touchcancel",
+        touchBeenden,
+        {
+            passive: false
+        }
+    );
+
+}; /* Ende reservatTouchZoomInitialisieren */
+/* Ende Reservat - Zoomsteuerung */
+/* =========================================================
 10 x 10 SPIELFELD
 ========================================================= */
 
@@ -9298,6 +9916,33 @@ function () {
 
 
     spielfeld.innerHTML = "";
+	/* -----------------------------------
+Zoom-Ebene für die Spielwelt erzeugen
+
+Nur diese Ebene wird später gezoomt.
+Ladebildschirm, Verbindungssperre und
+Dialoge bleiben außerhalb.
+----------------------------------- */
+
+const reservatZoomEbene =
+    document.createElement(
+        "div"
+    );
+
+reservatZoomEbene.id =
+    "reservatZoomEbene";
+
+spielfeld.appendChild(
+    reservatZoomEbene
+);
+
+/* Ende Zoom-Ebene erzeugen */
+/*
+Touch-Zoom für dieses neu erzeugte
+Spielfeld aktivieren.
+*/
+
+window.reservatTouchZoomInitialisieren();
 /* -----------------------------------
 Ladebildschirm erzeugen
 ----------------------------------- */
@@ -9387,11 +10032,11 @@ if (kartenDaten) {
 } /* Ende Kartendaten vorhanden */
 
 
-spielfeld.appendChild(
+reservatZoomEbene.appendChild(
     kartenEbene1
 );
 
-spielfeld.appendChild(
+reservatZoomEbene.appendChild(
     kartenEbene3
 );
 
@@ -9514,9 +10159,9 @@ if (window.kartenDebugRaster === true) {
             }
 
 
-            spielfeld.appendChild(
-                feld
-            );
+			reservatZoomEbene.appendChild(
+				feld
+			);
         }
     }
 };

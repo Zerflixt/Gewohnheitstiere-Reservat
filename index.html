@@ -475,6 +475,7 @@ Kartenebene 3
     pointer-events: none;
 
     z-index: 10;
+	-webkit-tap-highlight-color: transparent;
 }
 
 /* Ende Spielfigur */
@@ -1978,7 +1979,7 @@ Liegt unten im schwarzen Portalbereich.
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.225";
+window.multiplayerTestVersion = "0.226";
 
 /* Ende Testversion */
 
@@ -7522,6 +7523,56 @@ if (idleZustand === "weg") {
                     canvas.addEventListener(
                         "click",
                         async function () {
+							/* -----------------------------------
+Angeklickten Avatar kurz hervorheben
+----------------------------------- */
+
+/*
+Falls vorher ein anderer Avatar
+hervorgehoben war, dessen Glow
+sofort entfernen.
+*/
+
+document
+    .querySelectorAll(
+        ".spielfigur"
+    )
+    .forEach(
+        function (avatar) {
+
+            avatar.style.filter =
+                "";
+
+        }
+    );
+
+
+/*
+Den angeklickten Avatar mit demselben
+sanften Glow wie Traudel hervorheben.
+*/
+
+canvas.style.filter =
+    "drop-shadow(0 0 6px white) " +
+    "drop-shadow(0 0 10px white)";
+
+
+/*
+Nach 3 Sekunden verschwindet der
+Glow wieder.
+*/
+
+window.setTimeout(
+    function () {
+
+        canvas.style.filter =
+            "";
+
+    },
+    3000
+);
+
+/* Ende Avatar hervorheben */
 
                             /* -----------------------------------
                             Angeklikkten Spieler bestimmen

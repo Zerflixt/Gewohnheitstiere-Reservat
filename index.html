@@ -1952,7 +1952,7 @@ Liegt unten im schwarzen Portalbereich.
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.207";
+window.multiplayerTestVersion = "0.209";
 
 /* Ende Testversion */
 
@@ -2095,10 +2095,7 @@ Bequemer Zugriff auf die Karten
 window.reservatKarten =
     daten.karten;
 
-        console.log(
-            "Reservat-Karten geladen:",
-            window.reservatKarten
-        );
+
 
     } catch (fehler) {
 
@@ -3152,9 +3149,7 @@ die Login-Passage mit <<done>> anzeigt.
 window.multiplayerLoginPruefen =
 async function () {
 
-    console.log(
-        "Login-Passage ist bereit."
-    );
+ 
 
 
     /* -----------------------------------
@@ -3164,9 +3159,7 @@ async function () {
     await window.firebaseBereit;
 
 
-    console.log(
-        "Firebase wurde initialisiert."
-    );
+
     /* -----------------------------------
     Login-Spielerliste aus Firebase laden
     ----------------------------------- */
@@ -3285,9 +3278,7 @@ async function () {
     await window.firebaseAuth.authStateReady();
 
 
-    console.log(
-        "Firebase Auth ist bereit."
-    );
+
 
 
     const user =
@@ -3300,46 +3291,43 @@ async function () {
 
     if (user) {
 
-        console.log(
-            "Gespeicherter Benutzer:",
-            user.email
-        );
+
 /* -----------------------------------
 Reservats-Datensatz laden
 und Erstpasswort prüfen
 ----------------------------------- */
 
-const token =
-    await user.getIdToken();
+/* -----------------------------------
+Reservats-Datensatz über
+Firebase-SDK laden
+----------------------------------- */
 
-const antwort =
-    await fetch(
-        window.firebaseURL +
-        "users/" +
-        user.uid +
-        ".json?auth=" +
-        token
+const userRef =
+    window.firebaseRef(
+        window.firebaseDatabase,
+        "users/" + user.uid
     );
 
-if (!antwort.ok) {
-
-    throw new Error(
-        "Reservats-Datensatz konnte nicht gelesen werden."
+const userSnapshot =
+    await window.firebaseGet(
+        userRef
     );
 
-} /* Ende Antwort prüfen */
-
-
-const reservatsDaten =
-    await antwort.json();
-
-if (!reservatsDaten) {
+if (!userSnapshot.exists()) {
 
     throw new Error(
         "Kein Reservats-Datensatz gefunden."
     );
 
 } /* Ende Reservats-Datensatz prüfen */
+
+
+const reservatsDaten =
+    userSnapshot.val();
+
+/* Ende Reservats-Datensatz über Firebase-SDK laden */
+
+
 
 
 if (
@@ -3402,9 +3390,7 @@ return;
     Kein gespeicherter Benutzer
     ----------------------------------- */
 
-    console.log(
-        "Kein gespeicherter Benutzer."
-    );
+
 
 
     const ausgabe =
@@ -3642,38 +3628,40 @@ const email =
                     loginErgebnis.user;
 
 
-                const token =
-                    await user.getIdToken();
+               /* -----------------------------------
+Reservats-Datensatz über
+Firebase-SDK laden
+----------------------------------- */
+
+const userRef =
+    window.firebaseRef(
+        window.firebaseDatabase,
+        "users/" + user.uid
+    );
 
 
-                const antwort =
-                    await fetch(
-                        window.firebaseURL +
-                        "users/" +
-                        user.uid +
-                        ".json?auth=" +
-                        token
-                    );
+const userSnapshot =
+    await window.firebaseGet(
+        userRef
+    );
 
 
-                if (!antwort.ok) {
+if (!userSnapshot.exists()) {
 
-                    throw new Error(
-                        "Reservats-Datensatz konnte nicht gelesen werden."
-                    );
-                }
+    throw new Error(
+        "Kein Reservats-Datensatz gefunden."
+    );
 
-
-                const reservatsDaten =
-                    await antwort.json();
+}
 
 
-                if (!reservatsDaten) {
+const reservatsDaten =
+    userSnapshot.val();
 
-                    throw new Error(
-                        "Kein Reservats-Datensatz gefunden."
-                    );
-                }
+/* Ende Reservats-Datensatz über Firebase-SDK laden */
+
+
+
 
 
             ausgabe.textContent =
@@ -3877,39 +3865,25 @@ async function () {
 
 
 /* -----------------------------------
-Erstpasswort-Markierung entfernen
+Erstpasswort-Markierung über
+Firebase-SDK entfernen
 ----------------------------------- */
 
-const token =
-    await user.getIdToken();
-
-const antwort =
-    await fetch(
-        window.firebaseURL +
+const passwortMarkierungRef =
+    window.firebaseRef(
+        window.firebaseDatabase,
         "users/" +
         user.uid +
-        "/hasToPickNewPassword.json?auth=" +
-        token,
-        {
-            method: "PUT",
-
-            headers: {
-                "Content-Type":
-                    "application/json"
-            },
-
-            body: JSON.stringify(false)
-        }
+        "/hasToPickNewPassword"
     );
 
 
-if (!antwort.ok) {
+await window.firebaseSet(
+    passwortMarkierungRef,
+    false
+);
 
-    throw new Error(
-        "Passwort wurde geändert, aber hasToPickNewPassword konnte nicht auf false gesetzt werden."
-    );
-
-} /* Ende Antwort prüfen */
+/* Ende Erstpasswort-Markierung über Firebase-SDK entfernen */
 
 
 /* -----------------------------------
@@ -3993,9 +3967,7 @@ async function () {
             window.firebaseServerTimestamp()
         );
 
-        console.log(
-            "Reservat-Aktivität gemeldet."
-        );
+
 
     } catch (fehler) {
 
@@ -4107,10 +4079,7 @@ async function () {
                 zwoelfStunden
             ) {
 
-                console.log(
-                    "Valoria-Besuch nicht gezählt. " +
-                    "12-Stunden-Grenze noch nicht erreicht."
-                );
+
 
                 return;
 
@@ -4200,10 +4169,7 @@ async function () {
         );
 
 
-        console.log(
-            "Valoria-Besuch gezählt:",
-            neueDaten
-        );
+
 
 
     } catch (fehler) {
@@ -4501,9 +4467,6 @@ function () {
                         eigeneVerbindungRef;
 
 
-                    console.log(
-                        "Presence-Verbindung angemeldet."
-                    );
 
 
                 } catch (fehler) {
@@ -4657,7 +4620,7 @@ function () {
 
             if (!snapshot.exists()) {
 
-                console.log(
+                console.warn(
                     "Keine Mindestversion in Firebase gesetzt."
                 );
 
@@ -4681,15 +4644,7 @@ function () {
                 );
 
 
-            console.log(
-                "Versionsprüfung:",
-                "eigene Version",
-                eigeneVersion,
-                "| Mindestversion",
-                mindestversion,
-                "| Ergebnis",
-                vergleich
-            );
+
 
 
 if (vergleich < 0) {
@@ -4749,13 +4704,7 @@ if (vergleich < 0) {
 
     /* Ende fehlgeschlagener Aktualisierung */
 
-} else {
-
-    console.log(
-        "Reservat-Version ist ausreichend aktuell."
-    );
-
-}
+} 
 
         }/* Ende Mindestversions-Listener */
 
@@ -4841,11 +4790,7 @@ window.firebaseVerbindungsanzeigeAktualisieren?.();
                     : "";
 
 
-            console.log(
-                "Wartungsmodus:",
-                aktiv ? "AN" : "AUS",
-                text
-            );
+
 			
 			/* -----------------------------------
 Bei Wartungsbeginn Wartungspassage öffnen
@@ -5100,10 +5045,7 @@ function () {
                 orden
             );
 
-            console.log(
-                "Eigene Orden:",
-                orden
-            );
+
 
         }/* Ende Orden-Listener */
     );
@@ -5239,9 +5181,7 @@ async function () {
             window.eigenePresenceVerbindungRef =
                 null;
 
-            console.log(
-                "Presence-Verbindung beim Logout entfernt."
-            );
+
 
         } /* Ende Presence beim Logout */
 
@@ -6250,10 +6190,7 @@ async function avatarFuerUidLaden(uid) {
                 /* Ende Zzz-Canvas vorbereiten */
 
 
-                console.log(
-                    "Multiplayer-Avatar nachgeladen:",
-                    userDaten.habiticaName || uid
-                );
+ 
 
 
                 /* -----------------------------------
@@ -6775,40 +6712,8 @@ window.firebaseOnValue(
         relevanteAvatareNachladen();
 
         /* Ende relevante Avatare nachladen */
-        /* -----------------------------------
-        Testausgabe
-        ----------------------------------- */
 
-        console.log(
-            "Multiplayer-Aktivitäten:",
-            window.multiplayerAktivitaeten
-        );
 
-        /* Ende Testausgabe */
-/* -----------------------------------
-Eigenen Idle-Zustand testweise anzeigen
------------------------------------ */
-
-const testUser =
-    window.firebaseAuth.currentUser;
-
-if (testUser) {
-
-    const testAktivitaet =
-        window.multiplayerAktivitaeten[
-            testUser.uid
-        ]?.letzteAktivitaet;
-
-    console.log(
-        "Eigener Idle-Zustand:",
-        window.idleZustandBestimmen(
-            testAktivitaet
-        )
-    );
-
-} /* Ende Idle-Test */
-
-/* Ende Idle-Testausgabe */
     } /* Ende Activity-Listener */
 
 );
@@ -6996,10 +6901,7 @@ window.firebaseOnValue(
         /* Ende relevante Avatare nachladen */
 
 
-        console.log(
-            "Multiplayer-Positionen:",
-            positionen
-        );
+
 
     } /* Ende Positions-Listener */
 
@@ -7009,7 +6911,7 @@ window.firebaseOnValue(
     } catch (fehler) {
 
         console.error(
-            "Avatar-Test fehlgeschlagen:",
+            "Avatar konnte nicht geladen werden:",
             fehler
         );
 
@@ -7489,11 +7391,7 @@ if (
     )
 ) {
 
-    console.log(
-        "Dieses Feld ist gesperrt:",
-        neuesX,
-        neuesY
-    );
+
 
     return;
 }
@@ -7929,10 +7827,7 @@ document.addEventListener(
         }
 
 
-        console.log(
-            "Aktuelle Sperrfelder:",
-            karte.gesperrteFelder
-        );
+
     }
 );
 
@@ -8080,10 +7975,7 @@ document.addEventListener(
         } /* Ende aktuelles Feld vorhanden */
 
 
-        console.log(
-            "Aktuelle Avatar-Ebene-2-Felder:",
-            karte.avatarEbene2Felder
-        );
+
 
     } /* Ende Shift+A Ereignis */
 );
@@ -8415,10 +8307,7 @@ document.addEventListener(
                 jsonText
             );
 
-            console.log(
-                "Komplette Reservat_Karten.json " +
-                "wurde in die Zwischenablage kopiert."
-            );
+
 
             alert(
                 "Kartendaten kopiert!\n\n" +

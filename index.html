@@ -726,10 +726,14 @@ neutral halten
 Dauerhaften Fokus neutralisieren
 ----------------------------------- */
 
+.aktionstaste:hover,
 .aktionstaste:focus,
 .aktionstaste:focus-visible,
+.aktionstaste:active,
+.aktionstaste.aktiv:hover,
 .aktionstaste.aktiv:focus,
-.aktionstaste.aktiv:focus-visible {
+.aktionstaste.aktiv:focus-visible,
+.aktionstaste.aktiv:active {
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
@@ -1952,7 +1956,7 @@ Liegt unten im schwarzen Portalbereich.
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.209";
+window.multiplayerTestVersion = "0.216";
 
 /* Ende Testversion */
 
@@ -2217,6 +2221,213 @@ function () {
 
 /* Ende Kartengrafik aktualisieren */
 /* =========================================================
+STATIONÄRE NPC-GRAFIKEN AKTUALISIEREN
+========================================================= */
+
+window.npcGrafikenAktualisieren =
+function () {
+
+    const spielfeld =
+        document.getElementById(
+            "spielfeld"
+        );
+
+    const position =
+        window.aktuelleSpielerPosition;
+
+    if (
+        !spielfeld ||
+        !position ||
+        !position.karte
+    ) {
+        return;
+    }
+
+
+    /* -----------------------------------
+    Alte NPC-Grafiken entfernen
+    ----------------------------------- */
+
+    spielfeld
+        .querySelectorAll(
+            ".reservat-npc"
+        )
+        .forEach(
+            function (element) {
+                element.remove();
+            }
+        );
+
+    /* Ende alte NPC-Grafiken entfernen */
+
+
+    /* -----------------------------------
+    Sonderfelder der aktuellen Karte
+    ermitteln
+    ----------------------------------- */
+
+    const karte =
+        window.reservatKarten?.[
+            position.karte
+        ];
+
+    if (
+        !karte ||
+        !Array.isArray(
+            karte.sonderfelder
+        )
+    ) {
+        return;
+    }
+
+
+    const npcFelder =
+        karte.sonderfelder.filter(
+            function (sonderfeld) {
+
+                return (
+                    sonderfeld.typ === "npc_dialog" &&
+                    Array.isArray(
+                        sonderfeld.position
+                    ) &&
+                    sonderfeld.grafik
+                );
+
+            }
+        );
+
+    /* Ende NPC-Sonderfelder ermitteln */
+
+
+    /* -----------------------------------
+    Feldgröße bestimmen
+    ----------------------------------- */
+
+    const feldGroesse =
+        spielfeld.clientWidth / 10;
+
+    /* Ende Feldgröße bestimmen */
+
+
+    /* -----------------------------------
+    NPC-Grafiken erzeugen
+    ----------------------------------- */
+
+    npcFelder.forEach(
+        function (sonderfeld) {
+
+            const x =
+                sonderfeld.position[0];
+
+            const y =
+                sonderfeld.position[1];
+
+
+            const grafik =
+                document.createElement(
+                    "img"
+                );
+
+            grafik.className =
+                "reservat-npc";
+
+            grafik.src =
+                sonderfeld.grafik;
+
+            grafik.alt =
+                sonderfeld.npc ||
+                "NPC";
+
+
+            /*
+            Das quadratische PNG wird zunächst
+            exakt auf ein Rasterfeld gelegt.
+
+            Die Größe können wir anschließend
+            anhand des echten Hafenbildes
+            gemeinsam feinjustieren.
+            */
+
+            grafik.style.position =
+                "absolute";
+
+            /* -----------------------------------
+            Individuelle NPC-Darstellung
+
+            Die Werte kommen optional aus der JSON.
+            Ohne Angaben gilt:
+            Skalierung 1, Offset 0.
+            ----------------------------------- */
+
+            const skalierung =
+                Number.isFinite(
+                    sonderfeld.grafikSkalierung
+                )
+                    ? sonderfeld.grafikSkalierung
+                    : 1;
+
+            const offsetX =
+                Number.isFinite(
+                    sonderfeld.grafikOffsetX
+                )
+                    ? sonderfeld.grafikOffsetX
+                    : 0;
+
+            const offsetY =
+                Number.isFinite(
+                    sonderfeld.grafikOffsetY
+                )
+                    ? sonderfeld.grafikOffsetY
+                    : 0;
+
+
+            const grafikGroesse =
+                feldGroesse * skalierung;
+
+
+            grafik.style.width =
+                grafikGroesse + "px";
+
+            grafik.style.height =
+                grafikGroesse + "px";
+
+            grafik.style.left =
+                (
+                    x * feldGroesse +
+                    offsetX * feldGroesse
+                ) + "px";
+
+            grafik.style.top =
+                (
+                    y * feldGroesse +
+                    offsetY * feldGroesse
+                ) + "px";
+
+            /* Ende individuelle NPC-Darstellung */
+
+            grafik.style.objectFit =
+                "contain";
+
+            grafik.style.pointerEvents =
+                "none";
+
+            grafik.style.zIndex =
+                "25";
+
+
+            spielfeld.appendChild(
+                grafik
+            );
+
+        }
+    );
+
+    /* Ende NPC-Grafiken erzeugen */
+
+}; /* Ende npcGrafikenAktualisieren */
+
+/* Ende stationäre NPC-Grafiken aktualisieren */
+/* =========================================================
 SONDERFELD AN AKTUELLER POSITION ERMITTELN
 ========================================================= */
 
@@ -2285,6 +2496,100 @@ function () {
 
 /* Ende Sonderfeld an aktueller Position ermitteln */
 /* =========================================================
+SONDERFELD NEBEN AKTUELLER POSITION ERMITTELN
+========================================================= */
+
+window.sonderfeldNebenAktuellerPositionErmitteln =
+function () {
+
+    /* -----------------------------------
+    Aktuelle Spielerposition prüfen
+    ----------------------------------- */
+
+    const position =
+        window.aktuelleSpielerPosition;
+
+    if (
+        !position ||
+        !position.karte ||
+        typeof position.x !== "number" ||
+        typeof position.y !== "number"
+    ) {
+        return null;
+    }
+
+    /* Ende Spielerposition prüfen */
+
+
+    /* -----------------------------------
+    Aktuelle Karte ermitteln
+    ----------------------------------- */
+
+    const karte =
+        window.reservatKarten?.[
+            position.karte
+        ];
+
+    if (
+        !karte ||
+        !Array.isArray(
+            karte.sonderfelder
+        )
+    ) {
+        return null;
+    }
+
+    /* Ende Kartendaten prüfen */
+
+
+    /* -----------------------------------
+    Nachbar-Aktionsfeld suchen
+
+    Nur oben, unten, links und rechts.
+    Diagonale Felder zählen nicht.
+    ----------------------------------- */
+
+    const sonderfeld =
+        karte.sonderfelder.find(
+            function (eintrag) {
+
+                if (
+                    eintrag.trigger !==
+                        "nachbar_aktion" ||
+                    !Array.isArray(
+                        eintrag.position
+                    )
+                ) {
+                    return false;
+                }
+
+
+                const abstandX =
+                    Math.abs(
+                        eintrag.position[0] -
+                        position.x
+                    );
+
+                const abstandY =
+                    Math.abs(
+                        eintrag.position[1] -
+                        position.y
+                    );
+
+
+                return (
+                    abstandX + abstandY === 1
+                );
+
+            }
+        );
+
+    return sonderfeld || null;
+
+}; /* Ende sonderfeldNebenAktuellerPositionErmitteln */
+
+/* Ende Sonderfeld neben aktueller Position ermitteln */
+/* =========================================================
 KONTEXT-AKTION AKTUALISIEREN
 ========================================================= */
 
@@ -2316,16 +2621,66 @@ function () {
     ----------------------------------- */
 
     const sonderfeld =
-        window.sonderfeldAnAktuellerPositionErmitteln();
+        window.sonderfeldAnAktuellerPositionErmitteln() ||
+        window.sonderfeldNebenAktuellerPositionErmitteln();
 
 
     /* -----------------------------------
     Aktions-Sonderfeld vorhanden
     ----------------------------------- */
+    /* -----------------------------------
+    NPC bei Nachbar-Aktion hervorheben
+    ----------------------------------- */
+
+    const npcGrafiken =
+        document.querySelectorAll(
+            ".reservat-npc"
+        );
+
+    npcGrafiken.forEach(
+        function (grafik) {
+
+            grafik.style.filter =
+                "none";
+
+        }
+    );
+
 
     if (
         sonderfeld &&
-        sonderfeld.trigger === "aktion"
+        sonderfeld.trigger ===
+            "nachbar_aktion" &&
+        sonderfeld.typ ===
+            "npc_dialog"
+    ) {
+
+        npcGrafiken.forEach(
+            function (grafik) {
+
+                if (
+                    grafik.alt ===
+                    sonderfeld.npc
+                ) {
+
+                    grafik.style.filter =
+                        "drop-shadow(0 0 6px white) " +
+                        "drop-shadow(0 0 10px white)";
+
+                }
+
+            }
+        );
+
+    }
+
+    /* Ende NPC bei Nachbar-Aktion hervorheben */
+    if (
+        sonderfeld &&
+        (
+            sonderfeld.trigger === "aktion" ||
+            sonderfeld.trigger === "nachbar_aktion"
+        )
     ) {
 
         aktionButton.disabled = false;
@@ -6171,9 +6526,26 @@ async function avatarFuerUidLaden(uid) {
                         spieler
                     );
 
-                avatarNachUid[
+                                avatarNachUid[
                     uid
                 ] = canvas;
+
+
+                /* -----------------------------------
+                Spielerkennung am Avatar merken
+
+                Wird für die einfache Anzeige
+                beim Anklicken des Avatars benötigt.
+                ----------------------------------- */
+
+                canvas.dataset.spielerUid =
+                    uid;
+
+                canvas.dataset.spielerName =
+                    spieler.profile?.name ||
+                    "Unbekanntes Gewohnheitstier";
+
+                /* Ende Spielerkennung am Avatar */
 
 
                 /* -----------------------------------
@@ -6840,6 +7212,7 @@ window.firebaseOnValue(
 
             window.kartenNameAnzeigen();
             window.kartenGrafikAktualisieren();
+            window.npcGrafikenAktualisieren();
             window.kontextAktionAktualisieren();
 
         } /* Ende eigene Position übernehmen */
@@ -7096,7 +7469,141 @@ if (idleZustand === "weg") {
                 /* -----------------------------------
                 Andere Spieler
                 ----------------------------------- */
+                /* -----------------------------------
+                Fremden Avatar anklickbar machen
+                ----------------------------------- */
 
+                canvas.style.pointerEvents =
+                    "auto";
+
+                canvas.style.cursor =
+                    "pointer";
+
+
+                if (
+                    canvas.dataset.klickFunktionAktiv !==
+                    "true"
+                ) {
+
+                    canvas.dataset.klickFunktionAktiv =
+                        "true";
+
+
+                    canvas.addEventListener(
+                        "click",
+                        function () {
+
+                            /* -----------------------------------
+                            Angeklikkten Spieler bestimmen
+                            ----------------------------------- */
+
+                            const angeklickteUid =
+                                canvas.dataset.spielerUid;
+
+                            const angeklicktePosition =
+                                window.multiplayerPositionen?.[
+                                    angeklickteUid
+                                ];
+
+                            if (!angeklicktePosition) {
+                                return;
+                            }
+
+                            /* Ende angeklickten Spieler bestimmen */
+
+
+                            /* -----------------------------------
+                            Alle Spieler auf diesem Feld suchen
+                            ----------------------------------- */
+
+                            const namen = [];
+
+                            for (
+                                const uid
+                                in window.multiplayerPositionen
+                            ) {
+
+                                const anderePosition =
+                                    window.multiplayerPositionen[
+                                        uid
+                                    ];
+
+                                if (
+                                    !anderePosition ||
+                                    anderePosition.karte !==
+                                        angeklicktePosition.karte ||
+                                    anderePosition.x !==
+                                        angeklicktePosition.x ||
+                                    anderePosition.y !==
+                                        angeklicktePosition.y
+                                ) {
+                                    continue;
+                                }
+
+
+                                const andererAvatar =
+                                    window.avatarNachUid?.[
+                                        uid
+                                    ];
+
+                                if (
+                                    andererAvatar?.dataset
+                                        .spielerName
+                                ) {
+
+                                    namen.push(
+                                        andererAvatar.dataset
+                                            .spielerName
+                                    );
+
+                                }
+
+                            }
+
+                            /* Ende Spieler auf diesem Feld suchen */
+
+
+                            /* -----------------------------------
+                            Namen im Ereignisfeld anzeigen
+                            ----------------------------------- */
+
+                            const ereignisText =
+                                document.getElementById(
+                                    "schnappschussTest"
+                                );
+
+                            if (
+                                !ereignisText ||
+                                namen.length === 0
+                            ) {
+                                return;
+                            }
+
+
+                            if (namen.length === 1) {
+
+                                ereignisText.textContent =
+                                    "Hier steht " +
+                                    namen[0] +
+                                    ".";
+
+                            } else {
+
+                                ereignisText.textContent =
+                                    "Hier stehen " +
+                                    namen.join(", ") +
+                                    ".";
+
+                            }
+
+                            /* Ende Namen anzeigen */
+
+                        } /* Ende Avatar-Klick */
+                    );
+
+                }
+
+                /* Ende fremden Avatar anklickbar machen */
                 if (istEbene2) {
 
                     canvas.style.zIndex =
@@ -8629,7 +9136,21 @@ function () {
 
                         /* Ende sichtbare Avatare
                            nach Größenänderung */
+/* -----------------------------------
+NPC-Grafiken nach Größenänderung
+neu positionieren
+----------------------------------- */
 
+if (
+    typeof window.npcGrafikenAktualisieren ===
+    "function"
+) {
+
+    window.npcGrafikenAktualisieren();
+
+}
+
+/* Ende NPC-Grafiken nach Größenänderung */
                     } /* Ende Animation-Frame */
                 );
 

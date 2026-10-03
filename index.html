@@ -1979,7 +1979,7 @@ Liegt unten im schwarzen Portalbereich.
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.228";
+window.multiplayerTestVersion = "0.229";
 
 /* Ende Testversion */
 /* =========================================================
@@ -9664,11 +9664,73 @@ function (spielerX, spielerY) {
 
 
     /*
-    Die vorhandene Zoomfunktion begrenzt
-    automatisch an den Kartenrändern.
-    */
+/*
+Die vorhandene Zoomfunktion begrenzt
+automatisch an den Kartenrändern.
 
-    window.reservatZoomZeichnen();
+Nur diese automatische Kamerafahrt
+bekommt eine kurze weiche Bewegung.
+Pinch-Zoom und Finger-Pan bleiben direkt.
+*/
+
+const zoomEbene =
+    document.getElementById(
+        "reservatZoomEbene"
+    );
+
+if (!zoomEbene) {
+    return;
+}
+
+
+/*
+Alte automatische Kamerafahrt beenden,
+falls der Spieler schnell mehrere Schritte
+hintereinander macht.
+*/
+
+if (
+    window.reservatKameraTransitionTimer
+) {
+
+    window.clearTimeout(
+        window.reservatKameraTransitionTimer
+    );
+}
+
+
+/*
+Weiche Kamerafahrt einschalten.
+*/
+
+zoomEbene.style.transition =
+    "transform 0.35s ease-out";
+
+
+window.reservatZoomZeichnen();
+
+
+/*
+Nach der Kamerafahrt die Transition
+wieder vollständig entfernen.
+
+Dadurch reagieren manuelles Verschieben
+und Pinch anschließend wieder unmittelbar.
+*/
+
+window.reservatKameraTransitionTimer =
+    window.setTimeout(
+        function () {
+
+            zoomEbene.style.transition =
+                "";
+
+            window.reservatKameraTransitionTimer =
+                null;
+
+        },
+        400
+    );
 
 };
 

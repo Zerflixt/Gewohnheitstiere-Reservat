@@ -42,7 +42,7 @@
             "gesperrteFelder": [
                 [0,0], [1,0], [2,0], [3,0], [6,0], [7,0], [8,0], [9,0],
                 [0,1], [1,1], [2,1], [3,1], [8,1], [9,1],
-                [0,2], [1,2], [2,2],
+                [0,2], [1,2], [2,2], [3,2],
                 [0,3], [1,3],
                 [0,4], [1,4], [9,4],
                 [0,5], [1,5], [2,5], [8,5], [9,5],
@@ -75,7 +75,18 @@
         "typ": "externer_link",
         "text": "Überfahrt nach Valoria",
         "dialogGrafik": "Daten/valoria_dialog.png",
-        "link": "https://eternal-fit.vercel.app/"
+               "link": "https://eternal-fit.vercel.app/"
+    },
+    {
+        "position": [3, 2],
+        "trigger": "nachbar_aktion",
+        "typ": "npc_dialog",
+        "npc": "tratschtante",
+        "text": "Mit der Frau sprechen",
+        "grafik": "Daten/NPCs/Tratschtante/NPC_Tratschtante_Haende_Hueften_512x512.png",
+		"grafikSkalierung": 0.9,
+		"grafikOffsetX": 0.20,
+		"grafikOffsetY": 0.2
     }
 	]
         }

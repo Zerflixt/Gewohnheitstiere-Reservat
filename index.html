@@ -1978,7 +1978,7 @@ Liegt unten im schwarzen Portalbereich.
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.224";
+window.multiplayerTestVersion = "0.225";
 
 /* Ende Testversion */
 
@@ -9663,32 +9663,42 @@ function () {
             verschieben.
             */
 
-            if (
-                window.reservatZoomFaktor >
-                window.reservatZoomMinimum &&
-                ereignis.touches.length === 1
-            ) {
+if (
+    window.reservatZoomFaktor >
+    window.reservatZoomMinimum &&
+    ereignis.touches.length === 1
+) {
 
-                const finger =
-                    ereignis.touches[0];
+    const finger =
+        ereignis.touches[0];
 
-                fingerVerschieben = {
+    /*
+    Wir merken uns zunächst nur den
+    möglichen Beginn einer Verschiebung.
 
-                    startClientX:
-                        finger.clientX,
+    Noch kein preventDefault:
+    Ein kurzer Tap muss weiterhin einen
+    Avatar anklicken können.
+    */
 
-                    startClientY:
-                        finger.clientY,
+    fingerVerschieben = {
 
-                    startVersatzX:
-                        window.reservatZoomVersatzX,
+        startClientX:
+            finger.clientX,
 
-                    startVersatzY:
-                        window.reservatZoomVersatzY
-                };
+        startClientY:
+            finger.clientY,
 
-                ereignis.preventDefault();
-            }
+        startVersatzX:
+            window.reservatZoomVersatzX,
+
+        startVersatzY:
+            window.reservatZoomVersatzY,
+
+        aktiv:
+            false
+    };
+}
 
         },
         {
@@ -9806,35 +9816,67 @@ function () {
             bereits vergrößerte Karte.
             */
 
-            if (
-                fingerVerschieben &&
-                ereignis.touches.length === 1
-            ) {
+if (
+    fingerVerschieben &&
+    ereignis.touches.length === 1
+) {
 
-                const finger =
-                    ereignis.touches[0];
-
-
-                window.reservatZoomVersatzX =
-
-                    fingerVerschieben.startVersatzX +
-
-                    finger.clientX -
-                    fingerVerschieben.startClientX;
+    const finger =
+        ereignis.touches[0];
 
 
-                window.reservatZoomVersatzY =
+    const bewegungX =
+        finger.clientX -
+        fingerVerschieben.startClientX;
 
-                    fingerVerschieben.startVersatzY +
+    const bewegungY =
+        finger.clientY -
+        fingerVerschieben.startClientY;
 
-                    finger.clientY -
-                    fingerVerschieben.startClientY;
+
+    /*
+    Erst ab 8 Pixel Bewegung wird aus
+    dem möglichen Tap eine echte
+    Kartenverschiebung.
+    */
+
+    if (
+        !fingerVerschieben.aktiv &&
+        Math.hypot(
+            bewegungX,
+            bewegungY
+        ) >= 8
+    ) {
+
+        fingerVerschieben.aktiv =
+            true;
+    }
 
 
-                window.reservatZoomZeichnen();
+    if (fingerVerschieben.aktiv) {
 
-                ereignis.preventDefault();
-            }
+        window.reservatZoomVersatzX =
+
+            fingerVerschieben.startVersatzX +
+            bewegungX;
+
+
+        window.reservatZoomVersatzY =
+
+            fingerVerschieben.startVersatzY +
+            bewegungY;
+
+
+        window.reservatZoomZeichnen();
+
+        /*
+        Erst jetzt verhindern wir die
+        normale Browser-Touchaktion.
+        */
+
+        ereignis.preventDefault();
+    }
+}
 
         },
         {
@@ -9868,12 +9910,24 @@ function () {
         }
 
 
-        if (fingerVerschieben) {
+if (fingerVerschieben) {
 
-            fingerVerschieben = null;
+    /*
+    Nur eine echte Verschiebung
+    unterdrücken.
 
-            ereignis.preventDefault();
-        }
+    War es lediglich ein kurzer Tap,
+    darf daraus weiterhin der normale
+    Avatar-Klick entstehen.
+    */
+
+    if (fingerVerschieben.aktiv) {
+
+        ereignis.preventDefault();
+    }
+
+    fingerVerschieben = null;
+}
 
     }; /* Ende touchBeenden */
 

@@ -1979,10 +1979,42 @@ Liegt unten im schwarzen Portalbereich.
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.226";
+window.multiplayerTestVersion = "0.227";
 
 /* Ende Testversion */
+/* =========================================================
+BROWSER-SEITENZOOM SPERREN
 
+Das Reservat besitzt eine eigene Zoomsteuerung
+für das Spielfeld. Der Browser selbst soll daher
+nicht zusätzlich die komplette Seite vergrößern.
+========================================================= */
+
+let viewportMeta =
+    document.querySelector(
+        'meta[name="viewport"]'
+    );
+
+if (!viewportMeta) {
+
+    viewportMeta =
+        document.createElement(
+            "meta"
+        );
+
+    viewportMeta.name =
+        "viewport";
+
+    document.head.appendChild(
+        viewportMeta
+    );
+}
+
+viewportMeta.content =
+    "width=device-width, initial-scale=1.0, " +
+    "maximum-scale=1.0, user-scalable=no";
+
+/* Ende Browser-Seitenzoom sperren */
 /* =========================================================
 RESERVAT - VERSIONEN VERGLEICHEN
 ========================================================= */
@@ -7523,56 +7555,8 @@ if (idleZustand === "weg") {
                     canvas.addEventListener(
                         "click",
                         async function () {
-							/* -----------------------------------
-Angeklickten Avatar kurz hervorheben
------------------------------------ */
-
-/*
-Falls vorher ein anderer Avatar
-hervorgehoben war, dessen Glow
-sofort entfernen.
-*/
-
-document
-    .querySelectorAll(
-        ".spielfigur"
-    )
-    .forEach(
-        function (avatar) {
-
-            avatar.style.filter =
-                "";
-
-        }
-    );
 
 
-/*
-Den angeklickten Avatar mit demselben
-sanften Glow wie Traudel hervorheben.
-*/
-
-canvas.style.filter =
-    "drop-shadow(0 0 6px white) " +
-    "drop-shadow(0 0 10px white)";
-
-
-/*
-Nach 3 Sekunden verschwindet der
-Glow wieder.
-*/
-
-window.setTimeout(
-    function () {
-
-        canvas.style.filter =
-            "";
-
-    },
-    3000
-);
-
-/* Ende Avatar hervorheben */
 
                             /* -----------------------------------
                             Angeklikkten Spieler bestimmen

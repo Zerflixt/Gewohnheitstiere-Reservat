@@ -1975,11 +1975,151 @@ Liegt unten im schwarzen Portalbereich.
 }
 
 
-/* Ende Datenschutz und Credits */</style><script role="script" id="twine-user-script" type="text/twine-javascript">/* =========================================================
+/* Ende Datenschutz und Credits */
+/* =========================================================
+   NPC-DIALOG – TESTBÜHNE
+   ========================================================= */
+
+#reservatNpcDialogTest {
+
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    width: 100%;
+    height: 100%;
+
+    z-index: 100;
+
+    overflow: hidden;
+
+}
+
+
+/* ---------------------------------------------------------
+   Dialog-Hintergrund
+   --------------------------------------------------------- */
+/* ---------------------------------------------------------
+   NPC-DIALOG – eigene Zoom-Ebene
+
+   Nur der Inhalt des NPC-Dialogs wird gezoomt.
+   Der Kartenzoom darunter bleibt unabhängig.
+   --------------------------------------------------------- */
+
+#reservatNpcDialogZoomEbene {
+
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    width: 100%;
+    height: 100%;
+
+    transform-origin: 0 0;
+
+}
+
+/* Ende NPC-Dialog – Zoom-Ebene */
+#reservatNpcDialogHintergrund {
+
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    display: block;
+
+}
+
+/* Ende NPC-Dialog – Testbühne */
+/* ---------------------------------------------------------
+   NPC-DIALOG – Traudel
+   Werte zunächst nur für die grafische Positionierung
+   --------------------------------------------------------- */
+
+#reservatNpcDialogTraudel {
+
+    position: absolute;
+
+    left: 1%;
+    top: 17%;
+
+    height: 35%;
+    width: auto;
+
+    z-index: 2;
+
+    display: block;
+
+    pointer-events: none;
+
+}
+/* Ende NPC-Dialog – Traudel */
+/* ---------------------------------------------------------
+   NPC-DIALOG – eigener Spieler
+   Unten rechts verankert
+   --------------------------------------------------------- */
+
+#reservatNpcDialogSpieler {
+
+    position: absolute;
+
+    right: 0.8%;
+    bottom: 0.8%;
+
+    height: 28%;
+    width: auto;
+
+    z-index: 2;
+
+    display: block;
+
+    pointer-events: none;
+
+}
+
+/* Ende NPC-Dialog – eigener Spieler */
+/* ---------------------------------------------------------
+   NPC-DIALOG – Traudels Textfeld
+   TESTWERTE zum Vermessen
+   --------------------------------------------------------- */
+
+#reservatNpcDialogTraudelText {
+
+    position: absolute;
+
+    /*
+    Testposition rechts neben Traudel.
+    */
+
+    left: 30%;
+    top: 10%;
+
+    /*
+    Bewusst schmaler als beim ersten Test.
+    */
+
+    width: 62%;
+    height: auto;
+
+    z-index: 3;
+
+    display: block;
+
+    pointer-events: none;
+
+}</style><script role="script" id="twine-user-script" type="text/twine-javascript">/* =========================================================
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.229";
+window.multiplayerTestVersion = "0.238";
 
 /* Ende Testversion */
 /* =========================================================
@@ -2816,11 +2956,15 @@ async function () {
     ----------------------------------- */
 
     const sonderfeld =
-        window.sonderfeldAnAktuellerPositionErmitteln();
+        window.sonderfeldAnAktuellerPositionErmitteln() ||
+        window.sonderfeldNebenAktuellerPositionErmitteln();
 
     if (
         !sonderfeld ||
-        sonderfeld.trigger !== "aktion"
+        (
+            sonderfeld.trigger !== "aktion" &&
+            sonderfeld.trigger !== "nachbar_aktion"
+        )
     ) {
 
         return;
@@ -2861,6 +3005,15 @@ async function () {
                 break;
 
 
+            case "npc_dialog":
+
+                window.npcDialogTestAnzeigen(
+                    sonderfeld
+                );
+
+                break;
+
+
             default:
 
                 console.warn(
@@ -2885,7 +3038,938 @@ async function () {
 }; /* Ende sonderfeldAktionAusfuehren */
 
 /* Ende Sonderfeld-Aktion ausführen */
+/* =========================================================
+NPC-DIALOG TEST ANZEIGEN
 
+Erster grafischer Test für NPC-Dialoge.
+Momentan wird ausschließlich der
+Dialog-Hintergrund angezeigt.
+========================================================= */
+/* =========================================================
+NPC-DIALOG - ZOOMSTEUERUNG
+
+Der NPC-Dialog besitzt seinen eigenen Zoom.
+Er ist vollständig unabhängig vom Kartenzoom.
+
+Jeder neu geöffnete Dialog beginnt automatisch bei:
+
+Zoom = 100 %
+X    = 0
+Y    = 0
+========================================================= */
+
+window.npcDialogZoomInitialisieren =
+function (dialog, zoomEbene) {
+
+    if (
+        !dialog ||
+        !zoomEbene
+    ) {
+        return;
+    }
+
+
+    /* -----------------------------------
+    Eigener Zoomzustand dieses Dialogs
+    ----------------------------------- */
+
+    let zoomFaktor = 1;
+
+    const zoomMinimum = 1;
+    const zoomMaximum = 2.5;
+
+    let zoomVersatzX = 0;
+    let zoomVersatzY = 0;
+
+
+    /* -----------------------------------
+    Zoom-Versatz begrenzen
+    ----------------------------------- */
+
+    const zoomVersatzBegrenzen =
+    function () {
+
+        const breite =
+            dialog.clientWidth;
+
+        const hoehe =
+            dialog.clientHeight;
+
+
+        if (zoomFaktor <= 1) {
+
+            zoomVersatzX = 0;
+            zoomVersatzY = 0;
+
+            return;
+        }
+
+
+        const minimumX =
+            breite -
+            breite * zoomFaktor;
+
+        const minimumY =
+            hoehe -
+            hoehe * zoomFaktor;
+
+
+        zoomVersatzX =
+            Math.min(
+                0,
+                Math.max(
+                    minimumX,
+                    zoomVersatzX
+                )
+            );
+
+
+        zoomVersatzY =
+            Math.min(
+                0,
+                Math.max(
+                    minimumY,
+                    zoomVersatzY
+                )
+            );
+
+    }; /* Ende zoomVersatzBegrenzen */
+
+
+    /* -----------------------------------
+    Dialogzoom darstellen
+    ----------------------------------- */
+
+    const zoomZeichnen =
+    function () {
+
+        zoomVersatzBegrenzen();
+
+
+        zoomEbene.style.transform =
+            "translate3d(" +
+            zoomVersatzX + "px, " +
+            zoomVersatzY + "px, 0) " +
+            "scale(" +
+            zoomFaktor +
+            ")";
+
+    }; /* Ende zoomZeichnen */
+
+
+    /* -----------------------------------
+    Abstand zweier Finger
+    ----------------------------------- */
+
+    const fingerAbstand =
+    function (fingerA, fingerB) {
+
+        return Math.hypot(
+
+            fingerB.clientX -
+                fingerA.clientX,
+
+            fingerB.clientY -
+                fingerA.clientY
+        );
+
+    }; /* Ende fingerAbstand */
+
+
+    /* -----------------------------------
+    Mittelpunkt zweier Finger
+    ----------------------------------- */
+
+    const fingerMittelpunkt =
+    function (fingerA, fingerB) {
+
+        return {
+
+            x:
+                (
+                    fingerA.clientX +
+                    fingerB.clientX
+                ) / 2,
+
+            y:
+                (
+                    fingerA.clientY +
+                    fingerB.clientY
+                ) / 2
+        };
+
+    }; /* Ende fingerMittelpunkt */
+
+
+    let zweiFingerZoom = null;
+
+    let zoomBeruehrungAktiv =
+        false;
+
+    let fingerVerschieben =
+        null;
+
+
+    /* -----------------------------------
+    Zwei-Finger-Zoom beginnen
+    ----------------------------------- */
+
+    const zweiFingerZoomBeginnen =
+    function (fingerA, fingerB) {
+
+        const mittelpunkt =
+            fingerMittelpunkt(
+                fingerA,
+                fingerB
+            );
+
+
+        const dialogRechteck =
+            dialog.getBoundingClientRect();
+
+
+        const punktX =
+            mittelpunkt.x -
+            dialogRechteck.left;
+
+        const punktY =
+            mittelpunkt.y -
+            dialogRechteck.top;
+
+
+        zoomBeruehrungAktiv =
+            true;
+
+
+        zweiFingerZoom = {
+
+            startAbstand:
+                Math.max(
+                    1,
+                    fingerAbstand(
+                        fingerA,
+                        fingerB
+                    )
+                ),
+
+            startZoom:
+                zoomFaktor,
+
+            inhaltX:
+                (
+                    punktX -
+                    zoomVersatzX
+                ) /
+                zoomFaktor,
+
+            inhaltY:
+                (
+                    punktY -
+                    zoomVersatzY
+                ) /
+                zoomFaktor
+        };
+
+    }; /* Ende zweiFingerZoomBeginnen */
+
+
+    /* -----------------------------------
+    Finger aufsetzen
+    ----------------------------------- */
+
+    dialog.addEventListener(
+
+        "touchstart",
+
+        function (ereignis) {
+
+            /*
+            Ganz wichtig:
+
+            Touch des Dialogs darf nicht
+            beim Kartenzoom darunter landen.
+            */
+
+            ereignis.stopPropagation();
+
+
+            /* Zwei Finger = Pinch */
+
+            if (
+                ereignis.touches.length >= 2
+            ) {
+
+                fingerVerschieben =
+                    null;
+
+
+                zweiFingerZoomBeginnen(
+                    ereignis.touches[0],
+                    ereignis.touches[1]
+                );
+
+
+                ereignis.preventDefault();
+
+                return;
+            }
+
+
+            /*
+            Nach einem Pinch warten,
+            bis alle Finger weg sind.
+            */
+
+            if (zoomBeruehrungAktiv) {
+
+                fingerVerschieben =
+                    null;
+
+                ereignis.preventDefault();
+
+                return;
+            }
+
+
+            /*
+            Ein Finger darf nur bei
+            mehr als 100 % verschieben.
+            */
+
+            if (
+                zoomFaktor >
+                    zoomMinimum &&
+                ereignis.touches.length === 1
+            ) {
+
+                const finger =
+                    ereignis.touches[0];
+
+
+                fingerVerschieben = {
+
+                    startClientX:
+                        finger.clientX,
+
+                    startClientY:
+                        finger.clientY,
+
+                    startVersatzX:
+                        zoomVersatzX,
+
+                    startVersatzY:
+                        zoomVersatzY,
+
+                    aktiv:
+                        false
+                };
+            }
+
+        },
+
+        {
+            passive: false
+        }
+
+    );
+
+
+    /* -----------------------------------
+    Finger bewegen
+    ----------------------------------- */
+
+    dialog.addEventListener(
+
+        "touchmove",
+
+        function (ereignis) {
+
+            ereignis.stopPropagation();
+
+
+            /* Zwei Finger = Pinch */
+
+            if (
+                ereignis.touches.length >= 2
+            ) {
+
+                fingerVerschieben =
+                    null;
+
+
+                if (!zweiFingerZoom) {
+
+                    zweiFingerZoomBeginnen(
+                        ereignis.touches[0],
+                        ereignis.touches[1]
+                    );
+                }
+
+
+                const fingerA =
+                    ereignis.touches[0];
+
+                const fingerB =
+                    ereignis.touches[1];
+
+
+                const mittelpunkt =
+                    fingerMittelpunkt(
+                        fingerA,
+                        fingerB
+                    );
+
+
+                const dialogRechteck =
+                    dialog.getBoundingClientRect();
+
+
+                const punktX =
+                    mittelpunkt.x -
+                    dialogRechteck.left;
+
+                const punktY =
+                    mittelpunkt.y -
+                    dialogRechteck.top;
+
+
+                zoomFaktor =
+                    Math.min(
+
+                        zoomMaximum,
+
+                        Math.max(
+
+                            zoomMinimum,
+
+                            zweiFingerZoom.startZoom *
+                            fingerAbstand(
+                                fingerA,
+                                fingerB
+                            ) /
+                            zweiFingerZoom.startAbstand
+                        )
+                    );
+
+
+                zoomVersatzX =
+                    punktX -
+                    zweiFingerZoom.inhaltX *
+                    zoomFaktor;
+
+
+                zoomVersatzY =
+                    punktY -
+                    zweiFingerZoom.inhaltY *
+                    zoomFaktor;
+
+
+                zoomZeichnen();
+
+                ereignis.preventDefault();
+
+                return;
+            }
+
+
+            /*
+            Nach Pinch keine Ein-Finger-
+            Verschiebung beginnen.
+            */
+
+            if (zoomBeruehrungAktiv) {
+
+                fingerVerschieben =
+                    null;
+
+                ereignis.preventDefault();
+
+                return;
+            }
+
+
+            /* Ein-Finger-Pan */
+
+            if (
+                fingerVerschieben &&
+                ereignis.touches.length === 1
+            ) {
+
+                const finger =
+                    ereignis.touches[0];
+
+
+                const verschiebungX =
+                    finger.clientX -
+                    fingerVerschieben.startClientX;
+
+                const verschiebungY =
+                    finger.clientY -
+                    fingerVerschieben.startClientY;
+
+
+                /*
+                Wie beim Kartenzoom:
+                Erst ab 8 Pixel gilt der
+                Finger als Verschiebung.
+
+                Das wird später wichtig,
+                damit Antwort-Taps weiterhin
+                zuverlässig funktionieren.
+                */
+
+                if (
+                    !fingerVerschieben.aktiv &&
+                    Math.hypot(
+                        verschiebungX,
+                        verschiebungY
+                    ) >= 8
+                ) {
+
+                    fingerVerschieben.aktiv =
+                        true;
+                }
+
+
+                if (
+                    fingerVerschieben.aktiv
+                ) {
+
+                    zoomVersatzX =
+                        fingerVerschieben.startVersatzX +
+                        verschiebungX;
+
+                    zoomVersatzY =
+                        fingerVerschieben.startVersatzY +
+                        verschiebungY;
+
+
+                    zoomZeichnen();
+
+                    ereignis.preventDefault();
+                }
+            }
+
+        },
+
+        {
+            passive: false
+        }
+
+    );
+
+
+    /* -----------------------------------
+    Finger loslassen
+    ----------------------------------- */
+
+    const touchBeenden =
+    function (ereignis) {
+
+        ereignis.stopPropagation();
+
+
+        if (zoomBeruehrungAktiv) {
+
+            if (
+                ereignis.touches.length === 0
+            ) {
+
+                zweiFingerZoom =
+                    null;
+
+                zoomBeruehrungAktiv =
+                    false;
+            }
+
+
+            fingerVerschieben =
+                null;
+
+            ereignis.preventDefault();
+
+            return;
+        }
+
+
+        if (fingerVerschieben) {
+
+            if (
+                fingerVerschieben.aktiv
+            ) {
+
+                ereignis.preventDefault();
+            }
+
+
+            fingerVerschieben =
+                null;
+        }
+
+    }; /* Ende touchBeenden */
+
+
+    dialog.addEventListener(
+        "touchend",
+        touchBeenden,
+        {
+            passive: false
+        }
+    );
+
+
+    dialog.addEventListener(
+        "touchcancel",
+        touchBeenden,
+        {
+            passive: false
+        }
+    );
+
+
+    /* -----------------------------------
+    Garantierter Startzustand
+
+    Jeder NEU geöffnete Dialog startet
+    wieder bei exakt 100 %.
+    ----------------------------------- */
+
+    zoomFaktor = 1;
+    zoomVersatzX = 0;
+    zoomVersatzY = 0;
+
+    zoomZeichnen();
+
+}; /* Ende npcDialogZoomInitialisieren */
+
+/* Ende NPC-Dialog - Zoomsteuerung */
+window.npcDialogTestAnzeigen =
+function (sonderfeld) {
+
+    /* -----------------------------------
+    Eventuell vorhandenen Testdialog
+    entfernen
+    ----------------------------------- */
+
+    const alterDialog =
+        document.getElementById(
+            "reservatNpcDialogTest"
+        );
+
+    if (alterDialog) {
+
+        alterDialog.remove();
+
+    } /* Ende vorhandener Testdialog */
+
+
+    /* -----------------------------------
+    Spielfeld suchen
+    ----------------------------------- */
+
+    const spielfeld =
+        document.getElementById(
+            "spielfeld"
+        );
+
+    if (!spielfeld) {
+
+        console.error(
+            "NPC-Dialog kann nicht angezeigt werden: " +
+            "Spielfeld nicht gefunden."
+        );
+
+        return;
+
+    } /* Ende Spielfeld prüfen */
+
+
+    /* -----------------------------------
+    Dialogfläche erzeugen
+    ----------------------------------- */
+
+    const dialog =
+        document.createElement(
+            "div"
+        );
+
+    dialog.id =
+        "reservatNpcDialogTest";
+    /* -----------------------------------
+    Eigene Zoom-Ebene des Dialogs erzeugen
+    ----------------------------------- */
+
+    const dialogZoomEbene =
+        document.createElement(
+            "div"
+        );
+
+    dialogZoomEbene.id =
+        "reservatNpcDialogZoomEbene";
+
+    dialog.appendChild(
+        dialogZoomEbene
+    );
+
+    /* Ende Dialog-Zoom-Ebene */
+
+    /* -----------------------------------
+    Dialog-Hintergrund erzeugen
+    ----------------------------------- */
+
+    const hintergrund =
+        document.createElement(
+            "img"
+        );
+
+    hintergrund.src =
+        "Daten/NPCs/Dialog-Hintergrund_01_768.png";
+
+    hintergrund.id =
+        "reservatNpcDialogHintergrund";
+
+
+    /* -----------------------------------
+    Hintergrund in Dialog einsetzen
+    ----------------------------------- */
+
+dialogZoomEbene.appendChild(
+    hintergrund
+);
+
+    /* -----------------------------------
+    Traudel für Dialog erzeugen
+    ----------------------------------- */
+
+    const traudel =
+        document.createElement(
+            "img"
+        );
+
+    traudel.id =
+        "reservatNpcDialogTraudel";
+
+    traudel.src =
+        "Daten/NPCs/Tratschtante/" +
+        "NPC_Tratschtante_Haende_Hueften_512x512.png";
+
+    traudel.alt =
+        "Traudel";
+
+
+    /* -----------------------------------
+    Traudel in Dialog einsetzen
+    ----------------------------------- */
+
+dialogZoomEbene.appendChild(
+    traudel
+);
+    /* -----------------------------------
+    Traudel-Textcanvas zum Vermessen
+    ----------------------------------- */
+
+    const traudelTextCanvas =
+        document.createElement(
+            "canvas"
+        );
+
+    traudelTextCanvas.id =
+        "reservatNpcDialogTraudelText";
+
+    /*
+    Interne Canvas-Auflösung.
+    Bewusst groß genug für saubere Schrift.
+    */
+
+    traudelTextCanvas.width = 700;
+    traudelTextCanvas.height = 420;
+
+    const traudelTextContext =
+        traudelTextCanvas.getContext(
+            "2d"
+        );
+
+    /*
+    Feste Darstellung.
+    Dadurch kann ein Browser-Darkmode
+    unsere Textfarbe nicht verändern.
+    */
+
+    traudelTextContext.fillStyle =
+        "#2b2118";
+
+    traudelTextContext.font =
+        "32px sans-serif";
+
+    traudelTextContext.textBaseline =
+        "top";
+
+    /*
+    Testtext.
+    */
+
+    const testText =
+        "Na sowas! Dich habe ich hier ja noch nie gesehen. " +
+        "Du bist doch bestimmt eines dieser Gewohnheitstiere, " +
+        "von denen man überall hört. Sag mal, wie heißt du eigentlich?";
+
+    /*
+    Einfacher automatischer Zeilenumbruch.
+    */
+
+    const woerter =
+        testText.split(" ");
+
+    const zeilenHoehe = 42;
+    const maximaleBreite = 660;
+
+    let aktuelleZeile = "";
+    let y = 10;
+
+    for (const wort of woerter) {
+
+        const testZeile =
+            aktuelleZeile
+                ? aktuelleZeile + " " + wort
+                : wort;
+
+        const testBreite =
+            traudelTextContext
+                .measureText(testZeile)
+                .width;
+
+        if (
+            testBreite > maximaleBreite &&
+            aktuelleZeile
+        ) {
+
+            traudelTextContext.fillText(
+                aktuelleZeile,
+                10,
+                y
+            );
+
+            aktuelleZeile = wort;
+            y += zeilenHoehe;
+
+        } else {
+
+            aktuelleZeile =
+                testZeile;
+
+        }
+
+    }
+
+    /*
+    Letzte Zeile ausgeben.
+    */
+
+    if (aktuelleZeile) {
+
+        traudelTextContext.fillText(
+            aktuelleZeile,
+            10,
+            y
+        );
+
+    }
+
+dialogZoomEbene.appendChild(
+    traudelTextCanvas
+);
+
+    /* Ende Traudel-Textcanvas */
+    /* Ende Traudel für Dialog */
+	    /* -----------------------------------
+    Eigenen Spieleravatar für Dialog
+    erzeugen
+    ----------------------------------- */
+
+    const firebaseUser =
+        window.firebaseAuth?.currentUser;
+
+    const eigenerAvatar =
+        firebaseUser
+            ? window.avatarNachUid?.[
+                firebaseUser.uid
+            ]
+            : null;
+
+
+    if (eigenerAvatar) {
+
+        /* -----------------------------------
+        Eigenes Canvas für den Dialog
+        erzeugen
+        ----------------------------------- */
+
+        const spielerAvatar =
+            document.createElement(
+                "canvas"
+            );
+
+        spielerAvatar.id =
+            "reservatNpcDialogSpieler";
+
+        spielerAvatar.width =
+            eigenerAvatar.width;
+
+        spielerAvatar.height =
+            eigenerAvatar.height;
+
+
+        /* -----------------------------------
+        Bereits gebauten Avatar in das
+        Dialog-Canvas kopieren
+        ----------------------------------- */
+
+        const context =
+            spielerAvatar.getContext(
+                "2d"
+            );
+
+        context.drawImage(
+            eigenerAvatar,
+            0,
+            0
+        );
+
+
+        /* -----------------------------------
+        Spieleravatar in Dialog einsetzen
+        ----------------------------------- */
+
+dialogZoomEbene.appendChild(
+    spielerAvatar
+);
+
+    } /* Ende eigener Spieleravatar */
+
+    /* Ende Spieleravatar für Dialog */
+    /* -----------------------------------
+    Dialog ins Spielfeld einsetzen
+    ----------------------------------- */
+
+    spielfeld.appendChild(
+        dialog
+    );
+    /* -----------------------------------
+    Eigenen Dialog-Zoom aktivieren
+
+    Erfolgt nach dem Einsetzen ins DOM,
+    damit die Dialoggröße sicher bekannt ist.
+    ----------------------------------- */
+
+    window.npcDialogZoomInitialisieren(
+        dialog,
+        dialogZoomEbene
+    );
+
+    /* Ende Dialog-Zoom aktivieren */
+}; /* Ende npcDialogTestAnzeigen */
+
+/* Ende NPC-Dialog Test anzeigen */
 /* =========================================================
 EXTERNEN LINK - DIALOG ANZEIGEN
 ========================================================= */

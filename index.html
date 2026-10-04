@@ -2119,8 +2119,8 @@ Liegt unten im schwarzen Portalbereich.
 
     position: absolute;
 
-    left: 58.5%;
-    top: 75%;
+    right: 0.8%;
+    bottom: 2%;
 
     width: 10%;
     height: auto;
@@ -2130,7 +2130,7 @@ Liegt unten im schwarzen Portalbereich.
     display: block;
     opacity: 0.25;
     filter: grayscale(100%);
-    pointer-events: none;
+    pointer-events: auto;
 
 }
 
@@ -2140,7 +2140,11 @@ Liegt unten im schwarzen Portalbereich.
 #reservatNpcDialogWeiter.aktiv {
 
     opacity: 1;
-    filter: none;
+
+    filter:
+        drop-shadow(0 0 4px white)
+        drop-shadow(0 0 9px gold)
+        drop-shadow(0 0 15px gold);
 
 }
 
@@ -2154,8 +2158,8 @@ Liegt unten im schwarzen Portalbereich.
 
     position: absolute;
 
-    left: 58.5%;
-    top: 65%;
+    right: 0.8%;
+    top: 2%;
 
     width: 10%;
     height: auto;
@@ -2164,7 +2168,7 @@ Liegt unten im schwarzen Portalbereich.
 
     display: block;
 
-        pointer-events: auto;
+    pointer-events: auto;
     cursor: pointer;
 
 }
@@ -2205,7 +2209,7 @@ cursor: pointer;
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.247";
+window.multiplayerTestVersion = "0.288";
 
 /* Ende Testversion */
 /* =========================================================
@@ -2974,9 +2978,36 @@ function () {
 
         aktionButton.disabled = false;
 
-        aktionButton.title =
+
+        /* -----------------------------------
+        Sichtbaren Aktionstext bestimmen
+
+        Bei Traudel wird ihr Name erst
+        verwendet, nachdem sie sich dem
+        Spieler vorgestellt hat.
+        ----------------------------------- */
+
+        let sichtbarerAktionsText =
             sonderfeld.text ||
-            "Aktion ausführen";
+            "Aktion verfügbar";
+
+
+        if (
+            sonderfeld.typ === "npc_dialog" &&
+            sonderfeld.npc === "tratschtante" &&
+            window.traudelBekannt === true
+        ) {
+
+            sichtbarerAktionsText =
+                "Mit Traudel sprechen";
+
+        }
+
+        /* Ende sichtbaren Aktionstext bestimmen */
+
+
+        aktionButton.title =
+            sichtbarerAktionsText;
 
         aktionButton.classList.add(
             "aktiv"
@@ -2985,8 +3016,7 @@ function () {
         if (ereignisText) {
 
             ereignisText.textContent =
-                sonderfeld.text ||
-                "Aktion verfügbar";
+                sichtbarerAktionsText;
 
         } /* Ende Ereignistext setzen */
 
@@ -3023,7 +3053,24 @@ SONDERFELD-AKTION AUSFÜHREN
 ========================================================= */
 window.sonderfeldAktionAusfuehren =
 async function () {
+    /* -----------------------------------
+    Offenen NPC-Dialog berücksichtigen
 
+    Während eines laufenden Gesprächs
+    darf A den Dialog nicht neu starten.
+    ----------------------------------- */
+
+    if (
+        document.getElementById(
+            "reservatNpcDialogTest"
+        )
+    ) {
+
+        return;
+
+    }
+
+    /* Ende offenen NPC-Dialog berücksichtigen */
     /* -----------------------------------
     Bereits laufende Aktion abfangen
     ----------------------------------- */
@@ -3124,6 +3171,501 @@ async function () {
 }; /* Ende sonderfeldAktionAusfuehren */
 
 /* Ende Sonderfeld-Aktion ausführen */
+/* =========================================================
+TRAUDEL - LOKALER BEKANNTHEITSSTATUS
+========================================================= */
+
+window.traudelBekannt =
+    false;
+
+/* Ende Traudel - lokaler Bekanntheitsstatus */
+/* =========================================================
+TRAUDEL - GEDÄCHTNIS LADEN
+
+Liest Traudels gespeicherte Erinnerungen
+für den aktuell angemeldeten Spieler.
+
+Existiert noch kein Eintrag, wird null
+zurückgegeben.
+========================================================= */
+
+window.traudelGedaechtnisLaden =
+async function () {
+
+    /* -----------------------------------
+    Angemeldeten Spieler ermitteln
+    ----------------------------------- */
+
+    const user =
+        window.firebaseAuth?.currentUser;
+
+    if (!user) {
+
+        console.error(
+            "Traudels Gedächtnis kann nicht geladen werden: " +
+            "Kein Benutzer angemeldet."
+        );
+
+        return null;
+
+    }
+
+    /* Ende Spieler ermitteln */
+
+
+    /* -----------------------------------
+    Firebase-Pfad zu Traudel
+    ----------------------------------- */
+
+    const gedaechtnisRef =
+        window.firebaseRef(
+            window.firebaseDatabase,
+            "npcGedachtnis/traudel/" +
+            user.uid
+        );
+
+    /* Ende Firebase-Pfad */
+
+
+    /* -----------------------------------
+    Gedächtnis laden
+    ----------------------------------- */
+
+    try {
+
+        const snapshot =
+            await window.firebaseGet(
+                gedaechtnisRef
+            );
+
+        if (!snapshot.exists()) {
+
+            window.traudelBekannt =
+                false;
+
+            return null;
+
+        }
+
+
+        const gedaechtnis =
+            snapshot.val();
+
+        window.traudelBekannt =
+            gedaechtnis.traudelBekannt === true;
+
+        return gedaechtnis;
+
+    } catch (fehler) {
+
+        console.error(
+            "Traudels Gedächtnis konnte nicht geladen werden:",
+            fehler
+        );
+
+        return null;
+
+    }
+
+    /* Ende Gedächtnis laden */
+
+}; /* Ende traudelGedaechtnisLaden */
+
+/* Ende Traudel - Gedächtnis laden */
+/* =========================================================
+TRAUDEL - GEDÄCHTNIS SPEICHERN
+
+Legt Traudels Gedächtnis beim ersten
+gezählten Gespräch an oder aktualisiert
+es bei einem späteren gezählten Gespräch.
+========================================================= */
+
+window.traudelGedaechtnisSpeichern =
+async function (vorhandenesGedaechtnis) {
+
+    /* -----------------------------------
+    Angemeldeten Spieler ermitteln
+    ----------------------------------- */
+
+    const user =
+        window.firebaseAuth?.currentUser;
+
+    if (!user) {
+
+        console.error(
+            "Traudels Gedächtnis kann nicht gespeichert werden: " +
+            "Kein Benutzer angemeldet."
+        );
+
+        return false;
+
+    }
+
+    /* Ende Spieler ermitteln */
+
+
+    /* -----------------------------------
+    Aktuellen Zeitpunkt bestimmen
+    ----------------------------------- */
+
+    const jetzt =
+        Date.now();
+
+    /* Ende Zeitpunkt bestimmen */
+
+
+    /* -----------------------------------
+    Neue Gedächtnisdaten aufbauen
+    ----------------------------------- */
+
+    let neueDaten;
+
+    if (!vorhandenesGedaechtnis) {
+
+        neueDaten = {
+
+            erstesKennenlernen:
+                jetzt,
+
+            letztesGespraech:
+                jetzt,
+
+            gespraecheGesamt:
+                1,
+
+            nameGenannt:
+                false,
+
+            traudelBekannt:
+                false
+
+        };
+
+    } else {
+
+        neueDaten = {
+
+            erstesKennenlernen:
+                vorhandenesGedaechtnis
+                    .erstesKennenlernen,
+
+            letztesGespraech:
+                jetzt,
+
+            gespraecheGesamt:
+                vorhandenesGedaechtnis
+                    .gespraecheGesamt + 1,
+
+            nameGenannt:
+                vorhandenesGedaechtnis
+                    .nameGenannt === true,
+
+            traudelBekannt:
+                vorhandenesGedaechtnis
+                    .traudelBekannt === true
+
+        };
+
+    }
+
+    /* Ende Gedächtnisdaten aufbauen */
+
+
+    /* -----------------------------------
+    Firebase-Pfad zu Traudel
+    ----------------------------------- */
+
+    const gedaechtnisRef =
+        window.firebaseRef(
+            window.firebaseDatabase,
+            "npcGedachtnis/traudel/" +
+            user.uid
+        );
+
+    /* Ende Firebase-Pfad */
+
+
+    /* -----------------------------------
+    Gedächtnis speichern
+    ----------------------------------- */
+
+    try {
+
+        await window.firebaseSet(
+            gedaechtnisRef,
+            neueDaten
+        );
+
+        return true;
+
+    } catch (fehler) {
+
+        console.error(
+            "Traudels Gedächtnis konnte nicht gespeichert werden:",
+            fehler
+        );
+
+        return false;
+
+    }
+
+    /* Ende Gedächtnis speichern */
+
+}; /* Ende traudelGedaechtnisSpeichern */
+
+/* Ende Traudel - Gedächtnis speichern */
+/* =========================================================
+TRAUDEL - NAMEN MERKEN
+
+Setzt ausschließlich nameGenannt auf true.
+
+Die übrigen Gedächtniswerte bleiben
+unverändert.
+========================================================= */
+
+window.traudelSpielernameMerken =
+async function () {
+
+    /* -----------------------------------
+    Vorhandenes Gedächtnis laden
+    ----------------------------------- */
+
+    const gedaechtnis =
+        await window.traudelGedaechtnisLaden();
+
+    if (!gedaechtnis) {
+
+        console.error(
+            "Traudel kann den Spielernamen nicht merken: " +
+            "Kein Gedächtnis vorhanden."
+        );
+
+        return false;
+
+    }
+
+    /* Ende Gedächtnis laden */
+
+
+    /* -----------------------------------
+    Bereits gemerkt
+    ----------------------------------- */
+
+    if (gedaechtnis.nameGenannt === true) {
+
+        return true;
+
+    }
+
+    /* Ende bereits gemerkt */
+
+
+    /* -----------------------------------
+    Angemeldeten Spieler ermitteln
+    ----------------------------------- */
+
+    const user =
+        window.firebaseAuth?.currentUser;
+
+    if (!user) {
+
+        console.error(
+            "Traudel kann den Spielernamen nicht merken: " +
+            "Kein Benutzer angemeldet."
+        );
+
+        return false;
+
+    }
+
+    /* Ende Spieler ermitteln */
+
+
+    /* -----------------------------------
+    Nur nameGenannt verändern
+    ----------------------------------- */
+
+    const neueDaten = {
+
+        erstesKennenlernen:
+            gedaechtnis.erstesKennenlernen,
+
+        letztesGespraech:
+            gedaechtnis.letztesGespraech,
+
+        gespraecheGesamt:
+            gedaechtnis.gespraecheGesamt,
+
+        nameGenannt:
+            true,
+
+        traudelBekannt:
+            gedaechtnis.traudelBekannt === true
+
+    };
+
+    /* Ende neue Gedächtnisdaten */
+
+
+    const gedaechtnisRef =
+        window.firebaseRef(
+            window.firebaseDatabase,
+            "npcGedachtnis/traudel/" +
+            user.uid
+        );
+
+
+    try {
+
+        await window.firebaseSet(
+            gedaechtnisRef,
+            neueDaten
+        );
+
+        return true;
+
+    } catch (fehler) {
+
+        console.error(
+            "Traudel konnte den Spielernamen nicht merken:",
+            fehler
+        );
+
+        return false;
+
+    }
+
+}; /* Ende traudelSpielernameMerken */
+
+/* Ende Traudel - Namen merken */
+
+/* =========================================================
+TRAUDEL - BEKANNT MACHEN
+
+Wird aufgerufen, sobald Traudel sich dem Spieler
+tatsächlich als "Traudel" vorgestellt hat.
+
+Nur traudelBekannt wird auf true gesetzt.
+Alle anderen Gedächtniswerte bleiben unverändert.
+========================================================= */
+
+window.traudelBekanntMachen =
+async function () {
+
+    /* -----------------------------------
+    Vorhandenes Gedächtnis laden
+    ----------------------------------- */
+
+    const gedaechtnis =
+        await window.traudelGedaechtnisLaden();
+
+    if (!gedaechtnis) {
+
+        console.error(
+            "Traudel kann nicht als bekannt gespeichert werden: " +
+            "Kein Gedächtnis vorhanden."
+        );
+
+        return false;
+
+    }
+
+    /* Ende Gedächtnis laden */
+
+
+    /* -----------------------------------
+    Bereits bekannt
+    ----------------------------------- */
+
+    if (gedaechtnis.traudelBekannt === true) {
+
+        return true;
+
+    }
+
+    /* Ende bereits bekannt */
+
+
+    /* -----------------------------------
+    Angemeldeten Spieler ermitteln
+    ----------------------------------- */
+
+    const user =
+        window.firebaseAuth?.currentUser;
+
+    if (!user) {
+
+        console.error(
+            "Traudel kann nicht als bekannt gespeichert werden: " +
+            "Kein Benutzer angemeldet."
+        );
+
+        return false;
+
+    }
+
+    /* Ende Spieler ermitteln */
+
+
+    /* -----------------------------------
+    Nur traudelBekannt verändern
+    ----------------------------------- */
+
+    const neueDaten = {
+
+        erstesKennenlernen:
+            gedaechtnis.erstesKennenlernen,
+
+        letztesGespraech:
+            gedaechtnis.letztesGespraech,
+
+        gespraecheGesamt:
+            gedaechtnis.gespraecheGesamt,
+
+        nameGenannt:
+            gedaechtnis.nameGenannt === true,
+
+        traudelBekannt:
+            true
+
+    };
+
+    /* Ende neue Gedächtnisdaten */
+
+
+    const gedaechtnisRef =
+        window.firebaseRef(
+            window.firebaseDatabase,
+            "npcGedachtnis/traudel/" +
+            user.uid
+        );
+
+
+    try {
+
+        await window.firebaseSet(
+            gedaechtnisRef,
+            neueDaten
+        );
+        window.traudelBekannt =
+            true;
+
+        return true;
+
+    } catch (fehler) {
+
+        console.error(
+            "Traudel konnte nicht als bekannt gespeichert werden:",
+            fehler
+        );
+
+        return false;
+
+    }
+
+}; /* Ende traudelBekanntMachen */
+
+/* Ende Traudel - Bekannt machen */
 /* =========================================================
 NPC-DIALOG TEST ANZEIGEN
 
@@ -3730,8 +4272,111 @@ function (dialog, zoomEbene) {
 
 /* Ende NPC-Dialog - Zoomsteuerung */
 window.npcDialogTestAnzeigen =
-function (sonderfeld) {
+async function (sonderfeld) {
+	
+    /* -----------------------------------
+    Traudels Gedächtnis prüfen
+    ----------------------------------- */
 
+    const traudelGedaechtnis =
+        await window.traudelGedaechtnisLaden();
+
+    const jetzt =
+        Date.now();
+
+
+    let traudelGespraechsFall =
+        "erstesGespraech";
+
+
+    if (traudelGedaechtnis) {
+
+        const zeitSeitLetztemGespraech =
+            jetzt -
+            traudelGedaechtnis.letztesGespraech;
+
+        if (
+            zeitSeitLetztemGespraech <
+            60 * 60 * 1000
+        ) {
+
+            traudelGespraechsFall =
+                "zuFruehWieder";
+
+        } else {
+
+            traudelGespraechsFall =
+                "weiteresGespraech";
+
+        }
+
+    }
+
+    /* Ende Traudels Gedächtnis prüfen */	
+	    /* -----------------------------------
+    Gezähltes Gespräch speichern
+
+    Erstes Gespräch zählt immer.
+
+    Ein weiteres Gespräch zählt nur,
+    wenn seit dem letzten gezählten
+    Gespräch mindestens 60 Minuten
+    vergangen sind.
+
+    "zuFruehWieder" verändert Firebase
+    ausdrücklich NICHT.
+    ----------------------------------- */
+
+    if (
+        traudelGespraechsFall ===
+            "erstesGespraech" ||
+        traudelGespraechsFall ===
+            "weiteresGespraech"
+    ) {
+
+        await window.traudelGedaechtnisSpeichern(
+            traudelGedaechtnis
+        );
+
+    }
+
+    /* Ende gezähltes Gespräch speichern */
+    /* -----------------------------------
+    Traudel-Dialogdaten laden
+    ----------------------------------- */
+
+    let traudelDialogDaten;
+
+    try {
+
+        const antwort =
+            await fetch(
+                "Daten/NPCs/Tratschtante/Traudel_Dialoge.json"
+            );
+
+        if (!antwort.ok) {
+
+            throw new Error(
+                "Traudel_Dialoge.json konnte nicht geladen werden."
+            );
+
+        }
+
+        traudelDialogDaten =
+            await antwort.json();
+
+    } catch (fehler) {
+
+        console.error(
+            "Fehler beim Laden der Traudel-Dialogdaten:",
+            fehler
+        );
+
+        return;
+
+    }
+
+    /* Ende Traudel-Dialogdaten laden */
     /* -----------------------------------
     Eventuell vorhandenen Testdialog
     entfernen
@@ -3890,48 +4535,89 @@ dialogZoomEbene.appendChild(
     traudelTextContext.textBaseline =
         "top";
 
-    /*
-    Testtext.
-    */
+    /* -----------------------------------
+    Traudel-Text zeichnen
 
-    const testText =
-        "Na sowas! Dich habe ich hier ja noch nie gesehen. " +
-        "Du bist doch bestimmt eines dieser Gewohnheitstiere, " +
-        "von denen man überall hört. Sag mal, wie heißt du eigentlich? " +
-        "Und wo kommst du überhaupt her? Hier am Hafen sieht man ja " +
-        "allerhand Leute, aber ein neues Gesicht fällt mir natürlich " +
-        "sofort auf. Man muss schließlich wissen, was hier vor sich geht. " +
-        "Also los, erzähl mir ein bisschen von dir!";
+    Der Text kann damit später bei einem
+    Seitenwechsel neu gezeichnet werden.
+    ----------------------------------- */
 
-    /*
-    Einfacher automatischer Zeilenumbruch.
-    */
+    const traudelTextZeichnen =
+    function (text) {
 
-    const woerter =
-        testText.split(" ");
+        /* Alte Dialogseite löschen */
 
-    const zeilenHoehe = 46;
-    const maximaleBreite = 600;
+        traudelTextContext.clearRect(
+            0,
+            0,
+            traudelTextCanvas.width,
+            traudelTextCanvas.height
+        );
 
-    let aktuelleZeile = "";
-    let y = 10;
 
-    for (const wort of woerter) {
+        /* Feste Textdarstellung setzen */
 
-        const testZeile =
-            aktuelleZeile
-                ? aktuelleZeile + " " + wort
-                : wort;
+        traudelTextContext.fillStyle =
+            "#2b2118";
 
-        const testBreite =
-            traudelTextContext
-                .measureText(testZeile)
-                .width;
+        traudelTextContext.font =
+            "35px sans-serif";
 
-        if (
-            testBreite > maximaleBreite &&
-            aktuelleZeile
-        ) {
+        traudelTextContext.textBaseline =
+            "top";
+
+
+        /* Automatischer Zeilenumbruch */
+
+        const woerter =
+            text.split(" ");
+
+        const zeilenHoehe = 46;
+        const maximaleBreite = 600;
+
+        let aktuelleZeile = "";
+        let y = 10;
+
+
+        for (const wort of woerter) {
+
+            const testZeile =
+                aktuelleZeile
+                    ? aktuelleZeile + " " + wort
+                    : wort;
+
+            const testBreite =
+                traudelTextContext
+                    .measureText(testZeile)
+                    .width;
+
+            if (
+                testBreite > maximaleBreite &&
+                aktuelleZeile
+            ) {
+
+                traudelTextContext.fillText(
+                    aktuelleZeile,
+                    10,
+                    y
+                );
+
+                aktuelleZeile = wort;
+                y += zeilenHoehe;
+
+            } else {
+
+                aktuelleZeile =
+                    testZeile;
+
+            }
+
+        }
+
+
+        /* Letzte Zeile ausgeben */
+
+        if (aktuelleZeile) {
 
             traudelTextContext.fillText(
                 aktuelleZeile,
@@ -3939,31 +4625,193 @@ dialogZoomEbene.appendChild(
                 y
             );
 
-            aktuelleZeile = wort;
-            y += zeilenHoehe;
+        }
 
-        } else {
+    }; /* Ende traudelTextZeichnen */
 
-            aktuelleZeile =
-                testZeile;
+    /* -----------------------------------
+    Aktuelle Dialogseite
+
+    Damit weiß die Dialoglogik jederzeit,
+    auf welcher Seite wir uns befinden.
+    ----------------------------------- */
+
+    let aktuelleDialogSeite =
+        "start";
+
+    /* Ende aktuelle Dialogseite */
+	    /* -----------------------------------
+    Dialog-Platzhalter ersetzen
+
+    Der Spielername wird aus dem bereits
+    vorhandenen eigenen Avatar gelesen.
+    ----------------------------------- */
+
+    const dialogPlatzhalterErsetzen =
+    function (text) {
+
+        const firebaseUser =
+            window.firebaseAuth?.currentUser;
+
+        const eigenerAvatar =
+            firebaseUser
+                ? window.avatarNachUid?.[
+                    firebaseUser.uid
+                ]
+                : null;
+
+        const spielerName =
+            eigenerAvatar?.dataset?.spielerName ||
+            "Gewohnheitstier";
+        /* -----------------------------------
+        Optionale Namensansprache
+
+        Traudel verwendet den Spielernamen
+        nur, wenn er ihr genannt wurde.
+        ----------------------------------- */
+
+        const anredeName =
+            traudelGedaechtnis?.nameGenannt === true
+                ? spielerName + ", "
+                : "";
+
+        /* Ende optionale Namensansprache */
+
+        return String(text || "")
+            .replaceAll(
+                "{spielername}",
+                spielerName
+            )
+			.replaceAll(
+				"{anredeName}",
+				anredeName
+			)
+			.replaceAll(
+				"{valoriaBesucher}",
+				window.traudelValoriaBesucher?.name ||
+					"jemand"
+			);
+
+    }; /* Ende dialogPlatzhalterErsetzen */
+
+    /* Ende Dialog-Platzhalter ersetzen */
+	    /* -----------------------------------
+    Dialogseite anzeigen
+
+    Die Funktion erhält die ID der
+    gewünschten Seite und zeichnet den
+    dazugehörigen Traudel-Text.
+    ----------------------------------- */
+
+    const dialogSeiteAnzeigen =
+    function (seitenId) {
+
+        /* -----------------------------------
+        Dialogseite aus JSON holen
+        ----------------------------------- */
+
+        const seite =
+            traudelDialogDaten[
+                seitenId
+            ];
+
+        if (!seite) {
+
+            console.error(
+                "Traudel-Dialogseite nicht gefunden:",
+                seitenId
+            );
+
+            return;
 
         }
 
-    }
+        /* Ende Dialogseite aus JSON holen */
 
-    /*
-    Letzte Zeile ausgeben.
-    */
 
-    if (aktuelleZeile) {
+        /* -----------------------------------
+        Aktuelle Seite merken
+        ----------------------------------- */
 
-        traudelTextContext.fillText(
-            aktuelleZeile,
-            10,
-            y
+        aktuelleDialogSeite =
+            seitenId;
+
+        /* Ende aktuelle Seite merken */
+        /* -----------------------------------
+        Traudels Vorstellung merken
+        ----------------------------------- */
+
+        if (
+            seitenId ===
+                "traudelVorstellung"
+        ) {
+
+            window.traudelBekanntMachen();
+
+        }
+
+        /* Ende Traudels Vorstellung merken */
+
+        /* -----------------------------------
+        Traudels Text anzeigen
+        ----------------------------------- */
+
+        traudelTextZeichnen(
+            dialogPlatzhalterErsetzen(
+                seite.text
+            )
         );
 
-    }
+        /* Ende Traudels Text anzeigen */
+
+
+        /* -----------------------------------
+        Antworten aus JSON übernehmen
+        ----------------------------------- */
+
+        antwortTexte =
+            Array.isArray(
+                seite.antworten
+            )
+                ? seite.antworten.map(
+                    function (antwort) {
+
+                        return dialogPlatzhalterErsetzen(
+                            antwort.text
+                        );
+
+                    }
+                )
+                : [];
+
+        ausgewaehlteAntwort =
+            antwortTexte.length === 1
+                ? 0
+                : null;
+
+        antwortenZeichnen();
+
+
+        if (ausgewaehlteAntwort === null) {
+
+            weiterPfeil.classList.remove(
+                "aktiv"
+            );
+
+        } else {
+
+            weiterPfeil.classList.add(
+                "aktiv"
+            );
+
+        }
+
+        /* Ende Antworten aus JSON übernehmen */
+
+    }; /* Ende dialogSeiteAnzeigen */
+
+
+
 
 dialogZoomEbene.appendChild(
     traudelTextCanvas
@@ -4075,16 +4923,18 @@ dialogZoomEbene.appendChild(
         );
 
 
-    const antwortTexte = [
+	let antwortTexte = [];
+    /* -----------------------------------
+    Einzelne Antwort automatisch wählen
+    ----------------------------------- */
 
-        "Mögliche Antwort die in eine Zeile passt 1",
+    if (antwortTexte.length === 1) {
 
-        "Mögliche Antwort die in eine Zeile passt 2",
+        ausgewaehlteAntwort = 0;
 
-        "Mögliche Antwort die in eine Zeile passt 3"
+    }
 
-    ];
-
+    /* Ende einzelne Antwort automatisch wählen */
 
     /* -----------------------------------
     Antworten zeichnen
@@ -4108,8 +4958,8 @@ dialogZoomEbene.appendChild(
                 antwortContext.font =
             "bold 32px sans-serif";
 
-        antwortContext.textBaseline =
-            "middle";
+        antwortContext.textAlign =
+            "left";
 
 
         antwortTexte.forEach(
@@ -4159,10 +5009,10 @@ dialogZoomEbene.appendChild(
                         "#2b2118";
 
                     antwortContext.shadowColor =
-                        "rgba(255, 255, 210, 1)";
+                        "rgba(0, 255, 80, 1)";
 
                     antwortContext.shadowBlur =
-                        10;
+                        18;
 
                 } else {
 
@@ -4184,11 +5034,97 @@ dialogZoomEbene.appendChild(
 
                 /* Ende Darstellung nach Auswahlzustand */
 
-                antwortContext.fillText(
-                    text,
-                    20,
-                    y
+
+                /* -----------------------------------
+                Antworttext auf maximal zwei Zeilen
+                verteilen
+                ----------------------------------- */
+
+                const maximaleBreite =
+                    660;
+
+                const woerter =
+                    text.split(" ");
+
+                const zeilen =
+                    [""];
+
+                for (const wort of woerter) {
+
+                    const aktuelleZeile =
+                        zeilen[
+                            zeilen.length - 1
+                        ];
+
+                    const testZeile =
+                        aktuelleZeile
+                            ? aktuelleZeile + " " + wort
+                            : wort;
+
+                    const testBreite =
+                        antwortContext
+                            .measureText(
+                                testZeile
+                            )
+                            .width;
+
+
+                    if (
+                        testBreite > maximaleBreite &&
+                        aktuelleZeile &&
+                        zeilen.length < 2
+                    ) {
+
+                        zeilen.push(
+                            wort
+                        );
+
+                    } else {
+
+                        zeilen[
+                            zeilen.length - 1
+                        ] =
+                            testZeile;
+
+                    }
+
+                }
+
+
+                /* -----------------------------------
+                Eine oder zwei Zeilen zeichnen
+
+                Die erste Zeile einer zweizeiligen
+                Antwort sitzt etwas höher, damit beide
+                Zeilen um den bisherigen Antwortplatz
+                herum liegen.
+                ----------------------------------- */
+
+                const zeilenHoehe =
+                    34;
+
+                const startY =
+                    zeilen.length === 2
+                        ? y - 17
+                        : y;
+
+
+                zeilen.forEach(
+                    function (zeile, zeilenIndex) {
+
+                        antwortContext.fillText(
+                            zeile,
+                            20,
+                            startY +
+                                zeilenIndex *
+                                zeilenHoehe
+                        );
+
+                    }
                 );
+
+                /* Ende Antworttext auf zwei Zeilen */
+
 
             }
         );
@@ -4360,7 +5296,325 @@ dialogZoomEbene.appendChild(
         weiterPfeil
     );
 
+    /* -----------------------------------
+    Weiter-Pfeil bei einzelner Antwort
+    sofort aktivieren
+    ----------------------------------- */
 
+    if (antwortTexte.length === 1) {
+
+        weiterPfeil.classList.add(
+            "aktiv"
+        );
+
+    }
+
+    /* Ende Weiter-Pfeil bei einzelner Antwort */
+    /* -----------------------------------
+    Erste Dialogseite bestimmen
+
+    Bei erneutem Ansprechen innerhalb
+    von 60 Minuten zeigt Traudel ihre
+    kurze Wiederholungsseite.
+
+    Alle anderen Gespräche beginnen
+    weiterhin mit "start".
+    ----------------------------------- */
+
+    /* -----------------------------------
+    /* -----------------------------------
+    Orden des Spielers prüfen
+
+    Der aktuelle Ordenszustand wurde
+    bereits vom vorhandenen Orden-System
+    in window.eigeneOrden gespeichert.
+    ----------------------------------- */
+
+    const spielerHatOrden =
+        window.eigeneOrden?.mega === true ||
+        window.eigeneOrden?.ratefuchs === true ||
+        window.eigeneOrden?.resilienz === true ||
+        window.eigeneOrden?.steigerung === true;
+
+    /* Ende Orden des Spielers prüfen */
+
+
+    /* -----------------------------------
+    Erste Dialogseite bestimmen
+
+    Das erste Kennenlernen beginnt immer
+    mit der normalen Namensfrage.
+
+    Nur beim zu frühen Wiederkommen wird
+    Traudels Abweisung gezeigt.
+    ----------------------------------- */
+
+    const  ersteDialogSeite =
+        traudelGespraechsFall ===
+            "zuFruehWieder"
+            ? "zuFruehWieder"
+            : traudelGespraechsFall ===
+                "weiteresGespraech"
+                ? "weiteresGespraech"
+                : "start";
+
+
+
+
+
+    dialogSeiteAnzeigen(
+        ersteDialogSeite
+    );
+
+    /* Ende erste Dialogseite bestimmen */
+	    /* -----------------------------------
+    Weiter-Pfeil:
+    Testweise auf Seite 2 wechseln
+    ----------------------------------- */
+
+weiterPfeil.addEventListener(
+    "click",
+    async function (ereignis) {
+
+            ereignis.stopPropagation();
+
+
+            /* Nur reagieren, wenn eine
+               Antwort ausgewählt ist */
+
+            if (ausgewaehlteAntwort === null) {
+
+                return;
+
+            }
+
+
+            /* -----------------------------------
+            Gewählte Antwort auswerten
+            ----------------------------------- */
+
+            const aktuelleSeite =
+                traudelDialogDaten[
+                    aktuelleDialogSeite
+                ];
+
+            const antwort =
+                aktuelleSeite?.antworten?.[
+                    ausgewaehlteAntwort
+                ];
+
+            /* -----------------------------------
+            Reguläres Dialogende
+
+            Eine Antwort ohne "ziel" beendet
+            das Gespräch.
+
+            Eine Antwort mit "ziel" wechselt
+            zur angegebenen Dialogseite.
+            ----------------------------------- */
+
+            /* -----------------------------------
+            Traudels Orden-Tipp beim Weggehen
+
+            Nur wenn der Spieler innerhalb der
+            Wartezeit wiedergekommen ist.
+
+            Berücksichtigt werden ausschließlich
+            Resilienz und Ratefuchs.
+            ----------------------------------- */
+
+            if (
+                !antwort?.ziel &&
+                aktuelleDialogSeite ===
+                    "zuFruehWieder"
+            ) {
+
+                const moeglicheTipps = [];
+
+
+                if (
+                    window.eigeneOrden?.resilienz !== true
+                ) {
+
+                    moeglicheTipps.push(
+                        "tippResilienz"
+                    );
+
+                }
+
+
+                if (
+                    window.eigeneOrden?.ratefuchs !== true
+                ) {
+
+                    moeglicheTipps.push(
+                        "tippRatefuchs"
+                    );
+
+                }
+
+
+                /* -----------------------------------
+                Zufälligen fehlenden Orden auswählen
+                ----------------------------------- */
+
+                if (moeglicheTipps.length > 0) {
+
+                    const zufallsIndex =
+                        Math.floor(
+                            Math.random() *
+                            moeglicheTipps.length
+                        );
+
+                    dialogSeiteAnzeigen(
+                        moeglicheTipps[
+                            zufallsIndex
+                        ]
+                    );
+
+                    return;
+
+                }
+
+                /* Ende zufälliger Orden-Tipp */
+
+            }
+
+            /* Ende Traudels Orden-Tipp */
+
+/* -----------------------------------
+Valoria-Bericht
+
+Bei "Was gibt es Neues?" wird der
+letzte Besucher Valorias ermittelt.
+
+War der aktuelle Spieler selbst zuletzt
+dort, verwendet Traudel die Selbst-Seite.
+Andernfalls berichtet sie über den
+anderen Besucher.
+----------------------------------- */
+
+if (
+    aktuelleDialogSeite ===
+        "weiteresGespraech" &&
+    antwort?.text ===
+        "Was gibt es Neues?"
+) {
+
+    const letzterValoriaBesucher =
+        await window.valoriaLetztenBesucherErmitteln();
+
+
+    if (letzterValoriaBesucher) {
+
+        window.traudelValoriaBesucher =
+            letzterValoriaBesucher;
+
+
+        if (
+            letzterValoriaBesucher
+                .istEigenerSpieler === true
+        ) {
+
+            dialogSeiteAnzeigen(
+                "valoriaBerichtSelbst"
+            );
+
+        } else {
+
+            dialogSeiteAnzeigen(
+                "valoriaBerichtAnderer"
+            );
+
+        }
+
+        return;
+
+    }
+
+}
+
+/* Ende Valoria-Bericht */
+            /* -----------------------------------
+            Reguläres Dialogende
+            ----------------------------------- */
+
+            if (!antwort?.ziel) {
+
+                dialog.remove();
+                return;
+
+            }
+
+            /* Ende reguläres Dialogende */
+
+
+            /* -----------------------------------
+            Spielername bei Namensantwort merken
+
+            Die JSON-Seite "nameGenannt" ist
+            gleichzeitig unsere eindeutige Kennung
+            dafür, dass der Spieler Traudel seinen
+            Namen tatsächlich genannt hat.
+            ----------------------------------- */
+
+            if (
+                aktuelleDialogSeite === "start" &&
+                antwort.ziel === "nameGenannt"
+            ) {
+
+                window.traudelSpielernameMerken();
+
+            }
+
+            /* Ende Spielername merken */
+
+
+            /* -----------------------------------
+            Orden nach Traudels Vorstellung
+
+            Nach der Vorstellung würde es
+            normalerweise direkt zum
+            Beobachtungsposten gehen.
+
+            Beim ersten Kennenlernen und mit
+            vorhandenem Orden wird vorher
+            "ordenBemerkt" eingeschoben.
+            ----------------------------------- */
+
+            if (
+                aktuelleDialogSeite ===
+                    "traudelVorstellung" &&
+                antwort.ziel ===
+                    "beobachtungsposten" &&
+                traudelGespraechsFall ===
+                    "erstesGespraech" &&
+                spielerHatOrden
+            ) {
+
+                dialogSeiteAnzeigen(
+                    "ordenBemerkt"
+                );
+
+                return;
+
+            }
+
+            /* Ende Orden einschieben */
+
+
+            dialogSeiteAnzeigen(
+                antwort.ziel
+            );
+
+            /* Ende reguläres Dialogende */
+
+            /* Ende gewählte Antwort auswerten */
+
+        }
+    );
+
+    /* Ende Weiter-Pfeil - Test Seitenwechsel */
     const beendenX =
         document.createElement(
             "img"
@@ -5246,7 +6500,17 @@ async function () {
     ----------------------------------- */
 
     if (user) {
+        /* -----------------------------------
+        Traudels Bekanntheitsstatus laden
 
+        Dieser Weg wird benutzt, wenn Firebase
+        einen bereits angemeldeten Spieler
+        nach einem Reload wiederherstellt.
+        ----------------------------------- */
+
+        await window.traudelGedaechtnisLaden();
+
+        /* Ende Traudels Bekanntheitsstatus laden */
 
 /* -----------------------------------
 Reservats-Datensatz laden
@@ -5582,7 +6846,16 @@ const email =
 
                 const user =
                     loginErgebnis.user;
+                /* -----------------------------------
+                Traudels Bekanntheitsstatus laden
 
+                Der Firebase-Login ist an dieser Stelle
+                erfolgreich abgeschlossen.
+                ----------------------------------- */
+
+                await window.traudelGedaechtnisLaden();
+
+                /* Ende Traudels Bekanntheitsstatus laden */
 
                /* -----------------------------------
 Reservats-Datensatz über
@@ -6141,6 +7414,182 @@ async function () {
 }; /* Ende valoriaBesuchRegistrieren */
 
 /* Ende Valoria - Besuch registrieren */
+/* =========================================================
+VALORIA - LETZTEN BESUCHER ERMITTELN
+
+Liest alle Valoria-Datensätze und sucht
+den Spieler mit dem neuesten gewerteten
+Besuch.
+
+Rückgabe:
+{
+    uid: "...",
+    letzterBesuch: 123456789
+}
+
+Existiert noch kein Besuch, wird null
+zurückgegeben.
+========================================================= */
+
+window.valoriaLetztenBesucherErmitteln =
+async function () {
+
+    /* -----------------------------------
+    Valoria-Daten lesen
+    ----------------------------------- */
+
+    const valoriaRef =
+        window.firebaseRef(
+            window.firebaseDatabase,
+            "valoria"
+        );
+
+    try {
+
+        const snapshot =
+            await window.firebaseGet(
+                valoriaRef
+            );
+
+        if (!snapshot.exists()) {
+
+            return null;
+
+        }
+
+
+        const valoriaDaten =
+            snapshot.val() || {};
+
+
+        /* -----------------------------------
+        Neuesten Besuch suchen
+        ----------------------------------- */
+
+        let letzterBesucher =
+            null;
+
+
+        for (
+            const uid
+            in valoriaDaten
+        ) {
+
+            const letzterBesuch =
+                valoriaDaten[
+                    uid
+                ]?.letzterBesuch;
+
+
+            if (
+                typeof letzterBesuch !==
+                    "number"
+            ) {
+
+                continue;
+
+            }
+
+
+            if (
+                !letzterBesucher ||
+                letzterBesuch >
+                    letzterBesucher.letzterBesuch
+            ) {
+
+                letzterBesucher = {
+
+                    uid:
+                        uid,
+
+                    letzterBesuch:
+                        letzterBesuch
+
+                };
+
+            }
+
+        }
+
+        /* Ende neuesten Besuch suchen */
+
+/* -----------------------------------
+Namen des letzten Besuchers ermitteln
+
+Die Firebase-UID führt zunächst zu
+users/<uid>. Dort steht die Habitica-ID.
+
+Mit dieser Habitica-ID wird anschließend
+der Spieler im bereits geladenen
+Schnappschuss gesucht.
+----------------------------------- */
+
+if (letzterBesucher) {
+
+    const userRef =
+        window.firebaseRef(
+            window.firebaseDatabase,
+            "users/" +
+            letzterBesucher.uid
+        );
+
+    const userSnapshot =
+        await window.firebaseGet(
+            userRef
+        );
+
+
+    if (userSnapshot.exists()) {
+
+        const userDaten =
+            userSnapshot.val();
+
+        const spieler =
+            window.reservatSpielerSuchen(
+                window.reservatSchnappschuss,
+                userDaten.habiticaId
+            );
+
+
+        letzterBesucher.name =
+            spieler?.profile?.name ||
+            null;
+/* -----------------------------------
+Prüfen, ob der letzte Besucher
+der aktuell angemeldete Spieler ist
+----------------------------------- */
+
+letzterBesucher.istEigenerSpieler =
+    letzterBesucher.uid ===
+    window.firebaseAuth?.currentUser?.uid;
+
+/* Ende eigenen Spieler prüfen */
+    } else {
+
+        letzterBesucher.name =
+            null;
+
+    }
+
+}
+
+/* Ende Namen ermitteln */
+        return letzterBesucher;
+
+    } catch (fehler) {
+
+        console.error(
+            "Letzter Valoria-Besucher konnte nicht ermittelt werden:",
+            fehler
+        );
+
+        return null;
+
+    }
+
+}; /* Ende valoriaLetztenBesucherErmitteln */
+
+/* Ende Valoria - letzten Besucher ermitteln */
 /* =========================================================
 RESERVAT NACH WARTUNG NEU BETRETEN
 ========================================================= */
@@ -7851,12 +9300,24 @@ async function () {
         const schnappschuss =
             await antwort.json();
 
+        /* -----------------------------------
+        Schnappschuss global bereitstellen
 
+        Andere Systeme wie NPC-Dialoge
+        können dadurch denselben bereits
+        geladenen Schnappschuss verwenden.
+        ----------------------------------- */
+
+        window.reservatSchnappschuss =
+            schnappschuss;
+
+        /* Ende Schnappschuss global bereitstellen */
 /* -----------------------------------
 Spieler im Schnappschuss suchen
 ----------------------------------- */
 
-function spielerSuchen(
+window.reservatSpielerSuchen =
+function (
     objekt,
     habiticaId
 ) {
@@ -7878,11 +9339,11 @@ function spielerSuchen(
 
     for (const schluessel in objekt) {
 
-        const gefunden =
-            spielerSuchen(
-                objekt[schluessel],
-                habiticaId
-            );
+	const gefunden =
+		window.reservatSpielerSuchen(
+			objekt[schluessel],
+			habiticaId
+		);
 
         if (gefunden) {
             return gefunden;
@@ -7891,7 +9352,7 @@ function spielerSuchen(
 
 
     return null;
-}
+}; /* Ende reservatSpielerSuchen */
 
 
 /* =========================================================
@@ -7963,7 +9424,7 @@ Eigenen Spieler im Schnappschuss finden
 ----------------------------------- */
 
 const eigenerSpieler =
-    spielerSuchen(
+    window.reservatSpielerSuchen(
         schnappschuss,
         eigeneUserDaten.habiticaId
     );
@@ -8104,7 +9565,7 @@ async function avatarFuerUidLaden(uid) {
                 ----------------------------------- */
 
                 const spieler =
-                    spielerSuchen(
+                    window.reservatSpielerSuchen(
                         schnappschuss,
                         userDaten.habiticaId
                     );
@@ -8541,7 +10002,22 @@ const eigenerAvatarCanvas =
 avatarNachUid[
     firebaseUser.uid
 ] = eigenerAvatarCanvas;
+/* -----------------------------------
+Spielerkennung am eigenen Avatar merken
 
+Damit steht der Habitica-Name auch
+anderen Systemen wie NPC-Dialogen
+zur Verfügung.
+----------------------------------- */
+
+eigenerAvatarCanvas.dataset.spielerUid =
+    firebaseUser.uid;
+
+eigenerAvatarCanvas.dataset.spielerName =
+    eigenerSpieler.profile?.name ||
+    "Unbekanntes Gewohnheitstier";
+
+/* Ende Spielerkennung am eigenen Avatar */
 
 /* -----------------------------------
 Zzz-Canvas für eigenen Spieler
@@ -9614,7 +11090,28 @@ if (
 
     return;
 }
+    /* -----------------------------------
+    NPC-Dialog bei gültiger Bewegung
+    beenden
 
+    Kartenrand und gesperrte Felder wurden
+    vorher bereits geprüft. Deshalb wird
+    der Dialog nur bei einer tatsächlich
+    möglichen Bewegung geschlossen.
+    ----------------------------------- */
+
+    const npcDialog =
+        document.getElementById(
+            "reservatNpcDialogTest"
+        );
+
+    if (npcDialog) {
+
+        npcDialog.remove();
+
+    }
+
+    /* Ende NPC-Dialog bei Bewegung */
     /* -----------------------------------
     Neue Position nach Firebase schreiben
     ----------------------------------- */

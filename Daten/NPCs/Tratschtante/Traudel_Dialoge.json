@@ -1,0 +1,143 @@
+{
+    "_referenz": {
+        "_kommentar": "Dieser Text wurde beim Aufbau des Dialogfensters als Referenz für die maximale Textmenge getestet. Dialogtexte sollten diese Länge möglichst nicht überschreiten.",
+        "maximaleTraudelTextlaenge": "Na sowas! Dich habe ich hier ja noch nie gesehen. Du bist doch bestimmt eines dieser Gewohnheitstiere, von denen man überall hört. Sag mal, wie heißt du eigentlich? Und wo kommst du überhaupt her? Hier am Hafen sieht man ja allerhand Leute, aber ein neues Gesicht fällt mir natürlich sofort auf. Man muss schließlich wissen, was hier vor sich geht. Also los, erzähl mir ein bisschen von dir!"
+    },
+
+    "start": {
+        "text": "Na sowas! Euch habe ich hier ja noch nie gesehen. Ihr seid doch bestimmt eines dieser Gewohnheitstiere, von denen man überall hört. Sagt mal, wie heißt Ihr eigentlich?",
+        "antworten": [
+            {
+                "text": "Ich bin {spielername}. Ich bin eines der Gewohnheitstiere.",
+                "ziel": "nameGenannt"
+            },
+            {
+                "text": "Ein Gewohnheitstier. Das muss fürs Erste reichen.",
+                "ziel": "nameVerschwiegen"
+            },
+            {
+                "text": "Kommt darauf an. Wer will das wissen?",
+                "ziel": "gegenfrage"
+            }
+        ]
+    },
+
+    "ordenBemerkt": {
+        "_kommentar": "Optionale Seite für das erste Kennenlernen. Wird später nur eingeschoben, wenn Traudel beim Spieler einen Orden erkennt.",
+        "text": "Moment mal ... das da ist doch ein Orden, oder? Na sowas! Ihr scheint ja nicht ganz untätig zu sein. So etwas fällt mir natürlich sofort auf.",
+        "antworten": [
+			{
+				"text": "Ihr seid aber aufmerksam.",
+				"ziel": "beobachtungsposten"
+			}
+        ]
+    },
+
+    "nameGenannt": {
+        "text": "{spielername} also! Das werde ich mir merken. Man weiß schließlich nie, wann so eine Information noch einmal nützlich wird.",
+        "antworten": [
+            {
+                "text": "Und mit wem habe ich es zu tun?",
+                "ziel": "traudelVorstellung"
+            }
+        ]
+    },
+
+    "nameVerschwiegen": {
+        "text": "Na schön, na schön. Ich bin ja nicht neugierig! Also jedenfalls nicht mehr als unbedingt nötig. Ein Gewohnheitstier also ...",
+        "antworten": [
+            {
+                "text": "Und wer seid Ihr?",
+                "ziel": "traudelVorstellung"
+            }
+        ]
+    },
+
+    "gegenfrage": {
+        "text": "Oh! Natürlich. Da frage ich Euch hier aus und habe mich selbst noch nicht einmal vorgestellt. Wo bleiben denn meine Manieren?",
+        "antworten": [
+            {
+                "text": "Das habe ich mich auch gerade gefragt.",
+                "ziel": "traudelVorstellung"
+            }
+        ]
+    },
+
+    "traudelVorstellung": {
+        "text": "Traudel. Ich bin Traudel. Eigentlich komme ich nicht so oft hier am Hafen vorbei, aber in letzter Zeit ist hier ungewöhnlich viel los. Da habe ich mir gedacht, ich stelle mich einfach mal hierher.",
+        "antworten": [
+            {
+                "text": "Und warum ausgerechnet hier?",
+                "ziel": "beobachtungsposten"
+            }
+        ]
+    },
+
+    "beobachtungsposten": {
+ "text": "*kichert* Warum ich ausgerechnet hier stehe? Na, schaut Euch doch um! Von hier habe ich einen ausgezeichneten Blick auf die Kreuzung und auf die Fähre. Wer kommt, wer geht, wer übersetzt - mir entgeht hier kaum etwas. Nicht, dass ich die Leute beobachten würde! Ich passe nur ein bisschen auf, was hier so vor sich geht.",
+        "antworten": [
+            {
+                "text": "Natürlich. Nur ein bisschen."
+            }
+        ]
+    },
+
+    "weiteresGespraech": {
+        "_kommentar": "Vorläufiger Einstieg für spätere gezählte Gespräche. Die persönliche Variante mit oder ohne bekannten Spielernamen wird später durch die Dialoglogik ausgewählt.",
+        "text": "Ah, {anredeName}da seid Ihr ja wieder! Ich hatte schon so ein Gefühl, dass wir uns noch einmal über den Weg laufen würden.",
+        "antworten": [
+            {
+                "text": "Was gibt es Neues?"
+            }
+        ]
+    },
+	"valoriaBerichtAnderer": {
+    "text": "Wenn Ihr schon fragt ... {valoriaBesucher} war zuletzt in Valoria. Was dort wohl wieder getrieben wurde? Mir entgeht so etwas natürlich nicht.",
+    "antworten": [
+        {
+            "text": "Ihr bekommt wirklich einiges mit."
+        }
+    ]
+},
+
+"valoriaBerichtSelbst": {
+    "text": "Was es Neues gibt? Das solltet Ihr doch eigentlich selbst am besten wissen! Ihr wart schließlich zuletzt in Valoria. Mir entgeht so etwas nicht.",
+    "antworten": [
+        {
+            "text": "Offenbar wirklich nicht."
+        }
+    ]
+},
+
+	"zuFruehWieder": {
+		"text": "Oh, Ihr schon wieder! Also seid mir nicht böse, aber ich muss mich wirklich um meine Aufgaben kümmern. Das versteht Ihr doch sicher. Sind Eure Habitica-Listen schon abgearbeitet? Also meine nicht! Kommt gerne später wieder.",
+
+
+
+		"antworten": [
+			{
+				"text": "Oh - ja klar, ich habe auch noch zu tun!"
+			},
+			{
+				"text": "Na gut, bis dann!"
+			}
+		]
+	},
+	"tippResilienz": {
+    "text": "Ach, und noch etwas! Warum macht Ihr nicht schnell bei der Resilienzübung mit? Zerflixt würde sich freuen!",
+    "antworten": [
+        {
+            "text": "Gute Idee, mache ich!"
+        }
+    ]
+	},
+
+	"tippRatefuchs": {
+		"text": "Ach, und wenn Ihr schon Zeit habt: Habt Ihr eigentlich schon beim Rätsel mitgemacht? Da gibt es schließlich nicht nur einen Orden zu holen - mit etwas Glück sogar Edelsteine!",
+		"antworten": [
+			{
+				"text": "Ich schau es mir an!"
+			}
+		]
+	}
+}

@@ -2095,18 +2095,10 @@ Liegt unten im schwarzen Portalbereich.
 
     position: absolute;
 
-    /*
-    Testposition rechts neben Traudel.
-    */
+    left: 37%;
+    top: 14%;
 
-    left: 30%;
-    top: 10%;
-
-    /*
-    Bewusst schmaler als beim ersten Test.
-    */
-
-    width: 62%;
+    width: 60%;
     height: auto;
 
     z-index: 3;
@@ -2115,11 +2107,65 @@ Liegt unten im schwarzen Portalbereich.
 
     pointer-events: none;
 
-}</style><script role="script" id="twine-user-script" type="text/twine-javascript">/* =========================================================
+}
+
+/* ---------------------------------------------------------
+   NPC-DIALOG – Weiter-Pfeil
+
+   Testposition im neuen schmalen Mittelbereich.
+   --------------------------------------------------------- */
+
+#reservatNpcDialogWeiter {
+
+    position: absolute;
+
+    left: 58.5%;
+    top: 75%;
+
+    width: 10%;
+    height: auto;
+
+    z-index: 4;
+
+    display: block;
+
+    pointer-events: none;
+
+}
+
+/* Ende NPC-Dialog – Weiter-Pfeil */
+
+
+/* ---------------------------------------------------------
+   NPC-DIALOG – Beenden-X
+
+   Testposition im unteren Teil des Mittelbereichs.
+   --------------------------------------------------------- */
+
+#reservatNpcDialogBeenden {
+
+    position: absolute;
+
+    left: 58.5%;
+    top: 65%;
+
+    width: 10%;
+    height: auto;
+
+    z-index: 4;
+
+    display: block;
+
+        pointer-events: auto;
+    cursor: pointer;
+
+}
+
+/* Ende NPC-Dialog – Beenden-X */</style><script role="script" id="twine-user-script" type="text/twine-javascript">/* =========================================================
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.238";
+window.multiplayerTestVersion = "0.243";
 
 /* Ende Testversion */
 /* =========================================================
@@ -3799,7 +3845,7 @@ dialogZoomEbene.appendChild(
         "#2b2118";
 
     traudelTextContext.font =
-        "32px sans-serif";
+        "35px sans-serif";
 
     traudelTextContext.textBaseline =
         "top";
@@ -3811,7 +3857,11 @@ dialogZoomEbene.appendChild(
     const testText =
         "Na sowas! Dich habe ich hier ja noch nie gesehen. " +
         "Du bist doch bestimmt eines dieser Gewohnheitstiere, " +
-        "von denen man überall hört. Sag mal, wie heißt du eigentlich?";
+        "von denen man überall hört. Sag mal, wie heißt du eigentlich? " +
+        "Und wo kommst du überhaupt her? Hier am Hafen sieht man ja " +
+        "allerhand Leute, aber ein neues Gesicht fällt mir natürlich " +
+        "sofort auf. Man muss schließlich wissen, was hier vor sich geht. " +
+        "Also los, erzähl mir ein bisschen von dir!";
 
     /*
     Einfacher automatischer Zeilenumbruch.
@@ -3820,8 +3870,8 @@ dialogZoomEbene.appendChild(
     const woerter =
         testText.split(" ");
 
-    const zeilenHoehe = 42;
-    const maximaleBreite = 660;
+    const zeilenHoehe = 46;
+    const maximaleBreite = 600;
 
     let aktuelleZeile = "";
     let y = 10;
@@ -3945,7 +3995,75 @@ dialogZoomEbene.appendChild(
 );
 
     } /* Ende eigener Spieleravatar */
+    /* -----------------------------------
+    Dialog-Bediengrafiken erzeugen
 
+    Zunächst nur zur grafischen
+    Positionierung.
+
+    Eine Funktion erhalten die beiden
+    Grafiken erst im nächsten Schritt.
+    ----------------------------------- */
+
+    const weiterPfeil =
+        document.createElement(
+            "img"
+        );
+
+    weiterPfeil.id =
+        "reservatNpcDialogWeiter";
+
+    weiterPfeil.src =
+        "Daten/NPCs/" +
+        "dialog_weiter_pfeil_medaillon.png";
+
+    weiterPfeil.alt =
+        "Weiter";
+
+    dialogZoomEbene.appendChild(
+        weiterPfeil
+    );
+
+
+    const beendenX =
+        document.createElement(
+            "img"
+        );
+
+    beendenX.id =
+        "reservatNpcDialogBeenden";
+
+    beendenX.src =
+        "Daten/NPCs/" +
+        "dialog_beenden_X.png";
+
+    beendenX.alt =
+        "Dialog beenden";
+    /* -----------------------------------
+    Dialog über X beenden
+
+    Damit kann gleichzeitig geprüft werden,
+    ob ein neu geöffneter Dialog wieder
+    mit 100 % Zoom startet.
+    ----------------------------------- */
+
+    beendenX.addEventListener(
+        "click",
+        function (ereignis) {
+
+            ereignis.stopPropagation();
+
+            dialog.remove();
+
+        }
+    );
+
+    /* Ende Dialog über X beenden */
+    dialogZoomEbene.appendChild(
+        beendenX
+    );
+
+    /* Ende Dialog-Bediengrafiken */
     /* Ende Spieleravatar für Dialog */
     /* -----------------------------------
     Dialog ins Spielfeld einsetzen

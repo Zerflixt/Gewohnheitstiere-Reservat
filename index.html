@@ -2128,13 +2128,21 @@ Liegt unten im schwarzen Portalbereich.
     z-index: 4;
 
     display: block;
-
+    opacity: 0.25;
+    filter: grayscale(100%);
     pointer-events: none;
 
 }
 
 /* Ende NPC-Dialog – Weiter-Pfeil */
+/* Weiter-Pfeil nach Auswahl einer Antwort */
 
+#reservatNpcDialogWeiter.aktiv {
+
+    opacity: 1;
+    filter: none;
+
+}
 
 /* ---------------------------------------------------------
    NPC-DIALOG – Beenden-X
@@ -2161,11 +2169,41 @@ Liegt unten im schwarzen Portalbereich.
 
 }
 
-/* Ende NPC-Dialog – Beenden-X */</style><script role="script" id="twine-user-script" type="text/twine-javascript">/* =========================================================
+/* Ende NPC-Dialog – Beenden-X */
+/* =========================================================
+   NPC-DIALOG – TEST FÜR DREI ANTWORTEN
+   ========================================================= */
+
+
+/* ---------------------------------------------------------
+   Gezeichnete Antworttexte
+   --------------------------------------------------------- */
+
+#reservatNpcDialogAntworten {
+
+    position: absolute;
+
+    left: 6%;
+    top: 66%;
+
+    width: 54%;
+    height: auto;
+
+    z-index: 3;
+
+    display: block;
+
+    pointer-events: auto;
+cursor: pointer;
+
+}
+
+
+</style><script role="script" id="twine-user-script" type="text/twine-javascript">/* =========================================================
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.244";
+window.multiplayerTestVersion = "0.247";
 
 /* Ende Testversion */
 /* =========================================================
@@ -3995,6 +4033,302 @@ dialogZoomEbene.appendChild(
 );
 
     } /* Ende eigener Spieleravatar */
+	    /* =========================================================
+    NPC-DIALOG - TEST FÜR DREI ANTWORTEN
+
+    Die Texte werden auf ein Canvas gezeichnet.
+    Darüber liegen drei transparente Klickbereiche.
+
+    Die komplette Antwortfläche liegt innerhalb der
+    Dialog-Zoom-Ebene und wird deshalb gemeinsam mit
+    dem Dialog gezoomt und verschoben.
+    ========================================================= */
+
+    let ausgewaehlteAntwort =
+        null;
+
+
+    /* -----------------------------------
+    Antwort-Canvas erzeugen
+    ----------------------------------- */
+
+    const antwortCanvas =
+        document.createElement(
+            "canvas"
+        );
+
+    antwortCanvas.id =
+        "reservatNpcDialogAntworten";
+
+    antwortCanvas.width =
+        700;
+
+    antwortCanvas.height =
+        500;
+
+
+    const antwortContext =
+        antwortCanvas.getContext(
+            "2d"
+        );
+
+
+    const antwortTexte = [
+
+        "Mögliche Antwort die in eine Zeile passt 1",
+
+        "Mögliche Antwort die in eine Zeile passt 2",
+
+        "Mögliche Antwort die in eine Zeile passt 3"
+
+    ];
+
+
+    /* -----------------------------------
+    Antworten zeichnen
+
+    Die Funktion wird auch nach einer Auswahl
+    erneut aufgerufen, damit die ausgewählte
+    Antwort hervorgehoben werden kann.
+    ----------------------------------- */
+
+    const antwortenZeichnen =
+    function () {
+
+        antwortContext.clearRect(
+            0,
+            0,
+            antwortCanvas.width,
+            antwortCanvas.height
+        );
+
+
+                antwortContext.font =
+            "bold 32px sans-serif";
+
+        antwortContext.textBaseline =
+            "middle";
+
+
+        antwortTexte.forEach(
+            function (text, index) {
+
+				const y =
+                    65 +
+                    index * 85;
+
+
+
+
+
+                /* -----------------------------------
+                Darstellung nach Auswahlzustand
+                ----------------------------------- */
+
+                if (
+                    ausgewaehlteAntwort === null
+                ) {
+
+                    /*
+                    Noch nichts gewählt:
+                    Alle Antworten kräftig und schwarz.
+                    */
+
+                    antwortContext.fillStyle =
+                        "#2b2118";
+
+                    antwortContext.shadowColor =
+                        "transparent";
+
+                    antwortContext.shadowBlur =
+                        0;
+
+                } else if (
+                    ausgewaehlteAntwort === index
+                ) {
+
+                    /*
+                    Gewählte Antwort:
+                    Dunkle Schrift mit hellem Glow
+                    direkt um die Buchstaben.
+                    */
+
+                    antwortContext.fillStyle =
+                        "#2b2118";
+
+                    antwortContext.shadowColor =
+                        "rgba(255, 255, 210, 1)";
+
+                    antwortContext.shadowBlur =
+                        10;
+
+                } else {
+
+                    /*
+                    Nicht gewählte Antworten:
+                    Weiterhin lesbar, aber zurückgenommen.
+                    */
+
+                    antwortContext.fillStyle =
+                        "#8a847a";
+
+                    antwortContext.shadowColor =
+                        "transparent";
+
+                    antwortContext.shadowBlur =
+                        0;
+
+                }
+
+                /* Ende Darstellung nach Auswahlzustand */
+
+                antwortContext.fillText(
+                    text,
+                    20,
+                    y
+                );
+
+            }
+        );
+
+
+        /* Schatten sicher zurücksetzen */
+
+        antwortContext.shadowColor =
+            "transparent";
+
+        antwortContext.shadowBlur =
+            0;
+
+    }; /* Ende antwortenZeichnen */
+
+
+    antwortenZeichnen();
+
+
+    dialogZoomEbene.appendChild(
+        antwortCanvas
+    );
+
+
+        /* -----------------------------------
+    Antwort-Canvas anklickbar machen
+
+    Der Canvas kennt die Positionen seiner
+    Antwortzeilen selbst.
+
+    Dadurch müssen beim Verschieben des
+    Antwortbereichs keine separaten
+    Klickflächen nachgezogen werden.
+    ----------------------------------- */
+
+    antwortCanvas.addEventListener(
+        "click",
+        function (ereignis) {
+
+            /* -----------------------------------
+            Klickposition ins interne
+            Canvas-Koordinatensystem umrechnen
+            ----------------------------------- */
+
+            const rechteck =
+                antwortCanvas.getBoundingClientRect();
+
+            const klickY =
+                (
+                    ereignis.clientY -
+                    rechteck.top
+                ) *
+                (
+                    antwortCanvas.height /
+                    rechteck.height
+                );
+
+
+            /* -----------------------------------
+            Getroffene Antwort suchen
+
+            Die Antwortzeilen liegen bei:
+            65, 150 und 235 Pixel.
+
+            Rund um jede Zeile erlauben wir
+            eine komfortable Trefferhöhe.
+            ----------------------------------- */
+
+            let getroffeneAntwort =
+                null;
+
+            for (
+                let index = 0;
+                index < antwortTexte.length;
+                index++
+            ) {
+
+                const antwortY =
+                    65 +
+                    index * 85;
+
+                if (
+                    Math.abs(
+                        klickY -
+                        antwortY
+                    ) <= 35
+                ) {
+
+                    getroffeneAntwort =
+                        index;
+
+                    break;
+
+                }
+
+            }
+
+
+            /* Zwischenraum getroffen */
+
+            if (
+                getroffeneAntwort === null
+            ) {
+
+                return;
+
+            }
+
+
+            /* -----------------------------------
+            Antwort auswählen
+            ----------------------------------- */
+
+            ausgewaehlteAntwort =
+                getroffeneAntwort;
+
+            antwortenZeichnen();
+
+
+            /* -----------------------------------
+            Weiter-Pfeil aktivieren
+            ----------------------------------- */
+
+            const pfeil =
+                document.getElementById(
+                    "reservatNpcDialogWeiter"
+                );
+
+            if (pfeil) {
+
+                pfeil.classList.add(
+                    "aktiv"
+                );
+
+            }
+
+        }
+    );
+
+    /* Ende Antwort-Canvas anklickbar machen */
+
+    /* Ende NPC-Dialog - Test für drei Antworten */
     /* -----------------------------------
     Dialog-Bediengrafiken erzeugen
 

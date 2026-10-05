@@ -2067,6 +2067,29 @@ Liegt unten im schwarzen Portalbereich.
 }
 /* Ende NPC-Dialog – Traudel */
 /* ---------------------------------------------------------
+   NPC-DIALOG – Bibliotheksroboter
+   --------------------------------------------------------- */
+
+#reservatNpcDialogRoboter {
+
+    position: absolute;
+
+    left: 1%;
+    top: 17%;
+
+    height: 35%;
+    width: auto;
+
+    z-index: 2;
+
+    display: block;
+
+    pointer-events: none;
+
+}
+
+/* Ende NPC-Dialog – Bibliotheksroboter */
+/* ---------------------------------------------------------
    NPC-DIALOG – eigener Spieler
    Unten rechts verankert
    --------------------------------------------------------- */
@@ -2213,10 +2236,23 @@ cursor: pointer;
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.291";
+window.multiplayerTestVersion = "0.296";
 
 /* Ende Testversion */
+
 /* =========================================================
+EXTERNE NPC-DATEIEN LADEN
+========================================================= */
+
+window.bibliotheksroboterGeladen =
+    importScripts(
+        "Daten/NPCs/Bibliotheksroboter/Bibliotheksroboter.js"
+    );
+
+/* Ende externe NPC-Dateien laden */
+/* =========================================================
+
+
 BROWSER-SEITENZOOM SPERREN
 
 Das Reservat besitzt eine eigene Zoomsteuerung
@@ -4277,7 +4313,36 @@ function (dialog, zoomEbene) {
 /* Ende NPC-Dialog - Zoomsteuerung */
 window.npcDialogTestAnzeigen =
 async function (sonderfeld) {
-	
+	    /* -----------------------------------
+    NPC unterscheiden
+    ----------------------------------- */
+
+    if (
+        sonderfeld &&
+        sonderfeld.npc === "bibliotheksroboter"
+    ) {
+
+        if (
+            typeof window.bibliotheksroboterDialogAnzeigen ===
+            "function"
+        ) {
+
+            window.bibliotheksroboterDialogAnzeigen(
+                sonderfeld
+            );
+
+        } else {
+
+            console.error(
+                "Bibliotheksroboter-Dialogfunktion wurde nicht gefunden."
+            );
+
+        }
+
+        return;
+    }
+
+    /* Ende NPC unterscheiden */
     /* -----------------------------------
     Traudels Gedächtnis prüfen
     ----------------------------------- */
@@ -6898,7 +6963,7 @@ const reservatsDaten =
 
 
             ausgabe.textContent =
-    "✅ Angemeldet als " +
+    "? Angemeldet als " +
     habiticaName;
 /* -----------------------------------
 Erstpasswort prüfen
@@ -6909,7 +6974,7 @@ if (
 ) {
 
     ausgabe.textContent =
-        "✅ Login erfolgreich – bitte neues Passwort wählen.";
+        "? Login erfolgreich – bitte neues Passwort wählen.";
 
     SugarCube.Engine.play(
         "PWChange"
@@ -6959,7 +7024,7 @@ if (
             } catch (fehler) {
 
                 ausgabe.textContent =
-                    "❌ Login fehlgeschlagen.";
+                    "? Login fehlgeschlagen.";
 
 
             }
@@ -7020,7 +7085,7 @@ async function () {
 
         if (ausgabe) {
             ausgabe.textContent =
-                "❌ Das Passwort muss mindestens 6 Zeichen lang sein.";
+                "? Das Passwort muss mindestens 6 Zeichen lang sein.";
         }
 
         return;
@@ -7042,7 +7107,7 @@ async function () {
 
         if (ausgabe) {
             ausgabe.textContent =
-                "❌ Erlaubt sind nur Buchstaben und Zahlen.";
+                "? Erlaubt sind nur Buchstaben und Zahlen.";
         }
 
         return;
@@ -7058,7 +7123,7 @@ async function () {
 
         if (ausgabe) {
             ausgabe.textContent =
-                "❌ Die beiden Passwörter stimmen nicht überein.";
+                "? Die beiden Passwörter stimmen nicht überein.";
         }
 
         return;
@@ -7077,7 +7142,7 @@ async function () {
 
         if (ausgabe) {
             ausgabe.textContent =
-                "❌ Kein Benutzer angemeldet.";
+                "? Kein Benutzer angemeldet.";
         }
 
         return;
@@ -7126,7 +7191,7 @@ Passwortwechsel abgeschlossen
 if (ausgabe) {
 
     ausgabe.textContent =
-        "✅ Passwort wurde geändert.";
+        "? Passwort wurde geändert.";
 
 } /* Ende Erfolgsmeldung */
 
@@ -7141,7 +7206,7 @@ window.location.reload();
         if (ausgabe) {
 
             ausgabe.textContent =
-                "❌ Passwort konnte nicht geändert werden.";
+                "? Passwort konnte nicht geändert werden.";
 
         } /* Ende Fehlermeldung */
 
@@ -8254,7 +8319,7 @@ function (orden) {
 
     /* Ende aktuellen Ordenszustand merken */
     /* -----------------------------------
-    Zuordnung Firebase → Schaltfläche
+    Zuordnung Firebase ? Schaltfläche
     ----------------------------------- */
 
     const ordenZuordnung = {
@@ -10047,7 +10112,7 @@ Statusmeldung
 if (ausgabe) {
 
     ausgabe.textContent =
-        "✅ Multiplayer-Spieler geladen";
+        "? Multiplayer-Spieler geladen";
 }
 
 
@@ -10373,7 +10438,7 @@ window.firebaseOnValue(
         if (avatarPlatz) {
 
             avatarPlatz.textContent =
-                "❌ Avatar konnte nicht geladen werden.";
+                "? Avatar konnte nicht geladen werden.";
         }
     }
 };

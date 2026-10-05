@@ -446,8 +446,7 @@ Kartenebene 1
 ----------------------------------- */
 
 #kartenEbene1 {
-    background-image:
-        url("Daten/Karte_Bücherei_Ebene1.png");
+
 
     z-index: 10;
 }
@@ -458,8 +457,7 @@ Kartenebene 3
 ----------------------------------- */
 
 #kartenEbene3 {
-    background-image:
-        url("Daten/Karte_Bücherei_Ebene3.png");
+
 
     z-index: 30;
 }
@@ -1012,7 +1010,13 @@ RESERVAT - ZOOM-EBENE
     top: 0;
     width: 100%;
     height: 100%;
+    display: grid;
 
+    grid-template-columns:
+        repeat(10, 1fr);
+
+    grid-template-rows:
+        repeat(10, 1fr);
     transform-origin: 0 0;
 
 }
@@ -2209,7 +2213,7 @@ cursor: pointer;
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.288";
+window.multiplayerTestVersion = "0.291";
 
 /* Ende Testversion */
 /* =========================================================
@@ -13754,14 +13758,6 @@ function (zielPassage) {
          SPIELFELD / KARTE
          ================================================= --&gt;
 &lt;div id=&quot;spielfeld&quot;&gt;
-
-    &lt;!-- Kartenebene 3: Vordergrund --&gt;
-    &lt;div id=&quot;kartenEbene3&quot;&gt;&lt;/div&gt;
-
-
-
-
-
 &lt;/div&gt;
 
     &lt;div id=&quot;spielsteuerung&quot;&gt;

@@ -285,7 +285,51 @@ Firebase-Verbindungsstatus
 }
 /* Ende Firebase-Verbindungsstatus */
 
+/* -----------------------------------
+Sound an / aus
+----------------------------------- */
 
+#soundButton {
+    width: 44px;
+    height: 44px;
+
+    margin: 0;
+    padding: 0;
+
+    background: transparent;
+    border: none;
+    box-shadow: none;
+
+    cursor: pointer;
+
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#soundButton img {
+    width: 32px;
+    height: 32px;
+
+    display: block;
+    margin: auto;
+
+    object-fit: contain;
+
+    pointer-events: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+}
+
+#soundButton:hover,
+#soundButton:focus,
+#soundButton:active {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* Ende Sound an / aus */
 /* Ende Spielfeld-Kopf */
 /* =========================================================
 STATUS- / EREIGNISZEILE
@@ -2089,6 +2133,16 @@ Liegt unten im schwarzen Portalbereich.
 }
 
 /* Ende NPC-Dialog – Bibliotheksroboter */
+
+/* -----------------------------------
+WaS24-Roboter
+----------------------------------- */
+
+#reservatNpcDialogRoboter.reservatNpcDialogRoboterWaS24 {
+    transform: scale(1.2);
+}
+
+/* Ende WaS24-Roboter */
 /* ---------------------------------------------------------
    NPC-DIALOG – eigener Spieler
    Unten rechts verankert
@@ -2135,7 +2189,52 @@ Liegt unten im schwarzen Portalbereich.
     pointer-events: none;
 
 }
+/* ---------------------------------------------------------
+   NPC-DIALOG – Bibliotheksroboter Text
+   --------------------------------------------------------- */
 
+#reservatNpcDialogRoboterText {
+
+    position: absolute;
+
+    left: 37%;
+    top: 12%;
+
+    width: 60%;
+    height: auto;
+
+    z-index: 3;
+
+    display: block;
+
+    pointer-events: none;
+
+}
+
+/* Ende NPC-Dialog – Bibliotheksroboter Text */
+/* ---------------------------------------------------------
+   NPC-DIALOG – WaS24-Cover
+   --------------------------------------------------------- */
+
+#reservatNpcDialogWaS24Cover {
+
+    position: absolute;
+
+    left: 39%;
+    top: 48%;
+
+    height: 43%;
+    width: auto;
+
+    z-index: 3;
+
+    display: block;
+
+    pointer-events: none;
+
+}
+
+/* Ende NPC-Dialog – WaS24-Cover */
 /* ---------------------------------------------------------
    NPC-DIALOG – Weiter-Pfeil
 
@@ -2149,7 +2248,7 @@ Liegt unten im schwarzen Portalbereich.
     right: 0.8%;
     bottom: 2%;
 
-    width: 10%;
+    width: 7%;
     height: auto;
 
     z-index: 4;
@@ -2173,7 +2272,44 @@ Liegt unten im schwarzen Portalbereich.
         drop-shadow(0 0 9px gold)
         drop-shadow(0 0 15px gold);
 
+    animation:
+        reservatWeiterPfeilPuls 2.8s ease-in-out infinite;
+
 }
+
+
+/* -----------------------------------
+Weiter-Pfeil – sanftes Pulsieren
+----------------------------------- */
+
+@keyframes reservatWeiterPfeilPuls {
+
+    0%,
+    100% {
+
+        opacity: 0.8;
+
+        filter:
+            drop-shadow(0 0 3px white)
+            drop-shadow(0 0 6px gold)
+            drop-shadow(0 0 10px gold);
+
+    }
+
+    50% {
+
+        opacity: 1;
+
+        filter:
+            drop-shadow(0 0 5px white)
+            drop-shadow(0 0 12px gold)
+            drop-shadow(0 0 20px gold);
+
+    }
+
+}
+
+/* Ende Weiter-Pfeil – sanftes Pulsieren */
 
 /* ---------------------------------------------------------
    NPC-DIALOG – Beenden-X
@@ -2236,10 +2372,19 @@ cursor: pointer;
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.296";
+window.multiplayerTestVersion = "0.319";
 
 /* Ende Testversion */
+/* =========================================================
+ZENTRALE SOUNDVERWALTUNG LADEN
+========================================================= */
 
+window.reservatSoundGeladen =
+    importScripts(
+        "Daten/Sounds/ReservatSound.js"
+    );
+
+/* Ende zentrale Soundverwaltung laden */
 /* =========================================================
 EXTERNE NPC-DATEIEN LADEN
 ========================================================= */
@@ -5206,7 +5351,51 @@ dialogZoomEbene.appendChild(
 
         antwortContext.shadowBlur =
             0;
+                /* -----------------------------------
+        Weiter-Pfeil neben gewählter Antwort
+        positionieren
 
+        X bleibt fest am rechten Rand.
+        Nur Y folgt der gewählten Antwort.
+        ----------------------------------- */
+
+        if (
+            ausgewaehlteAntwort !== null
+        ) {
+
+            const pfeil =
+                document.getElementById(
+                    "reservatNpcDialogWeiter"
+                );
+
+            if (pfeil) {
+                pfeil.style.right =
+                    "auto";
+
+                pfeil.style.bottom =
+                    "auto";
+                const antwortY =
+                    65 +
+                    ausgewaehlteAntwort * 8.0;
+
+                /* Feste Position rechts
+                   vor dem Holzbrett */
+
+                pfeil.style.left =
+                    "60%";
+
+                /* Pfeil vertikal auf Höhe
+                   der gewählten Antwort */
+
+                pfeil.style.top =
+                    antwortY +
+                    "%";
+
+            }
+
+        }
+
+        /* Ende Weiter-Pfeil positionieren */
     }; /* Ende antwortenZeichnen */
 
 
@@ -7673,6 +7862,7 @@ function () {
 /* =========================================================
 FIREBASE - VERBINDUNGSSTATUS BEOBACHTEN
 ========================================================= */
+
 /* -----------------------------------
    Firebase-Statusgrafiken vorladen
    ----------------------------------- */
@@ -8602,6 +8792,15 @@ Eigene Orden beobachten
 window.ordenBeobachten();
 
 /* Ende eigene Orden beobachten */
+
+/* -----------------------------------
+Sound-Einstellung beobachten
+----------------------------------- */
+
+window.reservatSoundBeobachten();
+
+/* Ende Sound-Einstellung beobachten */
+
     } /* Ende Passageend-Ereignis */
 );
 
@@ -8692,6 +8891,318 @@ async function () {
 
 }; /* Ende multiplayerLogoutBestaetigen */
 /* Ende Logout */
+/* =========================================================
+SOUND EIN / AUS
+========================================================= */
+
+/* -----------------------------------
+Aktueller Sound-Zustand
+
+Später wird dieser Wert aus Firebase
+geladen. Bis dahin ist Sound beim
+Start eingeschaltet.
+----------------------------------- */
+
+window.reservatSoundAktiv = true;
+/* =========================================================
+SOUND-EINSTELLUNG - FIREBASE BEOBACHTEN
+========================================================= */
+
+window.reservatSoundBeobachten =
+function () {
+
+    /* -----------------------------------
+    Bereits gestarteten Listener erkennen
+    ----------------------------------- */
+
+    if (
+        window.reservatSoundListenerGestartet === true
+    ) {
+
+        return;
+
+    }
+
+    /* Ende Listener bereits gestartet */
+
+
+    /* -----------------------------------
+    Angemeldeten Benutzer prüfen
+    ----------------------------------- */
+
+    const user =
+        window.firebaseAuth?.currentUser;
+
+    if (!user) {
+
+        return;
+
+    }
+
+    /* Ende Benutzer prüfen */
+
+
+    /* -----------------------------------
+    Listener als gestartet merken
+    ----------------------------------- */
+
+    window.reservatSoundListenerGestartet =
+        true;
+
+    /* Ende Listener als gestartet merken */
+
+
+    /* -----------------------------------
+    Firebase-Pfad vorbereiten
+    ----------------------------------- */
+
+    const soundRef =
+        window.firebaseRef(
+            window.firebaseDatabase,
+            "users/" +
+            user.uid +
+            "/einstellungen/soundAktiv"
+        );
+
+    /* Ende Firebase-Pfad vorbereiten */
+
+
+    /* -----------------------------------
+    Sound-Einstellung beobachten
+    ----------------------------------- */
+
+    window.firebaseOnValue(
+
+        soundRef,
+
+        function (snapshot) {
+
+            /* -----------------------------------
+            Zustand übernehmen
+
+            Kein Firebase-Eintrag bedeutet:
+            Sound ist standardmäßig eingeschaltet.
+            ----------------------------------- */
+
+            window.reservatSoundAktiv =
+                snapshot.exists()
+                    ? snapshot.val() === true
+                    : true;
+/* -----------------------------------
+Laufende Sounds bei Sound AUS stoppen
+----------------------------------- */
+
+if (
+    window.reservatSoundAktiv !== true &&
+    typeof window.reservatAlleSoundsStoppen ===
+        "function"
+) {
+
+    window.reservatAlleSoundsStoppen();
+
+}
+/* -----------------------------------
+Aktive Dauersounds bei Sound AN
+wieder fortsetzen
+----------------------------------- */
+
+if (
+    window.reservatSoundAktiv === true &&
+    typeof window.reservatDauersoundsFortsetzen ===
+        "function"
+) {
+
+    window.reservatDauersoundsFortsetzen();
+
+}
+
+/* Ende Dauersounds fortsetzen */
+
+/* Ende laufende Sounds stoppen */
+            /* Ende Zustand übernehmen */
+
+
+            /* -----------------------------------
+            Sound-Symbol suchen
+            ----------------------------------- */
+
+            const icon =
+                document.getElementById(
+                    "soundIcon"
+                );
+
+            const button =
+                document.getElementById(
+                    "soundButton"
+                );
+
+            if (!icon || !button) {
+
+                return;
+
+            }
+
+            /* Ende Sound-Symbol suchen */
+
+
+            /* -----------------------------------
+            Anzeige aktualisieren
+            ----------------------------------- */
+
+            if (window.reservatSoundAktiv) {
+
+                icon.src =
+                    "Daten/Sounds/sound_on.png";
+
+                button.title =
+                    "Sound ausschalten";
+
+            } else {
+
+                icon.src =
+                    "Daten/Sounds/sound_off.png";
+
+                button.title =
+                    "Sound einschalten";
+
+            }
+
+            /* Ende Anzeige aktualisieren */
+
+        } /* Ende Sound-Listener */
+
+    );
+
+}; /* Ende reservatSoundBeobachten */
+
+/* Ende Sound-Einstellung - Firebase beobachten */
+
+/* -----------------------------------
+Sound umschalten
+----------------------------------- */
+
+window.reservatSoundUmschalten =
+async function () {
+
+    /* -----------------------------------
+    Neuen Zustand bestimmen
+    ----------------------------------- */
+
+    const neuerZustand =
+        !window.reservatSoundAktiv;
+
+
+    /* -----------------------------------
+    Angemeldeten Firebase-Benutzer prüfen
+    ----------------------------------- */
+
+    const user =
+        window.firebaseAuth?.currentUser;
+
+    if (!user) {
+
+        console.error(
+            "Sound-Einstellung konnte nicht gespeichert werden: " +
+            "Kein Firebase-Benutzer angemeldet."
+        );
+
+        return;
+
+    }
+
+
+    /* -----------------------------------
+    Sound-Einstellung in Firebase speichern
+    ----------------------------------- */
+
+    try {
+
+        const soundRef =
+            window.firebaseRef(
+                window.firebaseDatabase,
+                "users/" +
+                user.uid +
+                "/einstellungen/soundAktiv"
+            );
+
+        await window.firebaseSet(
+            soundRef,
+            neuerZustand
+        );
+
+    } catch (fehler) {
+
+        console.error(
+            "Sound-Einstellung konnte nicht gespeichert werden:",
+            fehler
+        );
+
+        return;
+
+    }
+
+    /* Ende Firebase speichern */
+
+
+    /* -----------------------------------
+    Zustand lokal übernehmen
+    ----------------------------------- */
+
+    window.reservatSoundAktiv =
+        neuerZustand;
+
+
+    /* -----------------------------------
+    Sound-Symbol suchen
+    ----------------------------------- */
+
+    const icon =
+        document.getElementById(
+            "soundIcon"
+        );
+
+    const button =
+        document.getElementById(
+            "soundButton"
+        );
+
+    if (!icon || !button) {
+
+        return;
+
+    }
+
+
+    /* -----------------------------------
+    Sound eingeschaltet
+    ----------------------------------- */
+
+    if (window.reservatSoundAktiv) {
+
+        icon.src =
+            "Daten/Sounds/sound_on.png";
+
+        button.title =
+            "Sound ausschalten";
+
+        return;
+
+    }
+
+
+    /* -----------------------------------
+    Sound ausgeschaltet
+    ----------------------------------- */
+
+    icon.src =
+        "Daten/Sounds/sound_off.png";
+
+    button.title =
+        "Sound einschalten";
+
+}; /* Ende reservatSoundUmschalten */
+
+/* Ende Sound ein / aus */
 /* =========================================================
 VOLLBILD UMSCHALTEN
 ========================================================= */
@@ -11072,6 +11583,20 @@ SPIELER BEWEGEN
 
 window.spielerBewegen =
 async function (deltaX, deltaY) {
+	    /* -----------------------------------
+    Reservat-Bewegung gesperrt
+    ----------------------------------- */
+
+    if (
+        window.reservatBedienungGesperrt ===
+        true
+    ) {
+
+        return;
+
+    }
+
+    /* Ende Reservat-Bewegung gesperrt */
     /* -----------------------------------
     Offenen Dialog berücksichtigen
     ----------------------------------- */
@@ -13769,7 +14294,19 @@ function (zielPassage) {
 &lt;/div&gt;
 
 &lt;!-- Ende Firebase-Verbindungsstatus --&gt;
-
+&lt;button
+    id=&quot;soundButton&quot;
+    type=&quot;button&quot;
+    onclick=&quot;window.reservatSoundUmschalten()&quot;
+    aria-label=&quot;Sound ein- oder ausschalten&quot;
+    title=&quot;Sound ausschalten&quot;
+&gt;
+    &lt;img
+        id=&quot;soundIcon&quot;
+        src=&quot;Daten/Sounds/sound_on.png&quot;
+        alt=&quot;&quot;
+    &gt;
+&lt;/button&gt;
             &lt;!-- Vollbild --&gt;
 
             &lt;button

@@ -2372,7 +2372,7 @@ cursor: pointer;
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.319";
+window.multiplayerTestVersion = "0.320";
 
 /* Ende Testversion */
 /* =========================================================
@@ -7076,7 +7076,9 @@ const habiticaName =
     document.getElementById("loginSpieler").value;
 
 const email =
-    habiticaName.toLowerCase() +
+    habiticaName
+        .toLowerCase()
+        .replaceAll(" ", "_") +
     "@reservat.invalid";
 
 

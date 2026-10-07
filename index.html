@@ -2372,7 +2372,7 @@ cursor: pointer;
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.320";
+window.multiplayerTestVersion = "0.321";
 
 /* Ende Testversion */
 /* =========================================================
@@ -7394,12 +7394,14 @@ window.location.reload();
 
     } catch (fehler) {
 
-        if (ausgabe) {
+		if (ausgabe) {
 
-            ausgabe.textContent =
-                "? Passwort konnte nicht geändert werden.";
+			ausgabe.textContent =
+				"? Passwort konnte nicht geändert werden. " +
+				"Fehler: " +
+				(fehler.code || fehler.message || "unbekannt");
 
-        } /* Ende Fehlermeldung */
+		} /* Ende Fehlermeldung */
 
 
         console.error(

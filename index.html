@@ -936,6 +936,112 @@ Orden - erhalten
     transform: translate(-12px, -10px);
 }
 /* Ende Orden im Steuerkreuz */
+/* =========================================================
+INVENTAR-SCHNELLZUGRIFF
+Zeitung und spätere Inventargegenstände
+========================================================= */
+
+#spielsteuerung {
+    position: relative;
+}
+
+/* -----------------------------------
+Inventarbereich im Hochformat
+Links oben unter dem Spielfeld
+----------------------------------- */
+
+#inventarSchnellzugriff {
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+
+    gap: 6px;
+
+    z-index: 5;
+}
+
+/* -----------------------------------
+Zeitungssymbol
+----------------------------------- */
+
+#zeitung25Button {
+    width: 110px;
+    height: 110px;
+
+    margin: 0;
+    padding: 0;
+
+    background: transparent;
+    border: none;
+    box-shadow: none;
+
+    cursor: pointer;
+
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#zeitung25Button img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    pointer-events: none;
+    user-select: none;
+}
+
+/* -----------------------------------
+Browser-Effekte unterdrücken
+----------------------------------- */
+
+#zeitung25Button:hover,
+#zeitung25Button:focus,
+#zeitung25Button:active {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* -----------------------------------
+Beim Anklicken aufleuchten
+----------------------------------- */
+
+#zeitung25Button:active img {
+    filter:
+        drop-shadow(0 0 4px white)
+        drop-shadow(0 0 8px gold);
+}
+
+/* -----------------------------------
+Zeitung 25 - noch nicht erhalten
+----------------------------------- */
+
+#zeitung25Button img {
+    filter: grayscale(100%);
+    opacity: 0.35;
+}
+
+/* -----------------------------------
+Zeitung 25 - erhalten
+----------------------------------- */
+
+#zeitung25Button.erhalten img {
+    filter: none;
+    opacity: 1;
+}
+
+/* Ende Zeitung 25 - Besitzanzeige */
+
+/* Ende Inventar-Schnellzugriff */
 /* Ende Bewegungssteuerung */
 /* =========================================================
 HANDY QUERFORMAT
@@ -1041,7 +1147,18 @@ unten links an der Karte
 #bewegungssteuerung {
     margin: auto auto 0 0;
 }
+/* -----------------------------------
+Inventar im Querformat
+Rechts neben dem Steuerkreuz
+----------------------------------- */
 
+#inventarSchnellzugriff {
+    top: auto;
+    left: 202px;
+    bottom: 0;
+}
+
+/* Ende Inventar im Querformat */
 
 }/* ENDE HANDY QUERFORMAT */
 /* =========================================================
@@ -2397,7 +2514,7 @@ cursor: pointer;
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.324";
+window.multiplayerTestVersion = "0.338";
 
 /* Ende Testversion */
 /* =========================================================
@@ -3909,6 +4026,334 @@ async function () {
 
 /* Ende Traudel - Bekannt machen */
 /* =========================================================
+INVENTAR - GEGENSTANDSBESITZ PRÜFEN
+
+Prüft, ob der angemeldete Spieler
+einen bestimmten Gegenstand besitzt.
+
+Beispiel:
+inventarGegenstandBesitzt("zeitungen", "25")
+
+Rückgabe:
+true  = Gegenstand vorhanden
+false = Gegenstand nicht vorhanden
+null  = Prüfung fehlgeschlagen
+========================================================= */
+
+window.inventarGegenstandBesitzt =
+async function (kategorie, gegenstandId) {
+
+    /* -----------------------------------
+    Angemeldeten Spieler ermitteln
+    ----------------------------------- */
+
+    const user =
+        window.firebaseAuth?.currentUser;
+
+    if (!user) {
+
+        console.error(
+            "Inventarprüfung: Kein Spieler angemeldet."
+        );
+
+        return null;
+
+    }
+
+    /* Ende Spieler ermitteln */
+
+
+    /* -----------------------------------
+    Inventarpfad bestimmen
+    ----------------------------------- */
+
+    const inventarRef =
+        window.firebaseRef(
+            window.firebaseDatabase,
+            "inventar/" +
+            user.uid + "/" +
+            kategorie + "/" +
+            gegenstandId
+        );
+
+    /* Ende Inventarpfad bestimmen */
+
+
+    /* -----------------------------------
+    Gegenstand in Firebase prüfen
+    ----------------------------------- */
+
+    try {
+
+        const snapshot =
+            await window.firebaseGet(
+                inventarRef
+            );
+
+        return snapshot.exists();
+
+    } catch (fehler) {
+
+        console.error(
+            "Inventarprüfung fehlgeschlagen:",
+            fehler
+        );
+
+        return null;
+
+    }
+
+    /* Ende Gegenstand prüfen */
+
+}; /* Ende inventarGegenstandBesitzt */
+
+/* Ende Inventar - Gegenstandsbesitz prüfen */
+/* =========================================================
+ZEITUNG 25 - SYMBOL AKTUALISIEREN
+
+Prüft den Zeitungsbesitz in Firebase.
+
+Nicht erhalten: grau
+Erhalten:       farbig
+Prüffehler:     grau
+========================================================= */
+
+window.zeitung25SymbolAktualisieren =
+async function () {
+
+    /* -----------------------------------
+    Zeitungssymbol suchen
+    ----------------------------------- */
+
+    const button =
+        document.getElementById(
+            "zeitung25Button"
+        );
+
+    if (!button) {
+        return;
+    }
+
+    /* -----------------------------------
+    Zunächst ausgegraut anzeigen
+    ----------------------------------- */
+
+    button.classList.remove(
+        "erhalten"
+    );
+
+    /* -----------------------------------
+    Zeitungsbesitz prüfen
+    ----------------------------------- */
+
+    const besitzt =
+        await window.inventarGegenstandBesitzt(
+            "zeitungen",
+            "25"
+        );
+
+    /* -----------------------------------
+    Symbol aktualisieren
+    ----------------------------------- */
+
+    if (
+        button.isConnected &&
+        besitzt === true
+    ) {
+
+        button.classList.add(
+            "erhalten"
+        );
+
+    }
+
+}; /* Ende zeitung25SymbolAktualisieren */
+
+/* Ende Zeitung 25 - Symbol aktualisieren */
+/* =========================================================
+ZEITUNG 25 - SCHNELLZUGRIFF ANKLICKEN
+
+Grau: Hinweis in der Ereigniszeile
+Farbig: Zeitung im Browser öffnen
+========================================================= */
+
+document.addEventListener(
+    "click",
+    function (ereignis) {
+
+        /* -----------------------------------
+        Zeitungssymbol erkennen
+        ----------------------------------- */
+
+        const button =
+            ereignis.target.closest(
+                "#zeitung25Button"
+            );
+
+        if (!button) {
+            return;
+        }
+
+        /* -----------------------------------
+        Besitzstatus prüfen
+        ----------------------------------- */
+
+        if (!button.classList.contains("erhalten")) {
+
+            const ereignisText =
+                document.getElementById(
+                    "schnappschussTest"
+                );
+
+            if (ereignisText) {
+
+			ereignisText.textContent =
+			"Du besitzt Ausgabe 25 noch nicht.";
+
+            }
+
+            return;
+        }
+
+        /* -----------------------------------
+        Zeitung öffnen
+        ----------------------------------- */
+
+        const zeitungFenster =
+            window.open(
+                "https://zerflixt.github.io/Wild-am-Sonntag-25/",
+                "Gewohnheitstiere_WaS25"
+            );
+
+        if (zeitungFenster) {
+            zeitungFenster.focus();
+        }
+
+        /* Ende Zeitung öffnen */
+
+    }
+);
+
+/* Ende Zeitung 25 - Schnellzugriff anklicken */
+/* =========================================================
+INVENTAR - ZEITUNG 25 HINZUFÜGEN
+
+Legt Ausgabe 25 dauerhaft im Inventar
+des angemeldeten Spielers ab.
+
+Rückgabe:
+true  = Zeitung erfolgreich hinzugefügt
+false = Zeitung bereits vorhanden oder Fehler
+========================================================= */
+
+window.inventarZeitung25Hinzufuegen =
+async function () {
+
+    /* -----------------------------------
+    Angemeldeten Spieler ermitteln
+    ----------------------------------- */
+
+    const user =
+        window.firebaseAuth?.currentUser;
+
+    if (!user) {
+
+        console.error(
+            "Zeitungsübergabe: Kein Spieler angemeldet."
+        );
+
+        return false;
+
+    }
+
+    /* Ende Spieler ermitteln */
+
+
+    /* -----------------------------------
+    Vorhandenen Besitz prüfen
+    ----------------------------------- */
+
+    const besitztZeitung =
+        await window.inventarGegenstandBesitzt(
+            "zeitungen",
+            "25"
+        );
+
+    if (besitztZeitung !== false) {
+
+        if (besitztZeitung === true) {
+
+            console.info(
+                "Ausgabe 25 ist bereits im Inventar."
+            );
+
+        } else {
+
+            console.error(
+                "Zeitungsbesitz konnte nicht geprüft werden."
+            );
+
+        }
+
+        return false;
+
+    }
+
+    /* Ende vorhandenen Besitz prüfen */
+
+
+    /* -----------------------------------
+    Inventarpfad bestimmen
+    ----------------------------------- */
+
+    const zeitungRef =
+        window.firebaseRef(
+            window.firebaseDatabase,
+            "inventar/" +
+            user.uid +
+            "/zeitungen/25"
+        );
+
+    /* Ende Inventarpfad bestimmen */
+
+
+    /* -----------------------------------
+    Zeitung speichern
+    ----------------------------------- */
+
+    try {
+
+        await window.firebaseSet(
+            zeitungRef,
+            {
+                erhaltenAm: Date.now(),
+                quelle: "traudel"
+            }
+        );
+
+        console.info(
+            "Ausgabe 25 erfolgreich ins Inventar aufgenommen."
+        );
+
+        return true;
+
+    } catch (fehler) {
+
+        console.error(
+            "Ausgabe 25 konnte nicht gespeichert werden:",
+            fehler
+        );
+
+        return false;
+
+    }
+
+    /* Ende Zeitung speichern */
+
+}; /* Ende inventarZeitung25Hinzufuegen */
+
+/* Ende Inventar - Zeitung 25 hinzufügen */
+/* =========================================================
 NPC-DIALOG TEST ANZEIGEN
 
 Erster grafischer Test für NPC-Dialoge.
@@ -4545,6 +4990,36 @@ async function (sonderfeld) {
     }
 
     /* Ende NPC unterscheiden */
+	    /* =========================================================
+    TRAUDEL - ZEITUNGSBESITZ PRÜFEN
+
+    Prüft vor dem Gespräch, ob der Spieler
+    Ausgabe 25 bereits im Inventar hat.
+
+    Die eigentliche Zeitungsübergabe
+    wird später ergänzt.
+    ========================================================= */
+
+    const traudelZeitung25Besitz =
+        await window.inventarGegenstandBesitzt(
+            "zeitungen",
+            "25"
+        );
+
+    if (traudelZeitung25Besitz === null) {
+
+        console.error(
+            "Traudel: Zeitungsbesitz konnte nicht geprüft werden."
+        );
+
+        return;
+
+    }
+
+    const traudelZeitung25Anbieten =
+        traudelZeitung25Besitz === false;
+
+    /* Ende Traudel - Zeitungsbesitz prüfen */
     /* -----------------------------------
     Traudels Gedächtnis prüfen
     ----------------------------------- */
@@ -4598,20 +5073,40 @@ async function (sonderfeld) {
     ausdrücklich NICHT.
     ----------------------------------- */
 
-    if (
-        traudelGespraechsFall ===
-            "erstesGespraech" ||
-        traudelGespraechsFall ===
-            "weiteresGespraech"
-    ) {
+        /* -----------------------------------
+    Normales Gespräch erst später zählen
+
+    Die Zeitungsübergabe muss vorher
+    abgeschlossen sein.
+
+    Mehrfaches Speichern verhindern.
+    ----------------------------------- */
+
+    let traudelGespraechBereitsGezaehlt = false;
+
+    const traudelNormalesGespraechZaehlen =
+    async function () {
+
+        if (traudelGespraechBereitsGezaehlt) {
+            return;
+        }
+
+        if (
+            traudelGespraechsFall !== "erstesGespraech" &&
+            traudelGespraechsFall !== "weiteresGespraech"
+        ) {
+            return;
+        }
 
         await window.traudelGedaechtnisSpeichern(
             traudelGedaechtnis
         );
 
-    }
+        traudelGespraechBereitsGezaehlt = true;
 
-    /* Ende gezähltes Gespräch speichern */
+    }; /* Ende traudelNormalesGespraechZaehlen */
+
+    /* Ende gezähltes Gespräch vorbereiten */
     /* -----------------------------------
     Traudel-Dialogdaten laden
     ----------------------------------- */
@@ -4751,9 +5246,31 @@ dialogZoomEbene.appendChild(
     traudel.id =
         "reservatNpcDialogTraudel";
 
-    traudel.src =
-        "Daten/NPCs/Tratschtante/" +
-        "NPC_Tratschtante_Haende_Hueften_512x512.png";
+    /* -----------------------------------
+    Traudel-Grafik nach Zeitungsbesitz
+
+    Ohne Ausgabe 25:
+    Traudel verteilt die Zeitung.
+
+    Mit Ausgabe 25:
+    Traudel zeigt ihre normale Grafik.
+    ----------------------------------- */
+
+    if (traudelZeitung25Anbieten) {
+
+        traudel.src =
+            "Daten/NPCs/Tratschtante/" +
+            "Traudel-verteilt-wild-am-sonntag-25.png";
+
+    } else {
+
+        traudel.src =
+            "Daten/NPCs/Tratschtante/" +
+            "NPC_Tratschtante_Haende_Hueften_512x512.png";
+
+    }
+
+    /* Ende Traudel-Grafik nach Zeitungsbesitz */
 
     traudel.alt =
         "Traudel";
@@ -5677,16 +6194,44 @@ dialogZoomEbene.appendChild(
 
 
 
-    dialogSeiteAnzeigen(
-        ersteDialogSeite
-    );
+       /* -----------------------------------
+    Gesprächsbeginn mit Zeitungsangebot
+    ----------------------------------- */
 
-    /* Ende erste Dialogseite bestimmen */
+    if (!traudelZeitung25Anbieten) {
+
+        await traudelNormalesGespraechZaehlen();
+
+        dialogSeiteAnzeigen(
+            ersteDialogSeite
+        );
+
+    } else {
+
+        /*
+        Zeitung zuerst anbieten.
+        Die Gesprächszählung erfolgt erst
+        nach Abschluss des Angebots.
+        */
+
+        dialogSeiteAnzeigen(
+            "zeitung25Angebot"
+        );
+
+    }
+
+    /* Ende Gesprächsbeginn mit Zeitungsangebot */
 	    /* -----------------------------------
     Weiter-Pfeil:
     Testweise auf Seite 2 wechseln
     ----------------------------------- */
+/* -----------------------------------
+Zeitungsübergabe gegen Doppelklick sichern
+----------------------------------- */
 
+let traudelZeitungsUebergabeLaeuft = false;
+
+/* Ende Doppelklick-Sicherung */
 weiterPfeil.addEventListener(
     "click",
     async function (ereignis) {
@@ -5717,7 +6262,135 @@ weiterPfeil.addEventListener(
                 aktuelleSeite?.antworten?.[
                     ausgewaehlteAntwort
                 ];
+            /* =========================================================
+            TRAUDEL - ZEITUNG 25 ÜBERGEBEN
+            ========================================================= */
 
+            if (traudelZeitungsUebergabeLaeuft) {
+                return;
+            }
+
+            /* -----------------------------------
+            Zeitungsangebot beantworten
+            ----------------------------------- */
+
+            if (aktuelleDialogSeite === "zeitung25Angebot") {
+
+                /* Zeitung annehmen */
+
+                if (antwort?.ziel === "zeitung25Annehmen") {
+
+                    traudelZeitungsUebergabeLaeuft = true;
+
+                    try {
+
+                        const gespeichert =
+                            await window.inventarZeitung25Hinzufuegen();
+
+                        if (gespeichert) {
+
+                            /* Zeitungssymbol sofort farbig schalten */
+
+                            await window.zeitung25SymbolAktualisieren();
+
+                            /* Ende Zeitungssymbol aktualisieren */
+
+                            dialogSeiteAnzeigen(
+                                "zeitung25Erhalten"
+                            );
+
+                        } else {
+
+                            dialogSeiteAnzeigen(
+                                "zeitung25Speicherfehler"
+                            );
+
+                        }
+
+                    } catch (fehler) {
+
+                        console.error(
+                            "Traudels Zeitungsübergabe fehlgeschlagen:",
+                            fehler
+                        );
+
+                        dialogSeiteAnzeigen(
+                            "zeitung25Speicherfehler"
+                        );
+
+                    } finally {
+
+                        traudelZeitungsUebergabeLaeuft = false;
+
+                    }
+
+                    return;
+
+                }
+
+                /* Ende Zeitung annehmen */
+
+
+                /* Zeitung ablehnen */
+
+                /* Zeitung ablehnen */
+
+                if (antwort?.ziel === "zeitung25Ablehnen") {
+
+                    /* Traudel zieht weiter */
+
+                    dialog.remove();
+
+                    return;
+
+                }
+
+                /* Ende Zeitung ablehnen */
+
+                /* Ende Zeitung ablehnen */
+
+            }
+
+            /* Ende Zeitungsangebot beantworten */
+
+
+            /* -----------------------------------
+            Nach Zeitungsangebot weitergehen
+            ----------------------------------- */
+
+            if (
+                aktuelleDialogSeite === "zeitung25Erhalten" &&
+                antwort?.ziel === "zeitung25Weiter"
+            ) {
+
+                /* Traudel muss weitere Zeitungen verteilen */
+
+                dialog.remove();
+
+                return;
+
+            }
+
+            /* -----------------------------------
+            Nach Speicherfehler normal fortfahren
+            ----------------------------------- */
+
+            if (
+                aktuelleDialogSeite === "zeitung25Speicherfehler" &&
+                antwort?.ziel === "zeitung25Weiter"
+            ) {
+
+                await traudelNormalesGespraechZaehlen();
+
+                dialogSeiteAnzeigen(
+                    ersteDialogSeite
+                );
+
+                return;
+
+            }
+
+            /* Ende Traudel - Zeitung 25 übergeben */
             /* -----------------------------------
             Reguläres Dialogende
 
@@ -14425,6 +15098,35 @@ function (zielPassage) {
 
     &lt;div id=&quot;spielsteuerung&quot;&gt;
 
+        &lt;!-- =========================================
+             INVENTAR-SCHNELLZUGRIFF
+
+             Hochformat:
+             Links unter dem Spielfeld.
+
+             Querformat:
+             Rechts neben dem Steuerkreuz.
+             ========================================= --&gt;
+
+        &lt;div id=&quot;inventarSchnellzugriff&quot;&gt;
+
+            &lt;button
+                id=&quot;zeitung25Button&quot;
+                class=&quot;inventarTaste&quot;
+                type=&quot;button&quot;
+                title=&quot;Wild am Sonntag – Ausgabe 25 lesen&quot;
+                aria-label=&quot;Wild am Sonntag Ausgabe 25 lesen&quot;
+            &gt;
+                &lt;img
+                    src=&quot;Daten/Icons/icon-wild-am-sonntag.png&quot;
+                    alt=&quot;&quot;
+                &gt;
+            &lt;/button&gt;
+
+        &lt;/div&gt;
+
+        &lt;!-- Ende Inventar-Schnellzugriff --&gt;
+
         &lt;div id=&quot;avatarTest&quot;&gt;
             Avatar wird geladen …
         &lt;/div&gt;
@@ -14587,7 +15289,7 @@ function (zielPassage) {
     &lt;&lt;run window.spielfeldGroesseBeobachten()&gt;&gt;
 
     &lt;&lt;run window.schnappschussTestenUndAvatarZeigen()&gt;&gt;
-
+    &lt;&lt;run window.zeitung25SymbolAktualisieren()&gt;&gt;
 &lt;&lt;/done&gt;&gt;
 
 

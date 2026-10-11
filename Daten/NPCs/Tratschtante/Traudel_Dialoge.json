@@ -3,7 +3,40 @@
         "_kommentar": "Dieser Text wurde beim Aufbau des Dialogfensters als Referenz für die maximale Textmenge getestet. Dialogtexte sollten diese Länge möglichst nicht überschreiten.",
         "maximaleTraudelTextlaenge": "Na sowas! Dich habe ich hier ja noch nie gesehen. Du bist doch bestimmt eines dieser Gewohnheitstiere, von denen man überall hört. Sag mal, wie heißt du eigentlich? Und wo kommst du überhaupt her? Hier am Hafen sieht man ja allerhand Leute, aber ein neues Gesicht fällt mir natürlich sofort auf. Man muss schließlich wissen, was hier vor sich geht. Also los, erzähl mir ein bisschen von dir!"
     },
+    "zeitung25Angebot": {
+        "_kommentar": "Wird vor dem normalen Traudel-Gespräch angezeigt, wenn Ausgabe 25 noch nicht im Inventar liegt.",
+        "text": "Ach, da seid Ihr ja! Zerflixt hat mich beauftragt, die neue Wild am Sonntag zu verteilen. Ausgabe 25, frisch erschienen! Und ich soll darauf achten, dass auch wirklich jeder ein Exemplar bekommt. Also, möchtet Ihr eine Zeitung haben?",
+        "antworten": [
+            {
+                "text": "Ja, gerne! Ich nehme eine.",
+                "ziel": "zeitung25Annehmen"
+            },
+            {
+                "text": "Nein danke, lieber nicht.",
+                "ziel": "zeitung25Ablehnen"
+            }
+        ]
+    },
 
+    "zeitung25Erhalten": {
+        "text": "Wunderbar! Da habt Ihr Euer Exemplar. Zerflixt wird sich freuen! Und jetzt, wo das erledigt ist ... was kann ich für Euch tun?",
+        "antworten": [
+            {
+                "text": "Vielen Dank, Traudel!",
+                "ziel": "zeitung25Weiter"
+            }
+        ]
+    },
+
+    "zeitung25Speicherfehler": {
+        "text": "Ach herrje! Irgendetwas stimmt mit der Übergabe nicht. Ich behalte Euer Exemplar lieber noch hier, bis das geklärt ist. Versucht es später noch einmal!",
+        "antworten": [
+            {
+                "text": "In Ordnung, Traudel.",
+                "ziel": "zeitung25Weiter"
+            }
+        ]
+    },
     "start": {
         "text": "Na sowas! Euch habe ich hier ja noch nie gesehen. Ihr seid doch bestimmt eines dieser Gewohnheitstiere, von denen man überall hört. Sagt mal, wie heißt Ihr eigentlich?",
         "antworten": [

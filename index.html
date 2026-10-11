@@ -2514,7 +2514,7 @@ cursor: pointer;
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.338";
+window.multiplayerTestVersion = "0.343";
 
 /* Ende Testversion */
 /* =========================================================
@@ -2527,6 +2527,16 @@ window.reservatSoundGeladen =
     );
 
 /* Ende zentrale Soundverwaltung laden */
+/* =========================================================
+INFORMATIONSOBJEKTE LADEN
+========================================================= */
+
+window.infotafelnGeladen =
+    importScripts(
+        "Daten/Objekte/Infotafeln/infotafeln.js"
+    );
+
+/* Ende Informationsobjekte laden */
 /* =========================================================
 EXTERNE NPC-DATEIEN LADEN
 ========================================================= */
@@ -2929,13 +2939,16 @@ function () {
         karte.sonderfelder.filter(
             function (sonderfeld) {
 
-                return (
-                    sonderfeld.typ === "npc_dialog" &&
-                    Array.isArray(
-                        sonderfeld.position
-                    ) &&
-                    sonderfeld.grafik
-                );
+				return (
+					(
+						sonderfeld.typ === "npc_dialog" ||
+						sonderfeld.typ === "info_objekt"
+					) &&
+					Array.isArray(
+						sonderfeld.position
+					) &&
+					sonderfeld.grafik
+				);
 
             }
         );
@@ -2978,9 +2991,10 @@ function () {
             grafik.src =
                 sonderfeld.grafik;
 
-            grafik.alt =
-                sonderfeld.npc ||
-                "NPC";
+			grafik.alt =
+				sonderfeld.npc ||
+				sonderfeld.infoId ||
+				"NPC";
 
 
             /*
@@ -3052,11 +3066,13 @@ function () {
             grafik.style.objectFit =
                 "contain";
 
-            grafik.style.pointerEvents =
-                "none";
+			grafik.style.pointerEvents =
+				"none";
 
-            grafik.style.zIndex =
-                "25";
+			grafik.style.zIndex =
+				sonderfeld.typ === "info_objekt"
+					? "45"
+					: "25";
 
 
 const reservatZoomEbene =
@@ -3299,21 +3315,25 @@ function () {
     );
 
 
-    if (
-        sonderfeld &&
-        sonderfeld.trigger ===
-            "nachbar_aktion" &&
-        sonderfeld.typ ===
-            "npc_dialog"
-    ) {
+				if (
+					sonderfeld &&
+					sonderfeld.trigger === "nachbar_aktion" &&
+					(
+						sonderfeld.typ === "npc_dialog" ||
+						sonderfeld.typ === "info_objekt"
+					)
+				) {
 
         npcGrafiken.forEach(
             function (grafik) {
 
-                if (
-                    grafik.alt ===
-                    sonderfeld.npc
-                ) {
+				if (
+					grafik.alt === sonderfeld.npc ||
+					(
+						sonderfeld.typ === "info_objekt" &&
+						grafik.alt === sonderfeld.infoId
+					)
+				) {
 
                     grafik.style.filter =
                         "drop-shadow(0 0 6px white) " +
@@ -3497,16 +3517,31 @@ async function () {
                 break;
 
 
-            case "npc_dialog":
+			case "npc_dialog":
 
-                window.npcDialogTestAnzeigen(
-                    sonderfeld
-                );
+				window.npcDialogTestAnzeigen(
+					sonderfeld
+				);
 
-                break;
+				break;
 
 
-            default:
+			case "info_objekt":
+
+				/* -----------------------------------
+				Informationsfenster öffnen
+				----------------------------------- */
+
+				window.infotafelAnzeigen(
+					sonderfeld
+				);
+
+				break;
+
+				/* Ende Informationsobjekt öffnen */
+
+
+			default:
 
                 console.warn(
                     "Unbekannter Sonderfeld-Typ:",

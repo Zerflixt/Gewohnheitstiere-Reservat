@@ -80,6 +80,7 @@ Größe auf Kartenbereich begrenzen
 ----------------------------------- */
 
 fenster.style.width = "90%";
+fenster.style.containerType = "inline-size";
 fenster.style.maxWidth = "none";
 
 fenster.style.maxHeight = "none";
@@ -135,7 +136,7 @@ textbereich.style.overflowY = "auto";
 textbereich.style.overflowX = "hidden";
 
 textbereich.style.color = "white";
-textbereich.style.fontSize = "clamp(12px, 1.8vw, 22px)";
+textbereich.style.fontSize = "2.8cqw";
 textbereich.style.lineHeight = "1.5";
 
 textbereich.style.zIndex = "5";

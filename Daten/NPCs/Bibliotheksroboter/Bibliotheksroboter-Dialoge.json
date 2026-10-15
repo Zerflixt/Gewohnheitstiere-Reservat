@@ -1,0 +1,182 @@
+{
+  "angriff": {
+    "scan": [
+      "WARNUNG.",
+      "",
+      "FEHLERHAFTE BESUCHERKLASSIFIZIERUNG.",
+      "",
+      "OBJEKT ERKANNT ALS:",
+      "BEDROHUNG.",
+      "",
+      "VERTEIDIGUNGSPROTOKOLL AKTIVIERT."
+    ]
+  },
+
+  "update": {
+    "scan": [
+      "SYSTEMUPDATE WIRD DURCHGEFÜHRT.",
+      "",
+      "FORTSCHRITT: 98 %",
+      "FORTSCHRITT: 97 %",
+      "",
+      "VORAUSSICHTLICHE RESTDAUER: 3 MINUTEN.",
+      "KORREKTUR: 47 MINUTEN.",
+      "",
+      "BITTE SPÄTER ERNEUT STÖREN."
+    ]
+  },
+
+	"normal": {
+		"antwortZugriffVerweigert": [
+  "ZUGRIFF VERWEIGERT."
+],
+	  "pruefungsBegriffe": [
+		"GESPRÄCHSBERECHTIGUNGSPRÜFUNG",
+		"KOMMUNIKATIONSFREIGABEPRÜFUNG",
+		"ANSPRECHBERECHTIGUNGSPRÜFUNG",
+		"KONVERSATIONSGENEHMIGUNGSVERFAHREN",
+		"UNTERBRECHUNGSBERECHTIGUNGSPRÜFUNG"
+	  ],
+	  "scan": [
+		"{pruefungsBegriff} LÄUFT ...",
+		"",
+		"NAME: {spielerName} ❌",
+		"HABITICA-GEBURTSTAG: {geburtstag} ❌",
+		"KLASSE: {klasse} ❌",
+		"LEVEL: {level} ❌",
+		"{zufallsPruefung} ❌",
+		"",
+		    "MITGLIED DER GEWOHNHEITSTIERE        ✅"
+  ],
+  "ausgabe24Erneut": [
+    "WILD AM SONNTAG – AUSGABE 24.",
+    "",
+    "ERNEUTE LEKTÜRE?",
+    "",
+    "UNGEWÖHNLICH.",
+    "",
+    "ABER ZULÄSSIG."
+  ],
+  "antwortBibliothekar": [
+    "NEGATIV.",
+    "",
+    "BIBLIOTHEKARISCHE FACHKRAFT",
+    "DERZEIT NICHT VERFÜGBAR.",
+    "",
+    "VERTRETUNGSMODUS AKTIV.",
+    "",
+    "SUCHEN SIE LEKTÜRE?"
+  ],
+  "empfehlungAusgabe24": [
+    "EMPFEHLUNG:",
+    "",
+    "WILD AM SONNTAG – AUSGABE 24.",
+    "",
+    "AKTUALITÄT: FRAGWÜRDIG.",
+    "UNTERHALTUNGSWERT: HINREICHEND."
+  ],
+  "ausgabe24Auswahl": [
+    "Zeitung nehmen und lesen.",
+    "Lieber doch nicht."
+  ],
+  "ersteAntworten": {
+    "antwort1": "Was ist hier eigentlich los?",
+    "antwort2": "OMG!! WTF?",
+    "antwort2Wiederholung": [
+      "Ich würde gerne die Ausgabe 24",
+      "noch einmal lesen."
+    ],
+    "antwort3": "Bist du der Bibliothekar?"
+  },
+"antwortLektuere": "Eigentlich schon.",
+"antwortUpdate": "Okay, ich komme später wieder.",
+"antwortBegruessung": "Ähm... Hallo?"
+	},
+
+	"zeitungsspende": {
+	  "entdeckung": {
+		"roboter": [
+		  "MOMENT.",
+		  "",
+		  "BEI IHNEN WURDE EIN DRUCKERZEUGNIS ERKANNT.",
+		  "",
+		  "WILD AM SONNTAG. AUSGABE 25."
+		],
+		"antworten": [
+		  "Und? Ist das verboten?",
+		  "Gut erkannt, Blechbüchse!"
+		]
+	  },
+
+	  "spendenfrage": {
+		"antwort1": [
+		  "VERBOTEN? NEIN.",
+		  "ABER EIN UNREGISTRIERTES DRUCKERZEUGNIS."
+		],
+		"antwort2": [
+		  "IHRE BEOBACHTUNGSGABE IST BEMERKENSWERT.",
+		  "FÜR EIN ORGANISCHES WESEN."
+		],
+		"zwischenfrage": [
+		  "Was willst du mir damit sagen?"
+		],
+		"roboter": [
+		  "MÖCHTEN SIE DIESE AUSGABE",
+		  "UNSERER BIBLIOTHEK SPENDEN?"
+		],
+		"antworten": [
+		  "Ja, die könnt ihr haben.",
+		  "Nein, die behalte ich lieber."
+		],
+		"abgelehnt": [
+		  "SPENDENANGEBOT ABGELEHNT.",
+		  "",
+		  "BEDAUERLICH.",
+		  "",
+"ICH WERDE VERSUCHEN,",
+"MEINE ENTTÄUSCHUNG ZU VERARBEITEN."
+],
+"antwortenNachPruefung": [
+  "(…)",
+  "(… Popel wie bitte!?)"
+],
+"antwortenNachSpende": [
+  "(…)",
+  "(… gern geschehen)"
+],
+"zurueckZumDialog": [
+  "WAS KANN ICH SONST NOCH",
+  "FÜR SIE TUN?"
+],
+
+		"pruefung": [
+		  "SPENDENANGEBOT AKZEPTIERT.",
+		  "",
+		  "STARTE ESELSOHRENPRÜFUNG ...",
+		  "ERGEBNIS: BESTANDEN.",
+		  "",
+		  "STARTE POPELVERKLEBUNGSPRÜFUNG ...",
+		  "ERGEBNIS: BESTANDEN.",
+		  "",
+		  "DRUCKERZEUGNIS ZUR ARCHIVIERUNG FREIGEGEBEN."
+],
+
+			"spendeErfolgreich": [
+			  "SPENDENVORGANG ABGESCHLOSSEN.",
+			  "",
+			  "AUSGABE 25 WURDE ARCHIVIERT.",
+			  "",
+			  "DIE BIBLIOTHEK DANKT IHNEN.",
+			  "ICH PERSÖNLICH BIN DAZU NICHT VERPFLICHTET."
+			],
+
+			"spendeFehlgeschlagen": [
+			  "FEHLER BEI DER ARCHIVIERUNG.",
+			  "",
+			  "SPENDENVORGANG NICHT ABGESCHLOSSEN.",
+			  "",
+			  "BITTE VERSUCHEN SIE ES SPÄTER ERNEUT."
+			]
+	  }
+	}
+}

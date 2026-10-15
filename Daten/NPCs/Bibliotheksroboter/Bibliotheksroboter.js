@@ -10,6 +10,48 @@ null = echter Zufall
 
 window.bibliotheksroboterTestModus = null;
 /* =========================================================
+BIBLIOTHEKSROBOTER - DIALOGTEXTE LADEN
+========================================================= */
+
+window.bibliotheksroboterDialogtexte = null;
+
+window.bibliotheksroboterDialogtexteLaden =
+async function () {
+
+    try {
+
+        const antwort = await fetch(
+            "Daten/NPCs/Bibliotheksroboter/" +
+            "Bibliotheksroboter-Dialoge.json"
+        );
+
+        if (!antwort.ok) {
+            throw new Error(
+                "HTTP-Fehler " + antwort.status
+            );
+        }
+
+        const daten = await antwort.json();
+
+        window.bibliotheksroboterDialogtexte =
+            daten;
+
+        return true;
+
+    } catch (fehler) {
+
+        console.error(
+            "Bibliotheksroboter: Dialogtexte konnten nicht geladen werden.",
+            fehler
+        );
+
+        return false;
+    }
+
+}; /* Ende bibliotheksroboterDialogtexteLaden */
+
+/* Ende Bibliotheksroboter - Dialogtexte laden */
+/* =========================================================
 BIBLIOTHEKSROBOTER – AUSGABE 24 ÖFFNEN
 ========================================================= */
 
@@ -68,6 +110,17 @@ BIBLIOTHEKSROBOTER - DIALOG ANZEIGEN
 
 window.bibliotheksroboterDialogAnzeigen =
 async function (sonderfeld) {
+	    /* -----------------------------------
+    Dialogtexte aus JSON laden
+    ----------------------------------- */
+
+    if (!window.bibliotheksroboterDialogtexte) {
+
+        await window.bibliotheksroboterDialogtexteLaden();
+
+    }
+
+    /* Ende Dialogtexte laden */
     /* -----------------------------------
     Gesprächsstart bestimmen
     ----------------------------------- */
@@ -404,7 +457,13 @@ async function (sonderfeld) {
 
 
     let scanZeilen;
+/* -----------------------------------
+Zeitungserkennung für Dialog merken
+----------------------------------- */
 
+let zeitung25SpendeMoeglich = false;
+
+/* Ende Zeitungserkennung */
 
 /* -----------------------------------
 Angriffsmodus
@@ -412,17 +471,9 @@ Angriffsmodus
 
 if (gespraechsStart === "angriff") {
 
-    scanZeilen = [
-        "WARNUNG.",
-        "",
-        "FEHLERHAFTE BESUCHERKLASSIFIZIERUNG.",
-        "",
-        "OBJEKT ERKANNT ALS:",
-        "BEDROHUNG.",
-        "",
-        "VERTEIDIGUNGSPROTOKOLL AKTIVIERT."
-    ];
-
+    scanZeilen =
+        window.bibliotheksroboterDialogtexte
+            .angriff.scan;
 
 /* -----------------------------------
 Update
@@ -430,36 +481,30 @@ Update
 
 } else if (gespraechsStart === "update") {
 
-    scanZeilen = [
-        "SYSTEMUPDATE WIRD DURCHGEFÜHRT.",
-        "",
-        "FORTSCHRITT: 98 %",
-        "FORTSCHRITT: 97 %",
-        "",
-        "VORAUSSICHTLICHE RESTDAUER: 3 MINUTEN.",
-        "KORREKTUR: 47 MINUTEN.",
-        "",
-        "BITTE SPÄTER ERNEUT STÖREN."
-    ];
-
+    scanZeilen =
+        window.bibliotheksroboterDialogtexte
+            .update.scan;
 
 /* -----------------------------------
 Normaler Gesprächsstart
 ----------------------------------- */
 
 } else {
+    /* -----------------------------------
+    Zeitungsspende prüfen
+    ----------------------------------- */
 
+zeitung25SpendeMoeglich =
+    await window.inventarZeitung25SpendeMoeglich();
+
+    /* Ende Zeitungsspende prüfen */
     /* -----------------------------------
     Prüfungsbegriff zufällig auswählen
     ----------------------------------- */
 
-    const pruefungsBegriffe = [
-        "GESPRÄCHSBERECHTIGUNGSPRÜFUNG",
-        "KOMMUNIKATIONSFREIGABEPRÜFUNG",
-        "ANSPRECHBERECHTIGUNGSPRÜFUNG",
-        "KONVERSATIONSGENEHMIGUNGSVERFAHREN",
-        "UNTERBRECHUNGSBERECHTIGUNGSPRÜFUNG"
-    ];
+	const pruefungsBegriffe =
+		window.bibliotheksroboterDialogtexte
+			.normal.pruefungsBegriffe;
 
     const pruefungsBegriff =
         pruefungsBegriffe[
@@ -714,39 +759,27 @@ Normaler Gesprächsstart
 
     /* Ende zufällige unnütze Prüfzeile */
 
-
-    /* -----------------------------------
+/* -----------------------------------
     Scan zusammensetzen
     ----------------------------------- */
+    /* Scanvorlage aus JSON übernehmen */
 
-    scanZeilen = [
-        pruefungsBegriff + " LÄUFT ...",
-        "",
-        "NAME: " +
-            spielerName +
-            " ❌",
+    scanZeilen =
+        window.bibliotheksroboterDialogtexte
+            .normal.scan.map(function (zeile) {
 
-        "HABITICA-GEBURTSTAG: " +
-            geburtstag +
-            " ❌",
+                return zeile
+                    .replaceAll("{pruefungsBegriff}", pruefungsBegriff)
+                    .replaceAll("{spielerName}", spielerName)
+                    .replaceAll("{geburtstag}", geburtstag)
+                    .replaceAll("{klasse}", klasse)
+                    .replaceAll("{level}", String(level))
+                    .replaceAll("{zufallsPruefung}", zufallsPruefung);
 
-        "KLASSE: " +
-            klasse +
-            " ❌",
+            });
 
-        "LEVEL: " +
-            level +
-            " ❌",
-
-        zufallsPruefung +
-            " ❌",
-
-        "",
-        "MITGLIED DER GEWOHNHEITSTIERE        ✅"
-    ];
-
-    /* Ende Scan zusammensetzen */
-
+    /* Ende Scanvorlage übernehmen */
+/* Ende Scan zusammensetzen */
 }
 
 
@@ -763,7 +796,13 @@ Normaler Gesprächsstart
     Roboter-Schreibgeräusch vorbereiten
     ----------------------------------- */
 let schreibSound = null;
+/* -----------------------------------
+Schreibanimation abbrechen
+----------------------------------- */
 
+let schreibVorgang = 0;
+
+/* Ende Abbruchkennung */
     /* -----------------------------------
     Bisher geschriebenen Text zeichnen
     ----------------------------------- */
@@ -803,7 +842,63 @@ let schreibSound = null;
         }
 
     } /* Ende scanTextZeichnen */
+/* -----------------------------------
+NPC-Text mit optionalem Sound schreiben
+----------------------------------- */
 
+async function npcTextSchreiben(
+    textZeilen,
+    soundDatei =
+        "Daten/NPCs/Bibliotheksroboter/" +
+        "roboter_nadeldrucker_antwort_10s.wav"
+) {
+    const meinVorgang = ++schreibVorgang;
+    const fertigeZeilen = [];
+
+    window.reservatSoundStoppen(schreibSound);
+    schreibSound = null;
+
+    if (soundDatei) {
+        schreibSound = window.reservatSoundAbspielen(
+            soundDatei,
+            0.35,
+            true
+        );
+    }
+
+    for (const zeile of textZeilen) {
+        if (meinVorgang !== schreibVorgang) return;
+
+        let sichtbar = "";
+
+        for (const zeichen of zeile) {
+            if (meinVorgang !== schreibVorgang) return;
+
+            sichtbar += zeichen;
+            scanTextZeichnen(fertigeZeilen, sichtbar);
+
+            await new Promise(function (fertig) {
+                setTimeout(fertig, 25);
+            });
+        }
+/* Abgebrochene Animation nicht fortsetzen */		
+if (meinVorgang !== schreibVorgang) return;
+        fertigeZeilen.push(zeile);
+        scanTextZeichnen(fertigeZeilen, null);
+
+        if (zeile === "") {
+            await new Promise(function (fertig) {
+                setTimeout(fertig, 180);
+            });
+        }
+    }
+
+    if (meinVorgang === schreibVorgang) {
+        window.reservatSoundStoppen(schreibSound);
+        schreibSound = null;
+    }
+
+} /* Ende npcTextSchreiben */
     /* =========================================================
     ANGRIFF BEENDET – FLUCHT ANBIETEN
     ========================================================= */
@@ -939,24 +1034,39 @@ schreibSound = null;
     Text buchstabenweise schreiben
     ----------------------------------- */
 
-    async function scanTextSchreiben() {
+			async function scanTextSchreiben(
+			textZeilen = scanZeilen,
+			soundDatei =
+				"Daten/NPCs/Bibliotheksroboter/" +
+				"roboter_nadeldrucker_antwort_10s.wav"
+		) {
+/* -----------------------------------
+Neuen Schreibvorgang starten
+----------------------------------- */
 
+const meinSchreibVorgang = ++schreibVorgang;
+
+window.reservatSoundStoppen(schreibSound);
+schreibSound = null;
+
+/* Ende Schreibvorgang starten */
         const fertigeZeilen = [];
 
- schreibSound =
-    window.reservatSoundAbspielen(
-        "Daten/NPCs/Bibliotheksroboter/" +
-        "roboter_nadeldrucker_antwort_10s.wav",
-        0.35,
-        true
-    );
+		schreibSound =
+			window.reservatSoundAbspielen(
+				soundDatei,
+				0.35,
+				true
+			);
 
 
         for (
             const kompletteZeile
-            of scanZeilen
+            of textZeilen
         ) {
-
+if (meinSchreibVorgang !== schreibVorgang) {
+    return;
+}
             /* Leerzeile */
 
             if (kompletteZeile === "") {
@@ -989,7 +1099,9 @@ schreibSound = null;
                 const zeichen
                 of kompletteZeile
             ) {
-
+if (meinSchreibVorgang !== schreibVorgang) {
+    return;
+}
                 sichtbarerText +=
                     zeichen;
 
@@ -1002,7 +1114,7 @@ schreibSound = null;
                     function (fertig) {
                         setTimeout(
                             fertig,
-                            28
+                            25
                         );
                     }
                 );
@@ -1060,6 +1172,83 @@ window.reservatSoundAbspielen(
     false
 );
 /* -----------------------------------
+Zeitungsspende: Gesprächsart bestimmen
+----------------------------------- */
+
+let zeitung25DialogAktiv =
+    zeitung25SpendeMoeglich === true;
+
+/* Ende Gesprächsart bestimmen */
+
+/* -----------------------------------
+Zeitungsspende: Entdeckungstext holen
+----------------------------------- */
+
+const zeitung25Entdeckung =
+    zeitung25DialogAktiv
+        ? window.bibliotheksroboterDialogtexte
+            .zeitungsspende.entdeckung
+        : null;
+
+/* Ende Entdeckungstext holen */
+/* -----------------------------------
+Zeitungsentdeckung auf dem Bildschirm
+----------------------------------- */
+
+if (zeitung25Entdeckung) {
+    /* Zeitung entdeckt: Scan-Grafik zeigen */
+    roboter.src =
+        "Daten/NPCs/Bibliotheksroboter/" +
+        "NPC_Hilfsrobo_05_Scan.png";
+    /* Ende Scan-Grafik */
+/* -----------------------------------
+Zeitungsentdeckung mit Schnarren schreiben
+----------------------------------- */
+const entdeckungsSchreibVorgang = schreibVorgang + 1;
+
+/* -----------------------------------
+Kurze Denkpause nach dem Scan
+----------------------------------- */
+
+new Promise(function (fertig) {
+    setTimeout(fertig, 2000);
+}).then(function () {
+
+    if (!dialog.isConnected) return;
+
+    if (schreibVorgang + 1 !== entdeckungsSchreibVorgang) {
+        return;
+    }
+
+    return npcTextSchreiben(
+        zeitung25Entdeckung.roboter
+    );
+
+}).then(function () {
+
+    if (schreibVorgang !== entdeckungsSchreibVorgang) {
+        return;
+    }
+
+    /* -----------------------------------
+    Antworten nach Textende freigeben
+    ----------------------------------- */
+
+if (dialog.isConnected) {
+    frageCanvas.style.visibility = "visible";
+    frageCanvas.style.pointerEvents = "auto";
+}
+
+    /* Ende Antwortfreigabe */
+
+});
+
+/* Ende animierte Zeitungsentdeckung */
+
+}
+
+/* Ende Zeitungsentdeckung anzeigen */
+/* -----------------------------------
 Erste Gesprächsantwort nach dem Scan
 ----------------------------------- */
 
@@ -1088,52 +1277,102 @@ frageContext.textAlign =
 frageContext.fillStyle =
     "#2b2118";
 
-frageContext.fillText(
-    "Was geht denn hier ab?",
-    20,
-    65
-);
+/* -----------------------------------
+Erste Antworten passend anzeigen
+----------------------------------- */
 
-if (ausgabe24Gezeigt) {
+if (zeitung25DialogAktiv) {
 
     frageContext.fillText(
-        "Ich würde gerne die Ausgabe 24",
+        zeitung25Entdeckung.antworten[0],
         20,
-        133
+        65
     );
 
     frageContext.fillText(
-        "noch einmal lesen.",
-        20,
-        167
-    );
-
-} else {
-
-    frageContext.fillText(
-        "OMG!! WTF?",
+        zeitung25Entdeckung.antworten[1],
         20,
         150
     );
 
+} else {
+
+    /* -----------------------------------
+    Normale Spielerantworten aus JSON laden
+    ----------------------------------- */
+
+    const ersteAntworten =
+        window.bibliotheksroboterDialogtexte
+            .normal.ersteAntworten;
+
+    frageContext.fillText(
+        ersteAntworten.antwort1,
+        20,
+        65
+    );
+
+    if (ausgabe24Gezeigt) {
+
+        frageContext.fillText(
+            ersteAntworten.antwort2Wiederholung[0],
+            20,
+            133
+        );
+
+        frageContext.fillText(
+            ersteAntworten.antwort2Wiederholung[1],
+            20,
+            167
+        );
+
+    } else {
+
+        frageContext.fillText(
+            ersteAntworten.antwort2,
+            20,
+            150
+        );
+
+    }
+
+    frageContext.fillText(
+        ersteAntworten.antwort3,
+        20,
+        235
+    );
+
+    /* Ende normale Spielerantworten */
+
 }
 
-frageContext.fillText(
-    "Bist du der Bibliothekar?",
-    20,
-    235
-);
+/* Ende erste Antworten anzeigen */
 
 dialogZoomEbene.appendChild(
     frageCanvas
 );
+/* -----------------------------------
+Antworten während der Entdeckung sperren
+----------------------------------- */
+
+if (zeitung25Entdeckung) {
+    frageCanvas.style.pointerEvents = "none";
+    frageCanvas.style.visibility = "hidden";
+}
+
+/* Ende Antwortsperre */
 /* -----------------------------------
 Gesprächsantwort auswählen
 ----------------------------------- */
 
 let gewaehlteAntwort = null;
 
+/* -----------------------------------
+Zeitung 25: Aktueller Gesprächsschritt
+----------------------------------- */
 
+let zeitung25Gesprächsschritt = "entdeckung";
+
+/* Ende Gesprächsschritt */
 /* -----------------------------------
 Weiter-Pfeil erzeugen
 ----------------------------------- */
@@ -1171,18 +1410,48 @@ function antwortenZeichnen() {
         frageCanvas.height
     );
 
-const antworten = [
-    ["Was geht denn hier ab?"],
-    ausgabe24Gezeigt
-        ? [
-            "Ich würde gerne die Ausgabe 24",
-            "noch einmal lesen."
-        ]
-        : [
-            "OMG!! WTF?"
-        ],
-    ["Bist du der Bibliothekar?"]
-];
+/* -----------------------------------
+Antworten passend zum Gespräch wählen
+----------------------------------- */
+
+/* -----------------------------------
+Zeitung 25: Antworten nach Gesprächsschritt
+----------------------------------- */
+
+const antworten = zeitung25DialogAktiv
+    ? (
+zeitung25Gesprächsschritt === "abgeschlossen"
+    ? window.bibliotheksroboterDialogtexte
+        .zeitungsspende.spendenfrage.antwortenNachSpende
+    : zeitung25Gesprächsschritt === "pruefungFertig"
+    ? window.bibliotheksroboterDialogtexte
+        .zeitungsspende.spendenfrage.antwortenNachPruefung
+            : zeitung25Gesprächsschritt === "roboterantwort"
+            ? window.bibliotheksroboterDialogtexte
+                .zeitungsspende.spendenfrage.zwischenfrage
+            : zeitung25Gesprächsschritt === "spendenfrage"
+            ? window.bibliotheksroboterDialogtexte
+                .zeitungsspende.spendenfrage.antworten
+            : zeitung25Entdeckung.antworten
+      ).map(
+          function (antwort) {
+              return [antwort];
+          }
+      )
+    : [
+        ["Was geht denn hier ab?"],
+        ausgabe24Gezeigt
+            ? [
+                "Ich würde gerne die Ausgabe 24",
+                "noch einmal lesen."
+            ]
+            : [
+                "OMG!! WTF?"
+            ],
+        ["Bist du der Bibliothekar?"]
+    ];
+
+/* Ende Antworten wählen */
 
     const positionen = [
         65,
@@ -1301,6 +1570,18 @@ frageCanvas.addEventListener(
     function (ereignis) {
 
         ereignis.stopPropagation();
+		        /* -----------------------------------
+        Während der Zeitungsspende keine Auswahl
+        ----------------------------------- */
+
+        if (
+            zeitung25DialogAktiv &&
+            zeitung25Gesprächsschritt === "spendeLaeuft"
+        ) {
+            return;
+        }
+
+        /* Ende Auswahlsperre */
 
         const rechteck =
             frageCanvas.getBoundingClientRect();
@@ -1328,6 +1609,7 @@ frageCanvas.addEventListener(
             gewaehlteAntwort = 2;
 
         } else if (
+            !zeitung25DialogAktiv &&
             mausY >= 195 &&
             mausY < 280
         ) {
@@ -1364,12 +1646,376 @@ frageWeiterPfeil.addEventListener(
     "click",
     async function (ereignis) {
 
-        ereignis.stopPropagation();
+ereignis.stopPropagation();
 
-        if (!gewaehlteAntwort) {
-            return;
+/* -----------------------------------
+Während Prüfung und Spende nicht weiter
+----------------------------------- */
+
+if (
+    zeitung25DialogAktiv &&
+    (
+        zeitung25Gesprächsschritt === "pruefung" ||
+        zeitung25Gesprächsschritt === "spendeLaeuft"
+    )
+) {
+    return;
+}
+
+/* Ende Sperre während Prüfung und Spende */
+
+if (!gewaehlteAntwort) {
+    return;
+}
+        /* -----------------------------------
+        Zeitung 25: Erste Spielerantwort
+        ----------------------------------- */
+
+        if (zeitung25DialogAktiv) {
+            /* -----------------------------------
+            Nach Ablehnung: normaler Dialog
+            ----------------------------------- */
+
+if (
+    zeitung25Gesprächsschritt ===
+        "abgeschlossen"
+) {
+
+    /* -----------------------------------
+    Zum normalen Gespräch zurückkehren
+    ----------------------------------- */
+
+    zeitung25DialogAktiv = false;
+    gewaehlteAntwort = null;
+
+    antwortenZeichnen();
+
+    frageWeiterPfeil.classList.remove(
+        "aktiv"
+    );
+
+    /* -----------------------------------
+    Neue Roboterfrage mit Schreibanimation
+    ----------------------------------- */
+
+		await npcTextSchreiben(
+			window.bibliotheksroboterDialogtexte
+				.zeitungsspende.zurueckZumDialog
+		);
+
+    /* Ende neue Roboterfrage */
+
+    return;
+
+}
+
+            /* Ende Rückkehr zum normalen Dialog */
+            const spendenDialog =
+                window.bibliotheksroboterDialogtexte
+                    .zeitungsspende.spendenfrage;
+/* -----------------------------------
+Zeitung 25: Qualitätsprüfung bestätigen
+----------------------------------- */
+
+if (zeitung25Gesprächsschritt === "pruefungFertig") {
+
+    /* Doppelte Spenden verhindern */
+    zeitung25Gesprächsschritt = "spendeLaeuft";
+    gewaehlteAntwort = null;
+    frageWeiterPfeil.classList.remove("aktiv");
+
+    /* Normale Robotergrafik wiederherstellen */
+    roboter.src =
+        "Daten/NPCs/Bibliotheksroboter/" +
+        "NPC_Hilfsrobo_04.png";
+
+    /* Zeitung in Firebase archivieren */
+    try {
+
+        const erfolgreich =
+            await window.inventarZeitung25Spenden();
+/* -----------------------------------
+Zeitungssymbol nach Spende aktualisieren
+----------------------------------- */
+
+if (erfolgreich === true) {
+    await window.zeitung25SymbolAktualisieren();
+}
+
+/* Ende Zeitungssymbol aktualisieren */
+        if (!dialog.isConnected) return;
+
+        await npcTextSchreiben(
+            erfolgreich
+                ? spendenDialog.spendeErfolgreich
+                : spendenDialog.spendeFehlgeschlagen
+        );
+
+    } catch (fehler) {
+
+        if (!dialog.isConnected) return;
+
+        console.error(
+            "Zeitungsspende fehlgeschlagen:",
+            fehler
+        );
+
+        await npcTextSchreiben(
+            spendenDialog.spendeFehlgeschlagen
+        );
+    }
+
+    if (!dialog.isConnected) return;
+
+    /* Rückkehr zum normalen Dialog vorbereiten */
+    zeitung25Gesprächsschritt = "abgeschlossen";
+    gewaehlteAntwort = null;
+    antwortenZeichnen();
+
+    return;
+}
+
+/* Ende Qualitätsprüfung bestätigen */
+            /* -----------------------------------
+            Erste Antwort des Roboters
+            ----------------------------------- */
+
+            if (
+                zeitung25Gesprächsschritt ===
+                "entdeckung"
+            ) {
+
+                const roboterAntwort =
+                    gewaehlteAntwort === 1
+                        ? spendenDialog.antwort1
+                        : spendenDialog.antwort2;
+				/* -----------------------------------
+				Nach Entdeckung: normale Robotergrafik
+				----------------------------------- */
+
+				roboter.src =
+					"Daten/NPCs/Bibliotheksroboter/" +
+					"NPC_Hilfsrobo_04.png";
+
+				/* Ende normale Robotergrafik */
+
+
+				zeitung25Gesprächsschritt =
+					"roboterantwort";
+
+				/* Einzige Antwort automatisch auswählen */
+				gewaehlteAntwort = 1;
+
+				antwortenZeichnen();
+
+/* -----------------------------------
+Weiter erst nach Textende freigeben
+----------------------------------- */
+
+frageWeiterPfeil.classList.remove("aktiv");
+
+const gestarteterSchreibVorgang = schreibVorgang + 1;
+
+npcTextSchreiben(roboterAntwort).then(function () {
+    if (schreibVorgang !== gestarteterSchreibVorgang) return;
+    if (
+        dialog.isConnected &&
+        zeitung25Gesprächsschritt === "roboterantwort"
+    ) {
+        frageWeiterPfeil.classList.add("aktiv");
+    }
+});
+
+/* Ende Weiter-Freigabe */
+				/* Ende automatische Auswahl */
+
+				return;
+
+            }
+
+            /* Ende erste Roboterantwort */
+
+            /* -----------------------------------
+            Spendenfrage anzeigen
+            ----------------------------------- */
+
+            if (
+                zeitung25Gesprächsschritt ===
+                "roboterantwort"
+            ) {
+
+/* -----------------------------------
+Spendenfrage mit Schnarren schreiben
+----------------------------------- */
+
+/* Antworten während der Schreibanimation sperren */
+frageCanvas.style.pointerEvents = "none";
+
+const gestarteterSpendenText = schreibVorgang + 1;
+
+npcTextSchreiben(spendenDialog.roboter).then(function () {
+    if (
+        schreibVorgang === gestarteterSpendenText &&
+        dialog.isConnected
+    ) {
+        frageCanvas.style.pointerEvents = "";
+    }
+});
+
+/* Ende Antwortsperre */
+
+/* Ende animierte Spendenfrage */
+
+                zeitung25Gesprächsschritt =
+                    "spendenfrage";
+
+                /* -----------------------------------
+                Neue Spielerantworten anzeigen
+                ----------------------------------- */
+
+                gewaehlteAntwort = null;
+
+                antwortenZeichnen();
+
+                frageWeiterPfeil.classList.remove(
+                    "aktiv"
+                );
+
+                /* Ende Spielerantworten anzeigen */
+
+                return;
+
+            }
+
+            /* -----------------------------------
+            Zeitungsspende abgelehnt
+            ----------------------------------- */
+
+            if (
+                zeitung25Gesprächsschritt ===
+                    "spendenfrage" &&
+                gewaehlteAntwort === 2
+            ) {
+
+/* -----------------------------------
+Ablehnung mit Schnarren schreiben
+----------------------------------- */
+
+const gestarteterAblehnungsText = schreibVorgang + 1;
+
+frageWeiterPfeil.classList.remove("aktiv");
+
+npcTextSchreiben(spendenDialog.abgelehnt).then(function () {
+    if (
+        schreibVorgang === gestarteterAblehnungsText &&
+        dialog.isConnected
+    ) {
+        frageWeiterPfeil.classList.add("aktiv");
+    }
+});
+
+/* Ende animierte Ablehnung */
+
+                /* Antwortfeld und Weiter-Pfeil behalten */
+                gewaehlteAntwort = 1;
+
+                zeitung25Gesprächsschritt =
+                    "abgeschlossen";
+
+                antwortenZeichnen();
+
+
+
+                /* Ende Ablehnung */
+
+                return;
+
+            }
+
+            /* Ende Zeitungsspende abgelehnt */
+			            /* -----------------------------------
+            Zeitung 25: Qualitätsprüfung starten
+            ----------------------------------- */
+
+            if (
+                zeitung25Gesprächsschritt ===
+                    "spendenfrage" &&
+                gewaehlteAntwort === 1
+            ) {
+
+                /* -----------------------------------
+                Qualitätsprüfung zeitlich anzeigen
+                Gesamtdauer: ca. 4 Sekunden
+                ----------------------------------- */
+                /* -----------------------------------
+                Prüfgrafik anzeigen
+                ----------------------------------- */
+
+                const vorherigeRoboterGrafik =
+                    roboter.src;
+
+                roboter.src =
+                    "Daten/NPCs/Bibliotheksroboter/" +
+                    "Hilfsrobo_10_spendenscan.png";
+
+                /* Ende Prüfgrafik anzeigen */
+                const pruefZeilen =
+                    spendenDialog.pruefung;
+
+/* -----------------------------------
+Qualitätsprüfung buchstabenweise schreiben
+----------------------------------- */
+
+npcTextSchreiben(pruefZeilen).then(function () {
+
+    /* Geschlossenen Dialog nicht aktualisieren */
+    if (!dialog.isConnected) return;
+
+    /* -----------------------------------
+    Qualitätsprüfung beendet:
+    Auf Bestätigung des Spielers warten
+    ----------------------------------- */
+
+    zeitung25Gesprächsschritt = "pruefungFertig";
+    gewaehlteAntwort = null;
+
+    dialogZoomEbene.appendChild(frageCanvas);
+    dialogZoomEbene.appendChild(frageWeiterPfeil);
+
+    frageCanvas.style.visibility = "visible";
+    frageCanvas.style.pointerEvents = "auto";
+
+    antwortenZeichnen();
+
+frageWeiterPfeil.classList.remove("aktiv");
+
+/* Ende Warten auf Spielerbestätigung */
+
+return;
+
+
+
+					});
+
+/* Ende buchstabenweise Qualitätsprüfung */
+
+                /* Ende Qualitätsprüfung zeitlich anzeigen */
+
+                frageCanvas.remove();
+                frageWeiterPfeil.remove();
+
+                zeitung25Gesprächsschritt =
+                    "pruefung";
+
+                return;
+
+            }
+
+            /* Ende Qualitätsprüfung */
+			 return;
         }
 
+        /* Ende Zeitung 25: Erste Spielerantwort */
 
         /* -----------------------------------
         Antwort 1:
@@ -1390,11 +2036,16 @@ frageWeiterPfeil.addEventListener(
 
             /* Roboterantwort anzeigen */
 
-            scanContext.fillText(
-                "ZUGRIFF VERWEIGERT.",
-                10,
-                10
-            );
+/* -----------------------------------
+Roboterantwort aus JSON animieren
+----------------------------------- */
+
+npcTextSchreiben(
+    window.bibliotheksroboterDialogtexte
+        .normal.antwortZugriffVerweigert
+);
+
+/* Ende animierte Roboterantwort */
 
 
             /*
@@ -1445,15 +2096,16 @@ window.reservatBedienungGesperrt =
 
 /* Wiederholungs-Kommentar vorbereiten */
 
-scanZeilen = [
-    "WILD AM SONNTAG – AUSGABE 24.",
-    "",
-    "ERNEUTE LEKTÜRE?",
-    "",
-    "UNGEWÖHNLICH.",
-    "",
-    "ABER ZULÄSSIG."
-];
+/* -----------------------------------
+Kommentar zur erneuten Zeitungslektüre
+aus der Dialog-JSON laden
+----------------------------------- */
+
+scanZeilen =
+    window.bibliotheksroboterDialogtexte
+        .normal.ausgabe24Erneut;
+
+/* Ende Kommentar laden */
 
 
 /* Kommentar schreiben */
@@ -1514,11 +2166,15 @@ function zeitungAntwortenZeichnen() {
     zeitungContext.textAlign =
         "left";
 
-    const antworten = [
-        "Zeitung nehmen und lesen.",
-        "Lieber doch nicht."
-    ];
+/* -----------------------------------
+Spielerantworten aus Dialog-JSON laden
+----------------------------------- */
 
+const antworten =
+    window.bibliotheksroboterDialogtexte
+        .normal.ausgabe24Auswahl;
+
+/* Ende Spielerantworten laden */
     const positionen = [
         65,
         150
@@ -1745,16 +2401,15 @@ zeitungWeiterPfeil.addEventListener(
 
             /* Angriffstext vorbereiten */
 
-            scanZeilen = [
-                "WARNUNG.",
-                "",
-                "FEHLERHAFTE BESUCHERKLASSIFIZIERUNG.",
-                "",
-                "OBJEKT ERKANNT ALS:",
-                "BEDROHUNG.",
-                "",
-                "VERTEIDIGUNGSPROTOKOLL AKTIVIERT."
-            ];
+/* -----------------------------------
+Angriffstext aus Dialog-JSON laden
+----------------------------------- */
+
+scanZeilen =
+    window.bibliotheksroboterDialogtexte
+        .angriff.scan;
+
+/* Ende Angriffstext laden */
 
 
             /* Angriffstext vollständig schreiben */
@@ -1791,16 +2446,15 @@ zeitungWeiterPfeil.addEventListener(
 
             /* Roboterantwort vorbereiten */
 
-            scanZeilen = [
-                "NEGATIV.",
-                "",
-                "BIBLIOTHEKARISCHE FACHKRAFT",
-                "DERZEIT NICHT VERFÜGBAR.",
-                "",
-                "VERTRETUNGSMODUS AKTIV.",
-                "",
-                "SUCHEN SIE LEKTÜRE?"
-            ];
+/* -----------------------------------
+Bibliothekar-Antwort aus JSON laden
+----------------------------------- */
+
+scanZeilen =
+    window.bibliotheksroboterDialogtexte
+        .normal.antwortBibliothekar;
+
+/* Ende Bibliothekar-Antwort laden */
 
 
             /* Roboterantwort schreiben */
@@ -1842,11 +2496,18 @@ zeitungWeiterPfeil.addEventListener(
             lektuereContext.fillStyle =
                 "#2b2118";
 
-            lektuereContext.fillText(
-                "Eigentlich schon.",
-                20,
-                65
-            );
+/* -----------------------------------
+Spielerantwort aus Dialog-JSON laden
+----------------------------------- */
+
+lektuereContext.fillText(
+    window.bibliotheksroboterDialogtexte
+        .normal.antwortLektuere,
+    20,
+    65
+);
+
+/* Ende Spielerantwort laden */
 
             dialogZoomEbene.appendChild(
                 lektuereCanvas
@@ -1904,14 +2565,15 @@ zeitungWeiterPfeil.addEventListener(
 
                     /* Empfehlung vorbereiten */
 
-                    scanZeilen = [
-                        "EMPFEHLUNG:",
-                        "",
-                        "WILD AM SONNTAG – AUSGABE 24.",
-                        "",
-                        "AKTUALITÄT: FRAGWÜRDIG.",
-                        "UNTERHALTUNGSWERT: HINREICHEND."
-                    ];
+/* -----------------------------------
+Buchempfehlung aus Dialog-JSON laden
+----------------------------------- */
+
+scanZeilen =
+    window.bibliotheksroboterDialogtexte
+        .normal.empfehlungAusgabe24;
+
+/* Ende Buchempfehlung laden */
 
 
                     /* Empfehlung schreiben */
@@ -2020,10 +2682,15 @@ function zeitungAntwortenZeichnen() {
     zeitungContext.textAlign =
         "left";
 
-    const antworten = [
-        "Zeitung nehmen und lesen.",
-        "Lieber doch nicht."
-    ];
+/* -----------------------------------
+Spielerantworten aus Dialog-JSON laden
+----------------------------------- */
+
+const antworten =
+    window.bibliotheksroboterDialogtexte
+        .normal.ausgabe24Auswahl;
+
+/* Ende Spielerantworten laden */
 
     const positionen = [
         65,
@@ -2310,11 +2977,12 @@ schreibSound = null;
             updateAntwortContext.fillStyle =
                 "#2b2118";
 
-            updateAntwortContext.fillText(
-                "Okay, ich komme später wieder.",
-                20,
-                65
-            );
+updateAntwortContext.fillText(
+    window.bibliotheksroboterDialogtexte
+        .normal.antwortUpdate,
+    20,
+    65
+);
 
 
             dialogZoomEbene.appendChild(
@@ -2375,8 +3043,20 @@ schreibSound = null;
 
         }
 
-        /* Ende Update-Spielerantwort */
-    } /* Ende scanTextSchreiben */
+/* Ende Update-Spielerantwort */
+
+/* -----------------------------------
+Schreibgeräusch am Textende stoppen
+----------------------------------- */
+
+if (meinSchreibVorgang === schreibVorgang) {
+    window.reservatSoundStoppen(schreibSound);
+    schreibSound = null;
+}
+
+/* Ende Schreibgeräusch stoppen */
+
+} /* Ende scanTextSchreiben */
 
 
     /* -----------------------------------
@@ -2430,11 +3110,12 @@ if (gespraechsStart !== "normal") {
         halloContext.fillStyle =
             "#2b2118";
 
-        halloContext.fillText(
-            "Ähm... Hallo?",
-            20,
-            65
-        );
+halloContext.fillText(
+    window.bibliotheksroboterDialogtexte
+        .normal.antwortBegruessung,
+    20,
+    65
+);
 
         dialogZoomEbene.appendChild(
             halloCanvas
@@ -2537,7 +3218,13 @@ halloWeiterPfeil.addEventListener(
                 alarmSound.currentTime = 0;
 
             }
+/* -----------------------------------
+Laufende Schreibanimation abbrechen
+----------------------------------- */
 
+schreibVorgang++;
+
+/* Ende Schreibanimation abbrechen */
             /* Schreibgeräusch ebenfalls stoppen */
 
 window.reservatSoundStoppen(

@@ -2514,7 +2514,7 @@ cursor: pointer;
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.343";
+window.multiplayerTestVersion = "0.353";
 
 /* Ende Testversion */
 /* =========================================================
@@ -2537,6 +2537,18 @@ window.infotafelnGeladen =
     );
 
 /* Ende Informationsobjekte laden */
+
+/* =========================================================
+INVENTARVERWALTUNG LADEN
+========================================================= */
+
+window.inventarverwaltungGeladen =
+    importScripts(
+        "Daten/Inventar/Inventarverwaltung.js"
+    );
+
+/* Ende Inventarverwaltung laden */
+
 /* =========================================================
 EXTERNE NPC-DATEIEN LADEN
 ========================================================= */
@@ -4060,89 +4072,7 @@ async function () {
 }; /* Ende traudelBekanntMachen */
 
 /* Ende Traudel - Bekannt machen */
-/* =========================================================
-INVENTAR - GEGENSTANDSBESITZ PRÜFEN
 
-Prüft, ob der angemeldete Spieler
-einen bestimmten Gegenstand besitzt.
-
-Beispiel:
-inventarGegenstandBesitzt("zeitungen", "25")
-
-Rückgabe:
-true  = Gegenstand vorhanden
-false = Gegenstand nicht vorhanden
-null  = Prüfung fehlgeschlagen
-========================================================= */
-
-window.inventarGegenstandBesitzt =
-async function (kategorie, gegenstandId) {
-
-    /* -----------------------------------
-    Angemeldeten Spieler ermitteln
-    ----------------------------------- */
-
-    const user =
-        window.firebaseAuth?.currentUser;
-
-    if (!user) {
-
-        console.error(
-            "Inventarprüfung: Kein Spieler angemeldet."
-        );
-
-        return null;
-
-    }
-
-    /* Ende Spieler ermitteln */
-
-
-    /* -----------------------------------
-    Inventarpfad bestimmen
-    ----------------------------------- */
-
-    const inventarRef =
-        window.firebaseRef(
-            window.firebaseDatabase,
-            "inventar/" +
-            user.uid + "/" +
-            kategorie + "/" +
-            gegenstandId
-        );
-
-    /* Ende Inventarpfad bestimmen */
-
-
-    /* -----------------------------------
-    Gegenstand in Firebase prüfen
-    ----------------------------------- */
-
-    try {
-
-        const snapshot =
-            await window.firebaseGet(
-                inventarRef
-            );
-
-        return snapshot.exists();
-
-    } catch (fehler) {
-
-        console.error(
-            "Inventarprüfung fehlgeschlagen:",
-            fehler
-        );
-
-        return null;
-
-    }
-
-    /* Ende Gegenstand prüfen */
-
-}; /* Ende inventarGegenstandBesitzt */
-
-/* Ende Inventar - Gegenstandsbesitz prüfen */
 /* =========================================================
 ZEITUNG 25 - SYMBOL AKTUALISIEREN
 
@@ -4214,7 +4144,7 @@ Farbig: Zeitung im Browser öffnen
 
 document.addEventListener(
     "click",
-    function (ereignis) {
+   async function (ereignis) {
 
         /* -----------------------------------
         Zeitungssymbol erkennen
@@ -4234,6 +4164,14 @@ document.addEventListener(
         ----------------------------------- */
 
         if (!button.classList.contains("erhalten")) {
+    /* -----------------------------------
+    Frühere Zeitungsspende prüfen
+    ----------------------------------- */
+
+    const spendeMoeglich =
+        await window.inventarZeitung25SpendeMoeglich();
+
+    /* Ende frühere Zeitungsspende prüfen */
 
             const ereignisText =
                 document.getElementById(
@@ -4242,8 +4180,10 @@ document.addEventListener(
 
             if (ereignisText) {
 
-			ereignisText.textContent =
-			"Du besitzt Ausgabe 25 noch nicht.";
+ereignisText.textContent =
+    spendeMoeglich === false
+        ? "Die habe ich gespendet."
+        : "Du besitzt Ausgabe 25 noch nicht.";
 
             }
 
@@ -4270,124 +4210,7 @@ document.addEventListener(
 );
 
 /* Ende Zeitung 25 - Schnellzugriff anklicken */
-/* =========================================================
-INVENTAR - ZEITUNG 25 HINZUFÜGEN
 
-Legt Ausgabe 25 dauerhaft im Inventar
-des angemeldeten Spielers ab.
-
-Rückgabe:
-true  = Zeitung erfolgreich hinzugefügt
-false = Zeitung bereits vorhanden oder Fehler
-========================================================= */
-
-window.inventarZeitung25Hinzufuegen =
-async function () {
-
-    /* -----------------------------------
-    Angemeldeten Spieler ermitteln
-    ----------------------------------- */
-
-    const user =
-        window.firebaseAuth?.currentUser;
-
-    if (!user) {
-
-        console.error(
-            "Zeitungsübergabe: Kein Spieler angemeldet."
-        );
-
-        return false;
-
-    }
-
-    /* Ende Spieler ermitteln */
-
-
-    /* -----------------------------------
-    Vorhandenen Besitz prüfen
-    ----------------------------------- */
-
-    const besitztZeitung =
-        await window.inventarGegenstandBesitzt(
-            "zeitungen",
-            "25"
-        );
-
-    if (besitztZeitung !== false) {
-
-        if (besitztZeitung === true) {
-
-            console.info(
-                "Ausgabe 25 ist bereits im Inventar."
-            );
-
-        } else {
-
-            console.error(
-                "Zeitungsbesitz konnte nicht geprüft werden."
-            );
-
-        }
-
-        return false;
-
-    }
-
-    /* Ende vorhandenen Besitz prüfen */
-
-
-    /* -----------------------------------
-    Inventarpfad bestimmen
-    ----------------------------------- */
-
-    const zeitungRef =
-        window.firebaseRef(
-            window.firebaseDatabase,
-            "inventar/" +
-            user.uid +
-            "/zeitungen/25"
-        );
-
-    /* Ende Inventarpfad bestimmen */
-
-
-    /* -----------------------------------
-    Zeitung speichern
-    ----------------------------------- */
-
-    try {
-
-        await window.firebaseSet(
-            zeitungRef,
-            {
-                erhaltenAm: Date.now(),
-                quelle: "traudel"
-            }
-        );
-
-        console.info(
-            "Ausgabe 25 erfolgreich ins Inventar aufgenommen."
-        );
-
-        return true;
-
-    } catch (fehler) {
-
-        console.error(
-            "Ausgabe 25 konnte nicht gespeichert werden:",
-            fehler
-        );
-
-        return false;
-
-    }
-
-    /* Ende Zeitung speichern */
-
-}; /* Ende inventarZeitung25Hinzufuegen */
-
-/* Ende Inventar - Zeitung 25 hinzufügen */
 /* =========================================================
 NPC-DIALOG TEST ANZEIGEN
 
@@ -5051,8 +4874,90 @@ async function (sonderfeld) {
 
     }
 
+    /* -----------------------------------
+    Frühere Zeitungsspende prüfen
+    ----------------------------------- */
+
+    let traudelZeitung25Gespendet = false;
+
+    if (traudelZeitung25Besitz === false) {
+
+        const user =
+            window.firebaseAuth?.currentUser;
+
+        if (!user) {
+            return;
+        }
+
+        const spendenRef =
+            window.firebaseRef(
+                window.firebaseDatabase,
+                "zeitungsspenden/25/" + user.uid
+            );
+
+        try {
+
+            const snapshot =
+                await window.firebaseGet(spendenRef);
+
+            traudelZeitung25Gespendet =
+                snapshot.exists();
+
+        } catch (fehler) {
+
+            console.error(
+                "Traudel: Frühere Zeitungsspende konnte nicht geprüft werden.",
+                fehler
+            );
+
+            return;
+        }
+
+    }
+
+    /* Ende frühere Zeitungsspende prüfen */
+	    /* -----------------------------------
+    Anzahl der Zeitungsspenden ermitteln
+    ----------------------------------- */
+
+    window.traudelZeitung25Spendenanzahl = 0;
+
+    if (traudelZeitung25Gespendet) {
+
+        const spendenListeRef =
+            window.firebaseRef(
+                window.firebaseDatabase,
+                "zeitungsspenden/25"
+            );
+
+        try {
+
+            const snapshot =
+                await window.firebaseGet(spendenListeRef);
+
+            if (snapshot.exists()) {
+
+                window.traudelZeitung25Spendenanzahl =
+                    Object.keys(snapshot.val()).length;
+
+            }
+
+        } catch (fehler) {
+
+            console.error(
+                "Traudel: Spendenanzahl konnte nicht geladen werden.",
+                fehler
+            );
+
+        }
+
+    }
+
+    /* Ende Anzahl der Zeitungsspenden */
+
     const traudelZeitung25Anbieten =
-        traudelZeitung25Besitz === false;
+        traudelZeitung25Besitz === false &&
+        !traudelZeitung25Gespendet;
 
     /* Ende Traudel - Zeitungsbesitz prüfen */
     /* -----------------------------------
@@ -5579,9 +5484,49 @@ dialogZoomEbene.appendChild(
         Traudels Text anzeigen
         ----------------------------------- */
 
+        /* -----------------------------------
+        Zeitungskommentar zufällig auswählen
+        ----------------------------------- */
+
+        let anzeigeText = seite.text;
+        /* -----------------------------------
+        Anzahl der Zeitungsspenden einsetzen
+        ----------------------------------- */
+
+        if (
+            seitenId === "zeitung25ErsatzErhalten"
+        ) {
+
+            anzeigeText =
+                anzeigeText.replace(
+                    "{anzahlSpenden}",
+                    String(window.traudelZeitung25Spendenanzahl ?? 0)
+                );
+
+        }
+
+        /* Ende Spendenanzahl einsetzen */
+        if (
+            seitenId === "zeitung25NachSpende" &&
+            Array.isArray(seite.texte) &&
+            seite.texte.length > 0
+        ) {
+
+            const zufallsIndex =
+                Math.floor(
+                    Math.random() * seite.texte.length
+                );
+
+            anzeigeText =
+                seite.texte[zufallsIndex];
+
+        }
+
+        /* Ende Zeitungskommentar auswählen */
+
         traudelTextZeichnen(
             dialogPlatzhalterErsetzen(
-                seite.text
+                anzeigeText
             )
         );
 
@@ -6233,24 +6178,36 @@ dialogZoomEbene.appendChild(
     Gesprächsbeginn mit Zeitungsangebot
     ----------------------------------- */
 
-    if (!traudelZeitung25Anbieten) {
+    if (traudelZeitung25Gespendet) {
+
+        /* -----------------------------------
+        Nach einer Zeitungsspende
+        ----------------------------------- */
+
+        dialogSeiteAnzeigen(
+            "zeitung25NachSpende"
+        );
+
+    } else if (traudelZeitung25Anbieten) {
+
+        /* -----------------------------------
+        Erste Zeitung anbieten
+        ----------------------------------- */
+
+        dialogSeiteAnzeigen(
+            "zeitung25Angebot"
+        );
+
+    } else {
+
+        /* -----------------------------------
+        Normales Gespräch
+        ----------------------------------- */
 
         await traudelNormalesGespraechZaehlen();
 
         dialogSeiteAnzeigen(
             ersteDialogSeite
-        );
-
-    } else {
-
-        /*
-        Zeitung zuerst anbieten.
-        Die Gesprächszählung erfolgt erst
-        nach Abschluss des Angebots.
-        */
-
-        dialogSeiteAnzeigen(
-            "zeitung25Angebot"
         );
 
     }
@@ -6297,6 +6254,116 @@ weiterPfeil.addEventListener(
                 aktuelleSeite?.antworten?.[
                     ausgewaehlteAntwort
                 ];
+				            /* -----------------------------------
+            Nach Zeitungsspende:
+            Direkt zu Traudels Neuigkeiten
+            ----------------------------------- */
+
+            if (
+                aktuelleDialogSeite === "zeitung25NachSpende" &&
+                antwort?.ziel === "zeitung25Neuigkeiten"
+            ) {
+
+                await traudelNormalesGespraechZaehlen();
+
+                /* Letzten Besucher Valorias ermitteln */
+
+                const letzterValoriaBesucher =
+                    await window.valoriaLetztenBesucherErmitteln();
+
+                if (letzterValoriaBesucher) {
+
+                    window.traudelValoriaBesucher =
+                        letzterValoriaBesucher;
+
+                    if (
+                        letzterValoriaBesucher.istEigenerSpieler === true
+                    ) {
+
+                        dialogSeiteAnzeigen(
+                            "valoriaBerichtSelbst"
+                        );
+
+                    } else {
+
+                        dialogSeiteAnzeigen(
+                            "valoriaBerichtAnderer"
+                        );
+
+                    }
+
+                } else {
+
+                    dialogSeiteAnzeigen(
+                        "weiteresGespraech"
+                    );
+
+                }
+
+                return;
+
+            }
+
+            /* Ende Sprung zu Traudels Neuigkeiten */
+			            /* -----------------------------------
+            Nach Zeitungsspende:
+            Ersatzexemplar übergeben
+            ----------------------------------- */
+
+            if (
+                aktuelleDialogSeite === "zeitung25NachSpende" &&
+                antwort?.ziel === "zeitung25Ersatz"
+            ) {
+
+                if (traudelZeitungsUebergabeLaeuft) {
+                    return;
+                }
+
+                traudelZeitungsUebergabeLaeuft = true;
+
+                try {
+
+                    const gespeichert =
+                        await window.inventarZeitung25Hinzufuegen();
+
+                    if (gespeichert) {
+
+                        await window.zeitung25SymbolAktualisieren();
+
+                        dialogSeiteAnzeigen(
+                            "zeitung25ErsatzErhalten"
+                        );
+
+                    } else {
+
+                        dialogSeiteAnzeigen(
+                            "zeitung25Speicherfehler"
+                        );
+
+                    }
+
+                } catch (fehler) {
+
+                    console.error(
+                        "Traudel: Ersatzzeitung konnte nicht übergeben werden.",
+                        fehler
+                    );
+
+                    dialogSeiteAnzeigen(
+                        "zeitung25Speicherfehler"
+                    );
+
+                } finally {
+
+                    traudelZeitungsUebergabeLaeuft = false;
+
+                }
+
+                return;
+
+            }
+
+            /* Ende Ersatzexemplar übergeben */
             /* =========================================================
             TRAUDEL - ZEITUNG 25 ÜBERGEBEN
             ========================================================= */
@@ -6424,7 +6491,20 @@ weiterPfeil.addEventListener(
                 return;
 
             }
+            /* -----------------------------------
+            Abschied nach Ersatzzeitung
+            ----------------------------------- */
 
+            if (
+                aktuelleDialogSeite === "zeitung25ErsatzErhalten"
+            ) {
+
+                dialog.remove();
+                return;
+
+            }
+
+            /* Ende Abschied nach Ersatzzeitung */
             /* Ende Traudel - Zeitung 25 übergeben */
             /* -----------------------------------
             Reguläres Dialogende
@@ -7714,6 +7794,7 @@ const {
     get,
     onValue,
     set,
+    update,
     push,
     onDisconnect,
     serverTimestamp
@@ -7733,6 +7814,9 @@ window.firebaseOnValue =
 
 window.firebaseSet =
     set;
+	
+window.firebaseUpdate =
+update;
 
 window.firebasePush =
     push;

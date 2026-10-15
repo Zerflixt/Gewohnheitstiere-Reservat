@@ -94,6 +94,11 @@
 	},
 
 	"zeitungsspende": {
+	  "zurueckZumDialog": [
+		"WAS KANN ICH SONST NOCH",
+		"FÜR SIE TUN?"
+	  ],
+
 	  "entdeckung": {
 		"roboter": [
 		  "MOMENT.",
@@ -143,10 +148,6 @@
 "antwortenNachSpende": [
   "(…)",
   "(… gern geschehen)"
-],
-"zurueckZumDialog": [
-  "WAS KANN ICH SONST NOCH",
-  "FÜR SIE TUN?"
 ],
 
 		"pruefung": [

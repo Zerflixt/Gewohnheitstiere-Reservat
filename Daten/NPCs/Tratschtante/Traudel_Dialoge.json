@@ -17,7 +17,37 @@
             }
         ]
     },
+    "zeitung25NachSpende": {
+        "texte": [
+            "Ach, da seid Ihr ja! Habt Ihr das Interview mit Mimi95 gelesen? Diese junge Schurkin scheint ja einiges über sich zu erzählen zu haben! Herrlich, so etwas lese ich gern!",
+            "Ach, diese neue Wild am Sonntag! Besonders das Horoskop zum Tag der Frustrationsschreie hat mich amüsiert. Vielleicht sollte ich das auch einmal ausprobieren! AAAAAH! Huch, das tut ja wirklich gut!",
+            "Habt Ihr eigentlich HOODWATCHERS Karte gesehen? Also wirklich, beeindruckend! Da musste sogar ich zweimal hinschauen. Und das will etwas heißen!",
+            "Habt Ihr schon gehört? Seppko hat die Herde verlassen! Es steht sogar in der neuen Wild am Sonntag. Ach, solche Nachrichten machen mich immer ganz nachdenklich.",
+            "Stellt Euch vor, niemand konnte das Rätsel aus Ausgabe 24 lösen! Dabei hatte ich sofort 120 heraus. Aber mich fragt ja wieder keiner!",
+            "In der Dankbarkeitsübung hat tatsächlich jemand seine Lieblingscola gefunden! Ist das nicht schön? Also ich persönlich trinke ja lieber Fanta. Aber jedem das Seine!",
+            "Also, ich muss schon sagen: Die Wettervorhersage in der Wild am Sonntag hat diesmal haargenau gestimmt! Ich sollte mich künftig wohl besser danach richten.",
+            "Habt Ihr diesen Couch-Tarnanzug in der Zeitung gesehen? Ich überlege ernsthaft, mir auch einen zuzulegen! Nur leider stand kein Preis dabei. Dabei ist das doch das Wichtigste!"
+        ],
+        "antworten": [
+            {
+                "text": "Ja, wirklich toll! Was gibt es sonst Neues?",
+                "ziel": "zeitung25Neuigkeiten"
+            },
+            {
+                "text": "Hättet Ihr noch ein Exemplar?",
+                "ziel": "zeitung25Ersatz"
+            }
+        ]
+    },
 
+    "zeitung25ErsatzErhalten": {
+        "text": "Aber selbstverständlich! Hier, nehmt noch eine. Ich habe übrigens gehört, dass dieser Bibliotheksroboter den Leuten ihre Zeitungen abschwatzt! Angeblich hat er schon {anzahlSpenden} Exemplare eingesammelt. Was der damit wohl vorhat?",
+        "antworten": [
+            {
+                "text": "Vielen Dank, Traudel. Auf Wiedersehen!"
+            }
+        ]
+    },
     "zeitung25Erhalten": {
         "text": "Wunderbar! Da habt Ihr Euer Exemplar. Zerflixt wird sich freuen! Und jetzt, wo das erledigt ist ... was kann ich für Euch tun?",
         "antworten": [

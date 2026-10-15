@@ -1,5 +1,11 @@
 {
     "eintraege": [
+	    {
+            "version": "0.353",
+            "datum": "2026-10-15",
+            "titel": "Zeitung Spenden",
+            "text": "Man kann seine Zeitung der Bibliothek spenden, mit diesem update teste ich das herausnehmen von items aus der realtime database, also nicht zu ernst nehmen"
+        },
         {
             "version": "0.343",
             "datum": "2026-10-11",

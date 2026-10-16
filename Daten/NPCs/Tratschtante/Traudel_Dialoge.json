@@ -144,7 +144,22 @@
             }
         ]
     },
-
+	"zeitung25SpendenNeuigkeit": {
+    "text": "Stellt Euch vor, inzwischen haben schon {anzahlSpenden} Mitglieder ihre Ausgabe 25 der Bücherei gespendet! Ist das nicht erfreulich?",
+    "antworten": [
+        {
+            "text": "Das ist wirklich erfreulich, Traudel!"
+        }
+    ]
+},
+	"zeitung25Neuigkeit": {
+		"text": "{zeitungsNeuigkeit}",
+		"antworten": [
+			{
+				"text": "Interessant! Vielen Dank, Traudel."
+			}
+		]
+	},
     "weiteresGespraech": {
         "_kommentar": "Vorläufiger Einstieg für spätere gezählte Gespräche. Die persönliche Variante mit oder ohne bekannten Spielernamen wird später durch die Dialoglogik ausgewählt.",
         "text": "Ah, {anredeName}da seid Ihr ja wieder! Ich hatte schon so ein Gefühl, dass wir uns noch einmal über den Weg laufen würden.",

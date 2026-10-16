@@ -2514,7 +2514,7 @@ cursor: pointer;
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.354";
+window.multiplayerTestVersion = "0.356";
 
 /* Ende Testversion */
 /* =========================================================
@@ -9594,13 +9594,13 @@ function () {
     }/* Ende Benutzer-Prüfung */
 
 
-    const ordenRef =
-        window.firebaseRef(
-            window.firebaseDatabase,
-            "auszeichnungen/" +
-            user.uid +
-            "/orden"
-        );
+	const ordenRef =
+		window.firebaseRef(
+			window.firebaseDatabase,
+			"spieler/" +
+			user.uid +
+			"/extern/errungenschaften/orden"
+		);
 
 
     /* -----------------------------------
@@ -12156,13 +12156,15 @@ if (idleZustand === "weg") {
                                 Orden des Spielers einmalig lesen
                                 ----------------------------------- */
 
-                                const ordenRef =
-                                    window.firebaseRef(
-                                        window.firebaseDatabase,
-                                        "auszeichnungen/" +
-                                        angeklickteUid +
-                                        "/orden"
-                                    );
+
+								const ordenRef =
+									window.firebaseRef(
+										window.firebaseDatabase,
+										"spieler/" +
+										angeklickteUid +
+										"/extern/errungenschaften/orden"
+									);
+
 
                                 try {
 

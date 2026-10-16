@@ -2514,7 +2514,7 @@ cursor: pointer;
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.359";
+window.multiplayerTestVersion = "0.360";
 
 /* Ende Testversion */
 /* =========================================================
@@ -5057,7 +5057,8 @@ async function (sonderfeld) {
 
         const antwort =
             await fetch(
-                "Daten/NPCs/Tratschtante/Traudel_Dialoge.json"
+                "Daten/NPCs/Tratschtante/Traudel_Dialoge.json",
+				 { cache: "no-store" }
             );
 
         if (!antwort.ok) {

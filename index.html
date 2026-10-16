@@ -2514,7 +2514,7 @@ cursor: pointer;
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.358";
+window.multiplayerTestVersion = "0.359";
 
 /* Ende Testversion */
 /* =========================================================
@@ -7339,7 +7339,7 @@ async function (sonderfeld) {
     const positionsRef =
         window.firebaseRef(
             window.firebaseDatabase,
-            "positions/" + user.uid
+            "realtime/positions/" + user.uid
         );
 
 
@@ -11666,7 +11666,7 @@ Alle Positionen beobachten
 const positionsRef =
     window.firebaseRef(
         window.firebaseDatabase,
-        "positions"
+        "realtime/positions"
     );
 
 
@@ -11716,7 +11716,7 @@ window.firebaseOnValue(
             const eigenePositionsRef =
                 window.firebaseRef(
                     window.firebaseDatabase,
-                    "positions/" +
+                    "realtime/positions/" +
                     firebaseUser.uid
                 );
 
@@ -12626,7 +12626,7 @@ if (
     const positionsRef =
         window.firebaseRef(
             window.firebaseDatabase,
-            "positions/" + user.uid
+            "realtime/positions/" + user.uid
         );
 
 

@@ -45,14 +45,15 @@ async function (kategorie, gegenstandId) {
     Inventarpfad bestimmen
     ----------------------------------- */
 
-    const inventarRef =
-        window.firebaseRef(
-            window.firebaseDatabase,
-            "inventar/" +
-            user.uid + "/" +
-            kategorie + "/" +
-            gegenstandId
-        );
+	const inventarRef =
+		window.firebaseRef(
+			window.firebaseDatabase,
+			"spieler/" +
+			user.uid +
+			"/intern/inventar/" +
+			kategorie + "/" +
+			gegenstandId
+		);
 
     /* Ende Inventarpfad bestimmen */
 
@@ -160,9 +161,9 @@ async function () {
     const zeitungRef =
         window.firebaseRef(
             window.firebaseDatabase,
-            "inventar/" +
+            "spieler/" +
             user.uid +
-            "/zeitungen/25"
+            "/intern/inventar/zeitungen/25"
         );
 
     /* Ende Inventarpfad bestimmen */
@@ -350,9 +351,9 @@ async function () {
     const zeitungRef =
         window.firebaseRef(
             window.firebaseDatabase,
-            "inventar/" +
+            "spieler/" +
             user.uid +
-            "/zeitungen/25"
+            "/intern/inventar/zeitungen/25"
         );
 
     try {

@@ -2514,7 +2514,7 @@ cursor: pointer;
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.353";
+window.multiplayerTestVersion = "0.354";
 
 /* Ende Testversion */
 /* =========================================================
@@ -4922,7 +4922,7 @@ async function (sonderfeld) {
 
     window.traudelZeitung25Spendenanzahl = 0;
 
-    if (traudelZeitung25Gespendet) {
+    
 
         const spendenListeRef =
             window.firebaseRef(
@@ -4951,7 +4951,7 @@ async function (sonderfeld) {
 
         }
 
-    }
+    
 
     /* Ende Anzahl der Zeitungsspenden */
 
@@ -5493,9 +5493,10 @@ dialogZoomEbene.appendChild(
         Anzahl der Zeitungsspenden einsetzen
         ----------------------------------- */
 
-        if (
-            seitenId === "zeitung25ErsatzErhalten"
-        ) {
+		if (
+			seitenId === "zeitung25ErsatzErhalten" ||
+			seitenId === "zeitung25SpendenNeuigkeit"
+		) {
 
             anzeigeText =
                 anzeigeText.replace(
@@ -6603,7 +6604,64 @@ if (
     antwort?.text ===
         "Was gibt es Neues?"
 ) {
+    /* -----------------------------------
+    Traudel - Neuigkeit zufällig auswählen
 
+    0 = Zeitung (50 %)
+    1 = Spenden (25 %)
+    2 = Valoria (25 %)
+    ----------------------------------- */
+
+    const neuigkeitenZufall = Math.random();
+
+    const neuigkeitenThema =
+        neuigkeitenZufall < 0.50
+            ? 0
+            : neuigkeitenZufall < 0.75
+                ? 1
+                : 2;
+
+    /* Ende Neuigkeit auswählen */
+	    /* -----------------------------------
+    Zeitungsneuigkeit vorbereiten
+    ----------------------------------- */
+
+    if (neuigkeitenThema === 0) {
+
+        const zeitungstexte =
+            traudelDialogDaten.zeitung25NachSpende.texte;
+
+        const zufallsIndex =
+            Math.floor(
+                Math.random() * zeitungstexte.length
+            );
+
+        traudelDialogDaten.zeitung25Neuigkeit.text =
+            zeitungstexte[zufallsIndex];
+
+        dialogSeiteAnzeigen(
+            "zeitung25Neuigkeit"
+        );
+
+        return;
+    }
+
+    /* Ende Zeitungsneuigkeit */
+	
+	    /* -----------------------------------
+    Spendenneuigkeit anzeigen (25 %)
+    ----------------------------------- */
+
+    if (neuigkeitenThema === 1) {
+
+        dialogSeiteAnzeigen(
+            "zeitung25SpendenNeuigkeit"
+        );
+
+        return;
+    }
+
+    /* Ende Spendenneuigkeit */
     const letzterValoriaBesucher =
         await window.valoriaLetztenBesucherErmitteln();
 

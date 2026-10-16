@@ -2514,7 +2514,7 @@ cursor: pointer;
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.361";
+window.multiplayerTestVersion = "0.362";
 
 /* Ende Testversion */
 /* =========================================================
@@ -8416,7 +8416,8 @@ async function () {
     const valoriaRef =
         window.firebaseRef(
             window.firebaseDatabase,
-            "valoria/" + user.uid
+            "spieler/" + user.uid +
+            "/extern/taten/valoriaBesuche"
         );
 
 
@@ -8601,65 +8602,67 @@ Existiert noch kein Besuch, wird null
 zurückgegeben.
 ========================================================= */
 
+
 window.valoriaLetztenBesucherErmitteln =
 async function () {
 
-    /* -----------------------------------
-    Valoria-Daten lesen
-    ----------------------------------- */
-
-    const valoriaRef =
-        window.firebaseRef(
-            window.firebaseDatabase,
-            "valoria"
-        );
-
     try {
 
-        const snapshot =
-            await window.firebaseGet(
-                valoriaRef
+        /* -----------------------------------
+        Vorhandene Benutzer-UIDs lesen
+        ----------------------------------- */
+
+        const usersRef =
+            window.firebaseRef(
+                window.firebaseDatabase,
+                "users"
             );
 
-        if (!snapshot.exists()) {
+        const usersSnapshot =
+            await window.firebaseGet(
+                usersRef
+            );
 
+        if (!usersSnapshot.exists()) {
             return null;
-
         }
 
+        const usersDaten =
+            usersSnapshot.val() || {};
 
-        const valoriaDaten =
-            snapshot.val() || {};
+        /* Ende Benutzer-UIDs lesen */
 
 
         /* -----------------------------------
-        Neuesten Besuch suchen
+        Valoria-Besuche einzeln lesen
         ----------------------------------- */
 
-        let letzterBesucher =
-            null;
+        let letzterBesucher = null;
 
+        for (const uid of Object.keys(usersDaten)) {
 
-        for (
-            const uid
-            in valoriaDaten
-        ) {
+            const besucheRef =
+                window.firebaseRef(
+                    window.firebaseDatabase,
+                    "spieler/" + uid +
+                    "/extern/taten/valoriaBesuche"
+                );
 
-            const letzterBesuch =
-                valoriaDaten[
-                    uid
-                ]?.letzterBesuch;
+            const besucheSnapshot =
+                await window.firebaseGet(
+                    besucheRef
+                );
 
-
-            if (
-                typeof letzterBesuch !==
-                    "number"
-            ) {
-
+            if (!besucheSnapshot.exists()) {
                 continue;
-
             }
 
+            const letzterBesuch =
+                besucheSnapshot.val()?.letzterBesuch;
+
+            if (typeof letzterBesuch !== "number") {
+                continue;
+            }
 
             if (
                 !letzterBesucher ||
@@ -8668,82 +8671,55 @@ async function () {
             ) {
 
                 letzterBesucher = {
-
-                    uid:
-                        uid,
-
-                    letzterBesuch:
-                        letzterBesuch
-
+                    uid: uid,
+                    letzterBesuch: letzterBesuch
                 };
 
             }
 
+        }/* Ende Valoria-Besuche einzeln lesen */
+
+
+        /* -----------------------------------
+        Namen des letzten Besuchers ermitteln
+        ----------------------------------- */
+
+        if (letzterBesucher) {
+
+            const userDaten =
+                usersDaten[letzterBesucher.uid];
+
+            if (userDaten) {
+
+                const spieler =
+                    window.reservatSpielerSuchen(
+                        window.reservatSchnappschuss,
+                        userDaten.habiticaId
+                    );
+
+                letzterBesucher.name =
+                    spieler?.profile?.name || null;
+
+            } else {
+
+                letzterBesucher.name = null;
+
+            }
+
+            /* -----------------------------------
+            Eigenen Spieler erkennen
+            ----------------------------------- */
+
+            letzterBesucher.istEigenerSpieler =
+                letzterBesucher.uid ===
+                window.firebaseAuth?.currentUser?.uid;
+
+            /* Ende eigenen Spieler erkennen */
+
         }
 
-        /* Ende neuesten Besuch suchen */
+        /* Ende Namen ermitteln */
 
-/* -----------------------------------
-Namen des letzten Besuchers ermitteln
-
-Die Firebase-UID führt zunächst zu
-users/<uid>. Dort steht die Habitica-ID.
-
-Mit dieser Habitica-ID wird anschließend
-der Spieler im bereits geladenen
-Schnappschuss gesucht.
------------------------------------ */
-
-if (letzterBesucher) {
-
-    const userRef =
-        window.firebaseRef(
-            window.firebaseDatabase,
-            "users/" +
-            letzterBesucher.uid
-        );
-
-    const userSnapshot =
-        await window.firebaseGet(
-            userRef
-        );
-
-
-    if (userSnapshot.exists()) {
-
-        const userDaten =
-            userSnapshot.val();
-
-        const spieler =
-            window.reservatSpielerSuchen(
-                window.reservatSchnappschuss,
-                userDaten.habiticaId
-            );
-
-
-        letzterBesucher.name =
-            spieler?.profile?.name ||
-            null;
-/* -----------------------------------
-Prüfen, ob der letzte Besucher
-der aktuell angemeldete Spieler ist
------------------------------------ */
-
-letzterBesucher.istEigenerSpieler =
-    letzterBesucher.uid ===
-    window.firebaseAuth?.currentUser?.uid;
-
-/* Ende eigenen Spieler prüfen */
-    } else {
-
-        letzterBesucher.name =
-            null;
-
-    }
-
-}
-
-/* Ende Namen ermitteln */
         return letzterBesucher;
 
     } catch (fehler) {
@@ -8758,6 +8734,7 @@ letzterBesucher.istEigenerSpieler =
     }
 
 }; /* Ende valoriaLetztenBesucherErmitteln */
+
 
 /* Ende Valoria - letzten Besucher ermitteln */
 /* =========================================================

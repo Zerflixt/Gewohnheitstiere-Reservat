@@ -142,7 +142,12 @@
                     "grafikOffsetX": -0.2,
                     "grafikOffsetY": -0.2
                 }
-            ]
+                        ],
+            "musik": {
+                "datei": "Daten/Sounds/Musik/Bibliothek_Hintergrundmusik_001.ogg",
+                "lautstaerke": 0.2,
+                "schleife": true
+            }
         },
         "hafen": {
             "name": "Am Hafen",

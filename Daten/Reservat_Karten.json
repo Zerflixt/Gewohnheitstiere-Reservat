@@ -283,7 +283,7 @@
             "soundquellen": [
                 {
                     "id": "meeresrauschen_nordstrand",
-                    "datei": "Daten/Sounds/Umgebung/Meeresrauschen_Loop_001.mp3",
+                    "datei": "Daten/Sounds/Umgebung/Meeresrauschen_Loop_002_lang.ogg",
                     "quellfelder": [
                         [0,0], [0,1], [0,2],
                         [0,3], [0,4], [0,5],

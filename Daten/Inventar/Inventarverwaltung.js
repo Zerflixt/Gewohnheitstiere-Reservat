@@ -250,7 +250,8 @@ async function () {
     const spendenRef =
         window.firebaseRef(
             window.firebaseDatabase,
-            "zeitungsspenden/25/" + user.uid
+            "spieler/" + user.uid +
+            "/extern/taten/zeitungsspenden/25"
         );
 
     try {
@@ -290,7 +291,8 @@ async function () {
 
     const spendenRef = window.firebaseRef(
         window.firebaseDatabase,
-        "zeitungsspenden/25/" + user.uid
+        "spieler/" + user.uid +
+        "/extern/taten/zeitungsspenden/25"
     );
 
     try {

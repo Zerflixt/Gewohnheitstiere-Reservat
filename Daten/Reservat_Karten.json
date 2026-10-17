@@ -213,6 +213,20 @@
                     "grafikOffsetX": 0.2,
                     "grafikOffsetY": 0.2
                 }
+            ],
+			            "soundquellen": [
+                {
+                    "id": "meeresrauschen_hafen",
+                    "datei": "Daten/Sounds/Umgebung/Meeresrauschen_Loop_002_lang.ogg",
+                    "quellfelder": [
+                        [0,0], [0,1], [0,2],
+                        [0,3], [0,4], [0,5],
+                        [1,0], [1,1], [1,2], 
+						[1,3], [1,4], [1,5]
+                    ],
+                    "reichweite": 6,
+                    "maxLautstaerke": 0.4
+                }
             ]
         },
         "strand_nord": {

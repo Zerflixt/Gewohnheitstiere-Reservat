@@ -1,6 +1,12 @@
 {
     "eintraege": [
 		{
+            "version": "0.366",
+            "datum": "2026-10-17",
+            "titel": "Erster Umgebungssound",
+            "text": "Endlich ist der erste Umgebungssound eingebaut - am Nordstrand hört man nun das Meer rauschen. (Danke Anna-Nas für die Auswahl der Sound-Datei)"
+        },
+		{
             "version": "0.364",
             "datum": "2026-10-17",
             "titel": "Spieler-Datenstruktur",

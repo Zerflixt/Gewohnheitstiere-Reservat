@@ -265,3 +265,462 @@ function () {
     /* Ende Dauersounds fortsetzen */
 
 }; /* Ende reservatDauersoundsFortsetzen */
+/* =========================================================
+DAUERSOUNDS NACH BENUTZERINTERAKTION STARTEN
+========================================================= */
+
+/*
+Manche Browser verhindern den automatischen
+Soundstart beim Laden der Seite.
+
+Nach einem Klick versuchen wir deshalb,
+noch pausierte Dauersounds zu starten.
+*/
+
+document.addEventListener(
+    "click",
+    function () {
+
+        /* Globalen Soundschalter beachten */
+
+        if (
+            window.reservatSoundAktiv !== true
+        ) {
+
+            return;
+
+        }
+
+        /* Pausierte Dauersounds prüfen */
+
+        window.reservatAktiveDauersounds.forEach(
+            function (sound) {
+
+                if (!sound.paused) {
+
+                    return;
+
+                }
+
+                window.reservatLaufendeSounds.add(
+                    sound
+                );
+
+                sound.play().catch(
+                    function () {
+
+                        window.reservatLaufendeSounds.delete(
+                            sound
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+    }
+);
+
+/* Ende Dauersounds nach Benutzerinteraktion */
+/* =========================================================
+ENTFERNUNG ZU EINER SOUNDQUELLE BERECHNEN
+========================================================= */
+
+window.reservatSoundEntfernung =
+function (
+    spielerX,
+    spielerY,
+    quellfelder
+) {
+
+    /* -----------------------------------
+    Kürzeste Entfernung suchen
+    ----------------------------------- */
+
+    let kleinsteEntfernung =
+        Infinity;
+
+    for (const feld of quellfelder) {
+
+        const unterschiedX =
+            spielerX - feld[0];
+
+        const unterschiedY =
+            spielerY - feld[1];
+
+        const entfernung =
+            Math.sqrt(
+                unterschiedX * unterschiedX +
+                unterschiedY * unterschiedY
+            );
+
+        if (
+            entfernung < kleinsteEntfernung
+        ) {
+
+            kleinsteEntfernung =
+                entfernung;
+
+        }
+
+    }
+
+    /* Ende kürzeste Entfernung suchen */
+
+    return kleinsteEntfernung;
+
+}; /* Ende reservatSoundEntfernung */
+
+
+/* =========================================================
+LAUTSTÄRKE AUS ENTFERNUNG BERECHNEN
+========================================================= */
+
+window.reservatSoundLautstaerke =
+function (
+    entfernung,
+    reichweite,
+    maxLautstaerke = 1
+) {
+
+    /* -----------------------------------
+    Lineare Lautstärkeabnahme
+    ----------------------------------- */
+
+    if (
+        reichweite <= 0
+    ) {
+
+        return 0;
+
+    }
+
+    const faktor =
+        Math.max(
+            0,
+            1 - entfernung / reichweite
+        );
+
+    return Math.min(
+        1,
+        Math.max(
+            0,
+            faktor * maxLautstaerke
+        )
+    );
+
+    /* Ende lineare Lautstärkeabnahme */
+
+}; /* Ende reservatSoundLautstaerke */
+/* =========================================================
+SOUND-LAUTSTÄRKE SANFT ANPASSEN
+========================================================= */
+
+window.reservatSoundSanftAnpassen =
+function (
+    sound,
+    zielLautstaerke,
+    dauer = 150
+) {
+
+    /* -----------------------------------
+    Eingaben prüfen
+    ----------------------------------- */
+
+    if (!sound) {
+
+        return;
+
+    }
+
+    zielLautstaerke =
+        Math.max(
+            0,
+            Math.min(1, zielLautstaerke)
+        );
+
+    /* Ende Eingaben prüfen */
+
+
+    /* -----------------------------------
+    Vorherige Überblendung abbrechen
+    ----------------------------------- */
+
+    if (sound.reservatFadeFrame) {
+
+        cancelAnimationFrame(
+            sound.reservatFadeFrame
+        );
+
+        sound.reservatFadeFrame = null;
+
+    }
+
+    /* Ende vorherige Überblendung */
+
+
+    /* -----------------------------------
+    Ausgangswerte merken
+    ----------------------------------- */
+
+    const startLautstaerke =
+        sound.volume;
+
+    const startZeit =
+        performance.now();
+
+    /* Ende Ausgangswerte merken */
+
+
+    /* -----------------------------------
+    Lautstärke schrittweise verändern
+    ----------------------------------- */
+
+    function aktualisieren(zeit) {
+
+        const fortschritt =
+            Math.max(
+                0,
+                Math.min(
+                    1,
+                    (zeit - startZeit) / dauer
+                )
+            );
+
+        sound.volume =
+            startLautstaerke +
+            (
+                zielLautstaerke -
+                startLautstaerke
+            ) * fortschritt;
+
+        if (fortschritt < 1) {
+
+            sound.reservatFadeFrame =
+                requestAnimationFrame(
+                    aktualisieren
+                );
+
+        } else {
+
+            sound.volume =
+                zielLautstaerke;
+
+            sound.reservatFadeFrame =
+                null;
+
+        }
+
+    }
+
+    /* Ende Lautstärke verändern */
+
+
+    /* -----------------------------------
+    Überblendung starten
+    ----------------------------------- */
+
+    sound.reservatFadeFrame =
+        requestAnimationFrame(
+            aktualisieren
+        );
+
+    /* Ende Überblendung starten */
+
+}; /* Ende reservatSoundSanftAnpassen */
+/* =========================================================
+POSITIONSABHÄNGIGE UMGEBUNGSGERÄUSCHE
+========================================================= */
+
+/*
+Jede Geräuschquelle bekommt höchstens
+ein Audioobjekt.
+
+Die Karte bestimmt die Geräuschquellen,
+die Spielerposition bestimmt die Lautstärke.
+*/
+
+window.reservatUmgebungSounds =
+    new Map();
+
+
+/* =========================================================
+UMGEBUNGSGERÄUSCHE AKTUALISIEREN
+========================================================= */
+
+window.reservatUmgebungSoundsAktualisieren =
+function (kartenId, spielerX, spielerY) {
+
+    /* -----------------------------------
+    Geräuschquellen der Karte ermitteln
+    ----------------------------------- */
+
+    const karte =
+        window.reservatKarten?.[kartenId];
+
+    const soundquellen =
+        Array.isArray(karte?.soundquellen)
+            ? karte.soundquellen
+            : [];
+
+    const benoetigteSounds =
+        new Set();
+
+    /* Ende Geräuschquellen ermitteln */
+
+
+    /* -----------------------------------
+    Geräuschquellen durchgehen
+    ----------------------------------- */
+
+    for (const quelle of soundquellen) {
+
+        if (
+            !quelle.id ||
+            !quelle.datei ||
+            !Array.isArray(quelle.quellfelder) ||
+            quelle.quellfelder.length === 0
+        ) {
+
+            continue;
+
+        }
+
+        const kennung =
+            kartenId + ":" + quelle.id;
+
+        benoetigteSounds.add(
+            kennung
+        );
+
+        /* Entfernung berechnen */
+
+        const entfernung =
+            window.reservatSoundEntfernung(
+                spielerX,
+                spielerY,
+                quelle.quellfelder
+            );
+
+        /* Ziellautstärke berechnen */
+
+        const zielLautstaerke =
+            window.reservatSoundLautstaerke(
+                entfernung,
+                quelle.reichweite,
+                quelle.maxLautstaerke
+            );
+
+        /* Sound bei Bedarf erzeugen */
+
+        let sound =
+            window.reservatUmgebungSounds.get(
+                kennung
+            );
+
+        if (!sound) {
+
+            sound =
+                window.reservatSoundAbspielen(
+                    quelle.datei,
+                    0,
+                    true
+                );
+
+            if (!sound) {
+
+                continue;
+
+            }
+
+            window.reservatUmgebungSounds.set(
+                kennung,
+                sound
+            );
+
+        }
+
+        /* -----------------------------------
+        Lautstärke sanft anpassen
+
+        Bei global ausgeschaltetem Sound
+        keine Überblendung starten.
+        ----------------------------------- */
+
+        if (
+            window.reservatSoundAktiv === true
+        ) {
+
+            window.reservatSoundSanftAnpassen(
+                sound,
+                zielLautstaerke
+            );
+
+        } else {
+
+            if (sound.reservatFadeFrame) {
+
+                cancelAnimationFrame(
+                    sound.reservatFadeFrame
+                );
+
+                sound.reservatFadeFrame = null;
+
+            }
+
+            sound.volume = zielLautstaerke;
+
+        }
+
+        /* Ende Lautstärke anpassen */
+    }
+
+    /* Ende Geräuschquellen durchgehen */
+
+
+    /* -----------------------------------
+    Sounds anderer Karten entfernen
+    ----------------------------------- */
+
+    for (
+        const [kennung, sound]
+        of window.reservatUmgebungSounds
+    ) {
+
+        if (
+            benoetigteSounds.has(kennung)
+        ) {
+
+            continue;
+
+        }
+
+        /* Laufende Überblendung abbrechen */
+
+        if (sound.reservatFadeFrame) {
+
+            cancelAnimationFrame(
+                sound.reservatFadeFrame
+            );
+
+            sound.reservatFadeFrame =
+                null;
+
+        }
+
+        /* Sound endgültig stoppen */
+
+        window.reservatSoundStoppen(
+            sound
+        );
+
+        window.reservatUmgebungSounds.delete(
+            kennung
+        );
+
+    }
+
+    /* Ende Sounds anderer Karten entfernen */
+
+}; /* Ende reservatUmgebungSoundsAktualisieren */

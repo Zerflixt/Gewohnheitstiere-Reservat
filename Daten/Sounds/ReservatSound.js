@@ -724,3 +724,117 @@ function (kartenId, spielerX, spielerY) {
     /* Ende Sounds anderer Karten entfernen */
 
 }; /* Ende reservatUmgebungSoundsAktualisieren */
+/* =========================================================
+HINTERGRUNDMUSIK - VERWALTUNG
+========================================================= */
+
+/*
+Hintergrundmusik wird unabhängig von
+positionsabhängigen Umgebungsgeräuschen verwaltet.
+
+Pro Karte läuft höchstens ein Musikstück.
+*/
+
+window.reservatAktuelleMusik = null;
+window.reservatAktuelleMusikKennung = null;
+
+
+/* =========================================================
+HINTERGRUNDMUSIK AKTUALISIEREN
+========================================================= */
+
+window.reservatMusikAktualisieren =
+function (kartenId) {
+
+    /* -----------------------------------
+    Musikdefinition der Karte ermitteln
+    ----------------------------------- */
+
+    const musik =
+        window.reservatKarten?.[kartenId]?.musik;
+
+    const kennung =
+        musik?.datei
+            ? kartenId + ":" + musik.datei
+            : null;
+
+    /* Ende Musikdefinition ermitteln */
+
+
+    /* -----------------------------------
+    Bereits richtige Musik aktiv?
+    ----------------------------------- */
+
+    if (
+        kennung !== null &&
+        kennung === window.reservatAktuelleMusikKennung
+    ) {
+
+        return;
+
+    }
+
+    /* Ende Prüfung */
+
+
+    /* -----------------------------------
+    Bisherige Musik stoppen
+    ----------------------------------- */
+
+    if (window.reservatAktuelleMusik) {
+
+        window.reservatSoundStoppen(
+            window.reservatAktuelleMusik
+        );
+
+        window.reservatAktuelleMusik = null;
+
+    }
+
+    window.reservatAktuelleMusikKennung = null;
+
+    /* Ende bisherige Musik */
+
+
+    /* -----------------------------------
+    Keine Musik auf dieser Karte?
+    ----------------------------------- */
+
+    if (!kennung) {
+
+        return;
+
+    }
+
+    /* Ende Prüfung */
+
+
+    /* -----------------------------------
+    Neue Musik starten
+    ----------------------------------- */
+
+    const lautstaerke =
+        Math.max(
+            0,
+            Math.min(1, musik.lautstaerke ?? 1)
+        );
+
+    const sound =
+        window.reservatSoundAbspielen(
+            musik.datei,
+            lautstaerke,
+            musik.schleife === true
+        );
+
+    if (!sound) {
+
+        return;
+
+    }
+
+    window.reservatAktuelleMusik = sound;
+    window.reservatAktuelleMusikKennung = kennung;
+
+    /* Ende neue Musik starten */
+
+}; /* Ende reservatMusikAktualisieren */

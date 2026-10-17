@@ -2514,7 +2514,7 @@ cursor: pointer;
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.366";
+window.multiplayerTestVersion = "0.367";
 
 /* Ende Testversion */
 /* =========================================================
@@ -11860,6 +11860,15 @@ window.firebaseOnValue(
                             soundY
                         );
 
+                        /* -----------------------------------
+                        Hintergrundmusik aktualisieren
+                        ----------------------------------- */
+
+                        window.reservatMusikAktualisieren(
+                            soundKarte
+                        );
+
+                        /* Ende Hintergrundmusik */
                     }
                 ).catch(
                     function (fehler) {

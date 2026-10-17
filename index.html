@@ -2514,7 +2514,7 @@ cursor: pointer;
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.364";
+window.multiplayerTestVersion = "0.366";
 
 /* Ende Testversion */
 /* =========================================================
@@ -2523,7 +2523,7 @@ ZENTRALE SOUNDVERWALTUNG LADEN
 
 window.reservatSoundGeladen =
     importScripts(
-        "Daten/Sounds/ReservatSound.js"
+        "Daten/Sounds/ReservatSound.js?v=1"
     );
 
 /* Ende zentrale Soundverwaltung laden */
@@ -2737,7 +2737,8 @@ async function () {
 
         const antwort =
             await fetch(
-                "Daten/Reservat_Karten.json"
+                "Daten/Reservat_Karten.json",
+				{ cache: "no-store" }
             );
 
         if (!antwort.ok) {
@@ -11788,6 +11789,16 @@ window.firebaseOnValue(
                     firebaseUser.uid
                 ];
 
+            /* -----------------------------------
+            Bisherige Position merken
+            ----------------------------------- */
+
+            const vorherigePosition =
+                window.aktuelleSpielerPosition;
+
+            /* Ende bisherige Position merken */
+
+
             window.aktuelleSpielerPosition = {
                 karte: eigenePosition.karte,
                 x: eigenePosition.x,
@@ -11798,6 +11809,72 @@ window.firebaseOnValue(
             window.kartenGrafikAktualisieren();
             window.npcGrafikenAktualisieren();
             window.kontextAktionAktualisieren();
+
+
+            /* -----------------------------------
+            Umgebungsgeräusche bei Positionswechsel
+            aktualisieren
+            ----------------------------------- */
+
+            const positionGeaendert =
+                !vorherigePosition ||
+                vorherigePosition.karte !== eigenePosition.karte ||
+                vorherigePosition.x !== eigenePosition.x ||
+                vorherigePosition.y !== eigenePosition.y;
+
+            if (positionGeaendert) {
+
+                const soundKarte =
+                    eigenePosition.karte;
+
+                const soundX =
+                    eigenePosition.x;
+
+                const soundY =
+                    eigenePosition.y;
+
+                Promise.resolve(
+                    window.reservatKartenBereit
+                ).then(
+                    function () {
+
+                        /* Veraltete Position ignorieren */
+
+                        const aktuell =
+                            window.aktuelleSpielerPosition;
+
+                        if (
+                            !aktuell ||
+                            aktuell.karte !== soundKarte ||
+                            aktuell.x !== soundX ||
+                            aktuell.y !== soundY
+                        ) {
+
+                            return;
+
+                        }
+
+                        window.reservatUmgebungSoundsAktualisieren(
+                            soundKarte,
+                            soundX,
+                            soundY
+                        );
+
+                    }
+                ).catch(
+                    function (fehler) {
+
+                        console.error(
+                            "Umgebungsgeräusche konnten nicht aktualisiert werden:",
+                            fehler
+                        );
+
+                    }
+                );
+
+            }
+
+            /* Ende Umgebungsgeräusche aktualisieren */
 
         } /* Ende eigene Position übernehmen */
 

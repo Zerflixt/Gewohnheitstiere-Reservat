@@ -1,6 +1,12 @@
 {
     "eintraege": [
 		{
+            "version": "0.368",
+            "datum": "2026-10-17",
+            "titel": "Musik + Sound",
+            "text": "In der Bücherei gibt es zum ersten mal Hintergrundmusik - zusätzlich zum Meeresrauschen gibt es punktuell Vogelzwitschern"
+        },
+		{
             "version": "0.366",
             "datum": "2026-10-17",
             "titel": "Erster Umgebungssound",

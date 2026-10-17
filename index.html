@@ -2514,7 +2514,7 @@ cursor: pointer;
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.363";
+window.multiplayerTestVersion = "0.364";
 
 /* Ende Testversion */
 /* =========================================================
@@ -9886,9 +9886,9 @@ function () {
     const soundRef =
         window.firebaseRef(
             window.firebaseDatabase,
-            "users/" +
-            user.uid +
-            "/einstellungen/soundAktiv"
+			"spieler/" +
+			user.uid +
+			"/intern/einstellungen/soundAktiv"
         );
 
     /* Ende Firebase-Pfad vorbereiten */
@@ -10047,9 +10047,9 @@ async function () {
         const soundRef =
             window.firebaseRef(
                 window.firebaseDatabase,
-                "users/" +
-                user.uid +
-                "/einstellungen/soundAktiv"
+				"spieler/" +
+				user.uid +
+				"/intern/einstellungen/soundAktiv"
             );
 
         await window.firebaseSet(

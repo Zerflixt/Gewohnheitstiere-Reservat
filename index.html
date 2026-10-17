@@ -2514,7 +2514,7 @@ cursor: pointer;
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.362";
+window.multiplayerTestVersion = "0.363";
 
 /* Ende Testversion */
 /* =========================================================
@@ -2544,7 +2544,7 @@ INVENTARVERWALTUNG LADEN
 
 window.inventarverwaltungGeladen =
     importScripts(
-        "Daten/Inventar/Inventarverwaltung.js?v=0.360"
+        "Daten/Inventar/Inventarverwaltung.js?v=2"
     );
 
 /* Ende Inventarverwaltung laden */
@@ -4892,7 +4892,8 @@ async function (sonderfeld) {
         const spendenRef =
             window.firebaseRef(
                 window.firebaseDatabase,
-                "zeitungsspenden/25/" + user.uid
+                "spieler/" + user.uid +
+                "/extern/taten/zeitungsspenden/25"
             );
 
         try {
@@ -4924,32 +4925,69 @@ async function (sonderfeld) {
 
     
 
-        const spendenListeRef =
+    /* -----------------------------------
+    Spielerliste laden
+    ----------------------------------- */
+
+    try {
+
+        const spielerListeRef =
             window.firebaseRef(
                 window.firebaseDatabase,
-                "zeitungsspenden/25"
+                "users"
             );
 
-        try {
+        const spielerSnapshot =
+            await window.firebaseGet(spielerListeRef);
 
-            const snapshot =
-                await window.firebaseGet(spendenListeRef);
+        const spielerListe =
+            spielerSnapshot.val() || {};
 
-            if (snapshot.exists()) {
+        /* Ende Spielerliste laden */
 
-                window.traudelZeitung25Spendenanzahl =
-                    Object.keys(snapshot.val()).length;
 
-            }
+        /* -----------------------------------
+        Zeitungsspenden zählen
+        ----------------------------------- */
 
-        } catch (fehler) {
+        const spendenPruefungen =
+            Object.keys(spielerListe).map(
+                async function (uid) {
 
-            console.error(
-                "Traudel: Spendenanzahl konnte nicht geladen werden.",
-                fehler
+                    const spendenRef =
+                        window.firebaseRef(
+                            window.firebaseDatabase,
+                            "spieler/" + uid +
+                            "/extern/taten/zeitungsspenden/25"
+                        );
+
+                    const snapshot =
+                        await window.firebaseGet(spendenRef);
+
+                    return snapshot.exists() ? 1 : 0;
+
+                }
             );
 
-        }
+        const ergebnisse =
+            await Promise.all(spendenPruefungen);
+
+        window.traudelZeitung25Spendenanzahl =
+            ergebnisse.reduce(
+                (summe, wert) => summe + wert,
+                0
+            );
+
+        /* Ende Zeitungsspenden zählen */
+
+    } catch (fehler) {
+
+        console.error(
+            "Traudel: Spendenanzahl konnte nicht geladen werden.",
+            fehler
+        );
+
+    }
 
     
 

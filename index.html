@@ -2565,9 +2565,19 @@ cursor: pointer;
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.375";
+window.multiplayerTestVersion = "0.378";
 
 /* Ende Testversion */
+/* =========================================================
+ZENTRALE TAGESZEITSTEUERUNG LADEN
+========================================================= */
+
+window.reservatTageszeitGeladen =
+    importScripts(
+        "Daten/Systeme/ReservatTageszeit.js?v=1"
+    );
+
+/* Ende zentrale Tageszeitsteuerung laden */
 /* =========================================================
 ZENTRALE SOUNDVERWALTUNG LADEN
 ========================================================= */
@@ -2904,6 +2914,21 @@ function () {
 
 
     /* -----------------------------------
+    Tageszeitabhängige Grafiken wählen
+    ----------------------------------- */
+
+    const tageszeit =
+        window.reservatTageszeitBestimmen();
+
+    const grafiken =
+        tageszeit === "nacht" && karte.nacht
+            ? karte.nacht
+            : karte;
+
+    /* Ende Grafikauswahl */
+
+
+    /* -----------------------------------
     Vorhandene Kartenebenen suchen
     ----------------------------------- */
 
@@ -2925,8 +2950,8 @@ function () {
     if (kartenEbene1) {
 
         kartenEbene1.style.backgroundImage =
-            karte.ebene1
-                ? `url("${karte.ebene1}")`
+            grafiken.ebene1
+                ? `url("${grafiken.ebene1}")`
                 : "none";
 
     } /* Ende Kartenebene 1 */
@@ -2939,15 +2964,15 @@ function () {
     if (kartenEbene3) {
 
         kartenEbene3.style.backgroundImage =
-            karte.ebene3
-                ? `url("${karte.ebene3}")`
+            grafiken.ebene3
+                ? `url("${grafiken.ebene3}")`
                 : "none";
 
     } /* Ende Kartenebene 3 */
 
 }; /* Ende kartenGrafikAktualisieren */
 
-/* Ende Kartengrafik aktualisieren */
+
 /* =========================================================
 STATIONÄRE NPC-GRAFIKEN AKTUALISIEREN
 ========================================================= */
@@ -15037,30 +15062,7 @@ kartenEbene3.id =
 /* Kartengrafiken aus JSON laden     */
 /*-----------------------------------*/
 
-const aktuelleKarte =
-    window.aktuelleSpielerPosition?.karte ||
-    "buecherei";
 
-const kartenDaten =
-    window.reservatKarten?.[aktuelleKarte];
-
-if (kartenDaten) {
-
-    if (kartenDaten.ebene1) {
-
-        kartenEbene1.style.backgroundImage =
-            `url("${kartenDaten.ebene1}")`;
-
-    } /* Ende Ebene 1 */
-
-    if (kartenDaten.ebene3) {
-
-        kartenEbene3.style.backgroundImage =
-            `url("${kartenDaten.ebene3}")`;
-
-    } /* Ende Ebene 3 */
-
-} /* Ende Kartendaten vorhanden */
 
 
 reservatZoomEbene.appendChild(
@@ -15070,7 +15072,13 @@ reservatZoomEbene.appendChild(
 reservatZoomEbene.appendChild(
     kartenEbene3
 );
+/* -----------------------------------
+Kartengrafiken nach Aufbau aktualisieren
+----------------------------------- */
 
+window.kartenGrafikAktualisieren();
+
+/* Ende Kartengrafiken aktualisieren */
 /* Ende Kartenebenen erzeugen */
 /* -----------------------------------
 Verbindungssperrschicht erzeugen

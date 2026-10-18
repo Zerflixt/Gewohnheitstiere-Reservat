@@ -1,6 +1,12 @@
 {
     "eintraege": [
 		{
+            "version": "0.374",
+            "datum": "2026-10-18",
+            "titel": "Karte teilen",
+            "text": "Es ist jetzt möglich die eigene Karte zu teilen und beispielsweise per Whatsapp zu verschicken, sofern das handy / der browser das unterstützt"
+        },
+		{
             "version": "0.372",
             "datum": "2026-10-18",
             "titel": "Deine Karte",

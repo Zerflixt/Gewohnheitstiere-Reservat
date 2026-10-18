@@ -957,10 +957,10 @@ Links oben unter dem Spielfeld
     left: 0;
 
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-content: flex-start;
 
-    gap: 6px;
+    gap: 0px;
 
     z-index: 5;
 }
@@ -1040,7 +1040,58 @@ Zeitung 25 - erhalten
 }
 
 /* Ende Zeitung 25 - Besitzanzeige */
+/* =========================================================
+SPIELERKARTEN-ICON
+Gleiche Größe und Positionierung wie Zeitung
+========================================================= */
 
+#spielerkarteButton {
+    width: 110px;
+    height: 110px;
+
+    margin: 0;
+    padding: 0;
+
+    background: transparent;
+    border: none;
+    box-shadow: none;
+
+    cursor: pointer;
+
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#spielerkarteButton img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+}
+
+#spielerkarteButton:hover,
+#spielerkarteButton:focus,
+#spielerkarteButton:active {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+#spielerkarteButton:active img {
+    filter:
+        drop-shadow(0 0 4px white)
+        drop-shadow(0 0 8px gold);
+}
+
+/* Ende Spielerkarten-Icon */
 /* Ende Inventar-Schnellzugriff */
 /* Ende Bewegungssteuerung */
 /* =========================================================
@@ -2514,7 +2565,7 @@ cursor: pointer;
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.368";
+window.multiplayerTestVersion = "0.372";
 
 /* Ende Testversion */
 /* =========================================================
@@ -2559,6 +2610,16 @@ window.bibliotheksroboterGeladen =
     );
 
 /* Ende externe NPC-Dateien laden */
+/* =========================================================
+SPIELERKARTENBETRACHTER LADEN
+========================================================= */
+
+window.spielerkartenBetrachterGeladen =
+    importScripts(
+        "Daten/Spielerkarten/SpielerkartenBetrachter.js?v=3"
+    );
+
+/* Ende Spielerkartenbetrachter laden */
 /* =========================================================
 
 
@@ -10946,7 +11007,14 @@ if (!eigenerSpieler) {
 
 } /* Ende Spieler im Schnappschuss prüfen */
 
+/* =========================================================
+EIGENEN SPIELER FÜR SPIELERKARTEN BEREITSTELLEN
+========================================================= */
 
+window.spielerkartenEigenerSpieler =
+    eigenerSpieler;
+
+/* Ende eigenen Spieler bereitstellen */
 
 
 
@@ -15403,6 +15471,26 @@ function (zielPassage) {
                     alt=&quot;&quot;
                 &gt;
             &lt;/button&gt;
+
+            &lt;!-- -----------------------------------
+                 Spielerkarte öffnen
+                 Funktion wird später ergänzt
+                 ----------------------------------- --&gt;
+
+            &lt;button
+                id=&quot;spielerkarteButton&quot;
+                class=&quot;inventarTaste&quot;
+                type=&quot;button&quot;
+                title=&quot;Eigene Spielerkarte ansehen&quot;
+                aria-label=&quot;Eigene Spielerkarte ansehen&quot;
+            &gt;
+                &lt;img
+                    src=&quot;Daten/Icons/SpielkartenIcon.png&quot;
+                    alt=&quot;&quot;
+                &gt;
+            &lt;/button&gt;
+
+            &lt;!-- Ende Spielerkarte öffnen --&gt;
 
         &lt;/div&gt;
 

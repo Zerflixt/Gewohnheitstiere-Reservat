@@ -1,6 +1,12 @@
 {
     "eintraege": [
 		{
+            "version": "0.372",
+            "datum": "2026-10-18",
+            "titel": "Deine Karte",
+            "text": "Man kann sich nun seine aktuelle Karte hochauflösend anschauen, dafür gibt es nun einen neuen Button neben der aktuellen Zeitung"
+        },
+		{
             "version": "0.368",
             "datum": "2026-10-17",
             "titel": "Musik + Sound",

@@ -586,7 +586,21 @@ function (kartenId, spielerX, spielerY) {
             continue;
 
         }
+        /* -----------------------------------
+        Tageszeit der Geräuschquelle prüfen
+        ----------------------------------- */
 
+        if (
+            quelle.tageszeit &&
+            quelle.tageszeit !==
+                window.reservatTageszeitBestimmen()
+        ) {
+
+            continue;
+
+        }
+
+        /* Ende Tageszeitprüfung */
         const kennung =
             kartenId + ":" + quelle.id;
 

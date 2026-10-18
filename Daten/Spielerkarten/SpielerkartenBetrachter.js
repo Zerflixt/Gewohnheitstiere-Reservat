@@ -130,6 +130,25 @@ window.spielerkartenBetrachterOeffnen =
                 </div>
 
                 <div id="spielerkartenWerkzeugleiste">
+				<!-- -----------------------------------
+				Spielerkarte teilen
+				----------------------------------- -->
+
+				<button
+					id="spielerkartenTeilen"
+					type="button"
+					title="Spielerkarte teilen"
+					aria-label="Spielerkarte teilen"
+					disabled
+				>
+					<img
+						src="Daten/Icons/Teilen-Golden.png"
+						alt=""
+						draggable="false"
+					>
+				</button>
+
+				<!-- Ende Spielerkarte teilen -->
 
 					<button
 						id="spielerkartenSchliessen"
@@ -166,7 +185,15 @@ window.spielerkartenBetrachterOeffnen =
 		window.spielerkarteMaussteuerungAktivieren();
 
 		/* Ende Maussteuerung aktivieren */
+		/* -----------------------------------
+		Teilen im Hintergrund vorbereiten
+		----------------------------------- */
 
+		window.spielerkarteTeilenVorbereiten(
+			kartenAdresse
+		);
+
+		/* Ende Teilen vorbereiten */
     };
 
 /* Ende Spielerkartenbetrachter öffnen */
@@ -208,6 +235,151 @@ $(document).on(
 );
 
 /* Ende Schließen-Button verbinden */
+/* =========================================================
+SPIELERKARTE - TEILEN VORBEREITEN
+========================================================= */
+
+window.spielerkarteTeilenVorbereiten =
+    async function (kartenAdresse) {
+
+        const knopf =
+            document.getElementById("spielerkartenTeilen");
+
+        if (!knopf) {
+            return;
+        }
+
+        /* -----------------------------------
+        Ausgangszustand: deaktiviert
+        ----------------------------------- */
+
+        knopf.disabled = true;
+        knopf.spielerkarteDatei = null;
+
+        /* -----------------------------------
+        Browserunterstützung prüfen
+        ----------------------------------- */
+
+        if (
+            typeof navigator.share !== "function" ||
+            typeof navigator.canShare !== "function"
+        ) {
+            return;
+        }
+
+        try {
+
+            /* -----------------------------------
+            Original-PNG laden
+            ----------------------------------- */
+
+            const antwort = await fetch(kartenAdresse);
+
+            if (!antwort.ok) {
+                return;
+            }
+
+            const bilddaten = await antwort.blob();
+
+            if (bilddaten.type !== "image/png") {
+                return;
+            }
+
+            /* -----------------------------------
+            Teilbare Datei erstellen
+            ----------------------------------- */
+
+            const dateiname =
+                decodeURIComponent(
+                    new URL(kartenAdresse).pathname.split("/").pop()
+                );
+
+            const datei = new File(
+                [bilddaten],
+                dateiname,
+                { type: "image/png" }
+            );
+
+            /* -----------------------------------
+            Dateifreigabe prüfen
+            ----------------------------------- */
+
+            if (!navigator.canShare({ files: [datei] })) {
+                return;
+            }
+
+            /* -----------------------------------
+            Nur aktuellen Betrachter aktivieren
+            ----------------------------------- */
+
+            if (
+                knopf.isConnected &&
+                document.getElementById("spielerkartenTeilen") === knopf
+            ) {
+                knopf.spielerkarteDatei = datei;
+                knopf.disabled = false;
+            }
+
+        } catch (fehler) {
+
+            console.warn(
+                "Spielerkarte kann nicht zum Teilen vorbereitet werden:",
+                fehler
+            );
+
+        }
+
+    };
+
+/* Ende Spielerkarte - Teilen vorbereiten */
+
+
+/* =========================================================
+SPIELERKARTE - TEILEN AUSFÜHREN
+========================================================= */
+
+$(document).on(
+    "click",
+    "#spielerkartenTeilen",
+    async function () {
+
+        const datei = this.spielerkarteDatei;
+
+        if (this.disabled || !datei) {
+            return;
+        }
+
+        try {
+
+            /* Direkt durch den Benutzerklick auslösen */
+
+            await navigator.share({
+                files: [datei]
+            });
+
+        } catch (fehler) {
+
+            /* Abbruch durch den Spieler ist kein Fehler */
+
+            if (fehler.name !== "AbortError") {
+
+                console.warn(
+                    "Spielerkarte konnte nicht geteilt werden:",
+                    fehler
+                );
+
+                alert(
+                    "Das Teilen der Spielerkarte hat leider nicht funktioniert."
+                );
+
+            }
+
+        }
+
+    }
+);
+
+/* Ende Spielerkarte - Teilen ausführen */
 /* =========================================================
 BROWSER-DRAGGING DER SPIELERKARTE VERHINDERN
 ========================================================= */
@@ -734,7 +906,41 @@ SPIELERKARTENBETRACHTER - DARSTELLUNG
 			height: 100%;
 			object-fit: contain;
 		}
+		/* -----------------------------------
+		Teilen-Button
+		----------------------------------- */
 
+		#spielerkartenTeilen {
+			flex: 0 0 52px;
+			width: 52px;
+			height: 52px;
+			padding: 0;
+
+			border: none;
+			background: transparent;
+			cursor: pointer;
+			touch-action: manipulation;
+		}
+
+		#spielerkartenTeilen img {
+			display: block;
+			width: 100%;
+			height: 100%;
+			object-fit: contain;
+		}
+
+		/* Deaktiviert: Symbol grau */
+
+		#spielerkartenTeilen:disabled {
+			cursor: default;
+		}
+
+		#spielerkartenTeilen:disabled img {
+			filter: grayscale(1);
+			opacity: 0.4;
+		}
+
+		/* Ende Teilen-Button */
 		/* -----------------------------------
 		Querformat: Werkzeugleiste rechts
 		----------------------------------- */

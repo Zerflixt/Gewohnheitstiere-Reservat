@@ -1,6 +1,12 @@
 {
     "eintraege": [
 		{
+            "version": "0.375",
+            "datum": "2026-10-18",
+            "titel": "performance",
+            "text": "Kleines Performance update - die Maps sind jetzt von der auflösung minimal kleiner um den download gering zu halten fürs reservat"
+        },
+		{
             "version": "0.374",
             "datum": "2026-10-18",
             "titel": "Karte teilen",

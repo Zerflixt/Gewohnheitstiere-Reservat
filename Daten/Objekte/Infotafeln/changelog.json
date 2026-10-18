@@ -1,6 +1,12 @@
 {
     "eintraege": [
 		{
+            "version": "0.378",
+            "datum": "2026-10-18",
+            "titel": "Zeit",
+            "text": "Es gibt nun Zeit im Reservat - es wird nachts dunkel und es  gibt entsprechend andere geräusche."
+        },
+		{
             "version": "0.375",
             "datum": "2026-10-18",
             "titel": "performance",

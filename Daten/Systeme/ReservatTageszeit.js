@@ -9,12 +9,17 @@ function () {
     Deutsche Stunde ermitteln
     ----------------------------------- */
 
-    const stunde = Number(
+    const zeitTeile =
         new Intl.DateTimeFormat("de-DE", {
             timeZone: "Europe/Berlin",
             hour: "2-digit",
             hourCycle: "h23"
-        }).format(new Date())
+        }).formatToParts(new Date());
+
+    const stunde = Number(
+        zeitTeile.find(
+            teil => teil.type === "hour"
+        ).value
     );
 
     /* -----------------------------------

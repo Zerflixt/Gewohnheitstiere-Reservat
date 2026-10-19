@@ -2565,7 +2565,7 @@ cursor: pointer;
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.379";
+window.multiplayerTestVersion = "0.384";
 
 /* Ende Testversion */
 /* =========================================================
@@ -2630,6 +2630,26 @@ window.spielerkartenBetrachterGeladen =
     );
 
 /* Ende Spielerkartenbetrachter laden */
+/* =========================================================
+RESERVAT - ANIMATIONEN LADEN
+========================================================= */
+
+window.reservatAnimationenGeladen =
+    importScripts(
+        "Daten/Animationen/reservat-animationen.js?v=2"
+    );
+
+/* Ende Reservat - Animationen laden */
+/* =========================================================
+RESERVAT - FEUERWERK FIREBASE LADEN
+========================================================= */
+
+window.reservatFeuerwerkFirebaseGeladen =
+    importScripts(
+        "Daten/Animationen/reservat-feuerwerk-firebase.js?v=1"
+    );
+
+/* Ende Reservat - Feuerwerk Firebase laden */
 /* =========================================================
 
 
@@ -7981,7 +8001,8 @@ const {
     update,
     push,
     onDisconnect,
-    serverTimestamp
+    serverTimestamp,
+    runTransaction
 } =
     await import(
         "https://www.gstatic.com/firebasejs/12.17.1/firebase-database.js"
@@ -8010,6 +8031,14 @@ window.firebaseOnDisconnect =
 
 window.firebaseServerTimestamp =
     serverTimestamp;
+	/* -----------------------------------
+	Firebase-Transaktionen bereitstellen
+	----------------------------------- */
+
+	window.firebaseRunTransaction =
+		runTransaction;
+
+	/* Ende Firebase-Transaktionen bereitstellen */
     await import(
         "https://www.gstatic.com/firebasejs/12.17.1/firebase-database.js"
     );
@@ -9678,6 +9707,74 @@ function (ordenName) {
         vorhanden
             ? ordenSpruch.vorhanden
             : ordenSpruch.fehlt;
+			    /* -----------------------------------
+				Resilienz-Feuerwerk bei Nacht
+				----------------------------------- */
+
+				if (
+					ordenName === "resilienz" &&
+					vorhanden &&
+					window.reservatTageszeitBestimmen() === "nacht"
+				) {
+
+					const position =
+						window.aktuelleSpielerPosition;
+
+					if (position) {
+
+						/* Raketenwerte einmalig festlegen */
+
+						const rakete = {
+							karte: position.karte,
+							x: position.x,
+							y: position.y,
+							palette: "gold",
+							groesse: 1,
+							seed: Math.floor(
+								Math.random() * 4294967296
+							)
+						};
+
+                        /* -----------------------------------
+                        Raketenstart zeitlich begrenzen
+                        ----------------------------------- */
+
+                        const jetzt = Date.now();
+
+                        if (
+                            jetzt -
+                            (window.letzterResilienzRaketenstart || 0)
+                            < 750
+                        ) {
+                            return;
+                        }
+
+                        /* Ende Raketenstart begrenzen */
+
+                        /* -----------------------------------
+                        Rakete an Firebase senden
+                        ----------------------------------- */
+
+                        if (
+                            window.reservatFeuerwerkFirebase
+                                ?.raketeSpeichern
+                        ) {
+
+                            window.letzterResilienzRaketenstart =
+                                jetzt;
+
+                            window.reservatFeuerwerkFirebase
+                                .raketeSpeichern(rakete);
+
+                        }
+
+                        /* Ende Rakete an Firebase senden */
+
+					}
+
+				}
+
+				/* Ende Resilienz-Feuerwerk bei Nacht */
 
 };/* Ende ordenAnklicken */
 
@@ -9731,6 +9828,69 @@ function () {
 };/* Ende ordenBeobachten */
 
 /* Ende Orden */
+/* =========================================================
+RESERVAT - FEUERWERK LISTENER BEENDEN
+========================================================= */
+
+$(document).on(
+    ":passageend",
+    function () {
+
+        /* -----------------------------------
+        Spielfeld verlassen?
+        ----------------------------------- */
+
+        if (SugarCube.State.passage === "Spielfeld") {
+            return;
+        }
+
+        /* Ende Spielfeld prüfen */
+
+
+        /* -----------------------------------
+        Feuerwerks-Listener beenden
+        ----------------------------------- */
+
+        window.reservatFeuerwerkFirebase?.beenden();
+
+        /* Ende Feuerwerks-Listener beenden */
+
+    }
+);
+
+/* Ende Feuerwerk Listener beenden */
+/* =========================================================
+RESERVAT - FEUERWERK LISTENER STARTEN
+========================================================= */
+
+$(document).on(
+    ":passageend",
+    async function () {
+
+        /* Nur beim Spielfeld starten */
+
+        if (SugarCube.State.passage !== "Spielfeld") {
+            return;
+        }
+
+        /* Auf Firebase warten */
+
+        await window.firebaseBereit;
+
+        /* Prüfen, ob Spielfeld noch geöffnet ist */
+
+        if (SugarCube.State.passage !== "Spielfeld") {
+            return;
+        }
+
+        /* Feuerwerks-Listener starten */
+
+        window.reservatFeuerwerkFirebase?.starten();
+
+    }
+);
+
+/* Ende Feuerwerk Listener starten */
 /* =========================================================
 RESERVAT - BETRETEN ALS AKTIVITÄT MELDEN
 ========================================================= */

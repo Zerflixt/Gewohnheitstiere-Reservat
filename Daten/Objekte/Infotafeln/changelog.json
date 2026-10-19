@@ -1,6 +1,12 @@
 {
     "eintraege": [
 		{
+            "version": "0.385",
+            "datum": "2026-10-19",
+            "titel": "Feuerwerk!",
+            "text": "Wer den Resilienzorden besitzt kann nun nachts Raketen starten... dies ist derzeit nur zur Belustigung und damit ich lerne wie das mit echtzeit Gedöns so funktioniert"
+        },
+		{
             "version": "0.379",
             "datum": "2026-10-19",
             "titel": "Fehlerkorrekturen",

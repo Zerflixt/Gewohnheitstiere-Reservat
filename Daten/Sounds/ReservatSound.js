@@ -77,9 +77,10 @@ function (
     Globalen Sound-Schalter prüfen
     ----------------------------------- */
 
-    if (
-        window.reservatSoundAktiv !== true
-    ) {
+	if (
+		window.reservatSoundAktiv !== true ||
+		document.hidden
+	) {
 
         /*
         Ein einmaliger Sound wird bei
@@ -217,13 +218,14 @@ function () {
     Sound muss eingeschaltet sein
     ----------------------------------- */
 
-    if (
-        window.reservatSoundAktiv !== true
-    ) {
+		if (
+			window.reservatSoundAktiv !== true ||
+			document.hidden
+		) {
 
-        return;
+			return;
 
-    }
+		}
 
     /* Ende Sound prüfen */
 
@@ -266,6 +268,40 @@ function () {
 
 }; /* Ende reservatDauersoundsFortsetzen */
 /* =========================================================
+SOUNDS BEIM APP-WECHSEL PAUSIEREN
+========================================================= */
+
+document.addEventListener(
+    "visibilitychange",
+    function () {
+
+        /* -----------------------------------
+        Reservat ist im Hintergrund
+        ----------------------------------- */
+
+        if (document.hidden) {
+
+            window.reservatAlleSoundsStoppen();
+            return;
+
+        }
+
+        /* Ende Hintergrund */
+
+
+        /* -----------------------------------
+        Reservat ist wieder sichtbar
+        ----------------------------------- */
+
+        window.reservatDauersoundsFortsetzen();
+
+        /* Ende Vordergrund */
+
+    }
+);
+
+/* Ende Sounds beim App-Wechsel pausieren */
+/* =========================================================
 DAUERSOUNDS NACH BENUTZERINTERAKTION STARTEN
 ========================================================= */
 
@@ -281,15 +317,20 @@ document.addEventListener(
     "click",
     function () {
 
-        /* Globalen Soundschalter beachten */
+	/* -----------------------------------
+	Soundschalter und Sichtbarkeit prüfen
+	----------------------------------- */
 
-        if (
-            window.reservatSoundAktiv !== true
-        ) {
+	if (
+		window.reservatSoundAktiv !== true ||
+		document.hidden
+	) {
 
-            return;
+		return;
 
-        }
+	}
+
+	/* Ende Soundschalter und Sichtbarkeit */
 
         /* Pausierte Dauersounds prüfen */
 

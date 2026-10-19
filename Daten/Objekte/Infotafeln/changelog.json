@@ -1,6 +1,12 @@
 {
     "eintraege": [
 		{
+            "version": "0.379",
+            "datum": "2026-10-19",
+            "titel": "Fehlerkorrekturen",
+            "text": "Die neue Tag Nacht Erkennung hat versehentlich immer Nacht erkannt. Jetzt wird es ab ca 7 uhr wieder hell. Der Spielkartenbetrachter hat eine Absicherung bekommen, falls die Karte noch nicht existiert oder nicht gefunden werden konnte. Das Soundsystem wurde angepasst damit bei minimiertem Browser die Sounds pausiert werden und nicht weiter laufen."
+        },
+		{
             "version": "0.378",
             "datum": "2026-10-18",
             "titel": "Zeit",

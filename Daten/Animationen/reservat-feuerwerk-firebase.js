@@ -205,10 +205,45 @@ Firebase-Ereignisse für Multiplayer-Feuerwerk
 					typeof window.reservatSoundAbspielen === "function"
 				) {
 
-					window.reservatSoundAbspielen(
-						"Daten/Sounds/Effekte/Rakete_Start_Boeller_3_1s.ogg",
+				/* -----------------------------------
+				Entfernung zur Rakete berechnen
+				----------------------------------- */
+
+				const spielerPosition =
+					window.aktuelleSpielerPosition;
+
+				const entfernung =
+					window.reservatSoundEntfernung(
+						spielerPosition.x,
+						spielerPosition.y,
+						[[rakete.x, rakete.y]]
+					);
+
+				/* -----------------------------------
+				Lautstärke nach Entfernung bestimmen
+				----------------------------------- */
+
+				const lautstaerke =
+					window.reservatSoundLautstaerke(
+						entfernung,
+						5,
 						0.4
 					);
+
+				/* -----------------------------------
+				Feuerwerkssound abspielen
+				----------------------------------- */
+
+				if (lautstaerke > 0) {
+
+					window.reservatSoundAbspielen(
+						"Daten/Sounds/Effekte/Rakete_Start_Boeller_3_1s.ogg",
+						lautstaerke
+					);
+
+				}
+
+				/* Ende entfernungsabhängiger Feuerwerkssound */
 
 				}
 

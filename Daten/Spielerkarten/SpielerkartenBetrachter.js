@@ -119,15 +119,45 @@ window.spielerkartenBetrachterOeffnen =
             "spielerkartenBetrachter";
 
         betrachter.innerHTML = `
-            <div id="spielerkartenInhalt">
+		<div id="spielerkartenInhalt">
+		
+			<div id="spielerkartenBildbereich">
 
-                <div id="spielerkartenBildbereich">
-                    <img
-                        id="spielerkartenBild"
-                        alt="Eigene Spielerkarte"
-						draggable="false"
-                    >
-                </div>
+				<img
+					id="spielerkartenBild"
+					alt="Eigene Spielerkarte"
+					draggable="false"
+				>
+
+				<!-- -----------------------------------
+				Meldung bei fehlender Spielerkarte
+				----------------------------------- -->
+
+				<div
+					id="spielerkartenFehlermeldung"
+					role="alert"
+					hidden
+				>
+					<strong>
+						Deine Spielerkarte konnte nicht geladen werden.
+					</strong>
+
+					<p>
+						Wenn du noch neu bei den Gewohnheitstieren bist,
+						kann es eine Weile dauern, bis deine Karte
+						verfügbar ist.
+					</p>
+
+					<p>
+						Solltest du der Meinung sein, dass deine Karte
+						bereits existieren müsste, kontaktiere bitte
+						Zerflixt.
+					</p>
+				</div>
+
+				<!-- Ende Meldung bei fehlender Spielerkarte -->
+
+			</div>
 
                 <div id="spielerkartenWerkzeugleiste">
 				<!-- -----------------------------------
@@ -171,13 +201,51 @@ window.spielerkartenBetrachterOeffnen =
             betrachter
         );
 
-        /* -----------------------------------
-        Kartenbild laden
-        ----------------------------------- */
+		/* -----------------------------------
+		Kartenbild laden und Fehler erkennen
+		----------------------------------- */
 
-        document.getElementById(
-            "spielerkartenBild"
-        ).src = kartenAdresse;
+		const kartenBild =
+			document.getElementById("spielerkartenBild");
+
+		const fehlerMeldung =
+			document.getElementById("spielerkartenFehlermeldung");
+
+		/* -----------------------------------
+		Ladefehler behandeln
+		----------------------------------- */
+
+		kartenBild.addEventListener("error", function () {
+
+			/* Defektes Bild ausblenden */
+
+			kartenBild.style.display = "none";
+
+			/* Fehlermeldung anzeigen */
+
+			fehlerMeldung.hidden = false;
+
+			/* Teilen sicherheitshalber deaktivieren */
+
+			const teilenKnopf =
+				document.getElementById("spielerkartenTeilen");
+
+			if (teilenKnopf) {
+				teilenKnopf.disabled = true;
+				teilenKnopf.spielerkarteDatei = null;
+			}
+
+		});
+
+		/* Ende Ladefehler behandeln */
+
+		/* -----------------------------------
+		Bildladevorgang starten
+		----------------------------------- */
+
+		kartenBild.src = kartenAdresse;
+
+		/* Ende Kartenbild laden und Fehler erkennen */
 		/* -----------------------------------
 		Maussteuerung aktivieren
 		----------------------------------- */
@@ -308,17 +376,61 @@ window.spielerkarteTeilenVorbereiten =
                 return;
             }
 
-            /* -----------------------------------
-            Nur aktuellen Betrachter aktivieren
-            ----------------------------------- */
+		/* -----------------------------------
+		Bildladevorgang abwarten
+		----------------------------------- */
 
-            if (
-                knopf.isConnected &&
-                document.getElementById("spielerkartenTeilen") === knopf
-            ) {
-                knopf.spielerkarteDatei = datei;
-                knopf.disabled = false;
-            }
+		const kartenBild =
+			document.getElementById("spielerkartenBild");
+
+		const fehlerMeldung =
+			document.getElementById("spielerkartenFehlermeldung");
+
+		if (!kartenBild || !fehlerMeldung) {
+			return;
+		}
+
+		/* Falls das Bild noch lädt, darauf warten */
+
+		if (!kartenBild.complete) {
+
+			await new Promise(function (fertig) {
+
+				kartenBild.addEventListener(
+					"load",
+					fertig,
+					{ once: true }
+				);
+
+				kartenBild.addEventListener(
+					"error",
+					fertig,
+					{ once: true }
+				);
+
+			});
+
+		}
+
+		/* Ende Bildladevorgang abwarten */
+
+		/* -----------------------------------
+		Nur erfolgreich geladene Karte freigeben
+		----------------------------------- */
+
+		if (
+			knopf.isConnected &&
+			document.getElementById("spielerkartenTeilen") === knopf &&
+			kartenBild.isConnected &&
+			kartenBild.complete &&
+			kartenBild.naturalWidth > 0 &&
+			fehlerMeldung.hidden
+		) {
+			knopf.spielerkarteDatei = datei;
+			knopf.disabled = false;
+		}
+
+		/* Ende Freigabeprüfung */
 
         } catch (fehler) {
 
@@ -860,6 +972,46 @@ SPIELERKARTENBETRACHTER - DARSTELLUNG
 			user-select: none;
 			-webkit-user-drag: none;
 		}
+		/* -----------------------------------
+		Fehlermeldung bei fehlender Spielerkarte
+		----------------------------------- */
+
+		#spielerkartenFehlermeldung {
+			width: 100%;
+			height: 100%;
+
+			box-sizing: border-box;
+			padding: 20px;
+
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+
+			text-align: center;
+			color: #f0e4c8;
+
+			font-size: clamp(12px, 2.5vmin, 17px);
+			line-height: 1.5;
+
+			overflow: auto;
+			touch-action: auto;
+		}
+
+		#spielerkartenFehlermeldung[hidden] {
+			display: none;
+		}
+
+		#spielerkartenFehlermeldung strong {
+			font-size: 1.15em;
+			color: #ffd27a;
+		}
+
+		#spielerkartenFehlermeldung p {
+			margin: 14px 0 0;
+		}
+
+		/* Ende Fehlermeldung */
 
 		/* -----------------------------------
 		Werkzeugleiste

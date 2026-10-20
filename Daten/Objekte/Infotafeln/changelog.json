@@ -1,6 +1,12 @@
 {
     "eintraege": [
 		{
+            "version": "0.386",
+            "datum": "2026-10-20",
+            "titel": "Brandschutz",
+            "text": "Der Bibliotheksroboter hat auf die Brandschutzbestimmungen innerhalb von Gebäuden verwiesen. Daher ist dort das Zünden von Pyrotechnik ab sofort verboten!"
+        },
+		{
             "version": "0.385",
             "datum": "2026-10-19",
             "titel": "Feuerwerk!",

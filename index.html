@@ -2565,7 +2565,7 @@ cursor: pointer;
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.385";
+window.multiplayerTestVersion = "0.386";
 
 /* Ende Testversion */
 /* =========================================================
@@ -9714,7 +9714,10 @@ function (ordenName) {
 				if (
 					ordenName === "resilienz" &&
 					vorhanden &&
-					window.reservatTageszeitBestimmen() === "nacht"
+					window.reservatTageszeitBestimmen() === "nacht" &&
+					window.reservatKarten?.[
+						window.aktuelleSpielerPosition?.karte
+					]?.indoor !== true
 				) {
 
 					const position =

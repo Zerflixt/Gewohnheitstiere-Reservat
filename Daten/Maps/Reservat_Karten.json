@@ -96,6 +96,7 @@
         },
         "buecherei_innen": {
             "name": "In der Bücherei",
+			"indoor": true,
             "ebene1": "Daten/Maps/Buecherei_Innen/Buecherei_Innen_Ebene1.png",
             "ebene3": "Daten/Maps/Buecherei_Innen/Buecherei_Innen_Ebene3.png",
             "gesperrteFelder": [

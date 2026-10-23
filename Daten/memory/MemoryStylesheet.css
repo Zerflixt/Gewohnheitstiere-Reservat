@@ -1,0 +1,200 @@
+
+/* =========================================================
+   MEMORY - STYLESHEET
+   ========================================================= */
+
+/* -----------------------------------
+   Memory: Spielfeldbereich
+   ----------------------------------- */
+
+#memoryTestBereich {
+    width: 100%;
+    max-width: 430px;
+    margin: 0 auto;
+}
+
+/* -----------------------------------
+   Memory: Spielstand und Zeit
+   ----------------------------------- */
+
+#memoryTestInfo {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 8px;
+    font-size: 14px;
+}
+
+/* -----------------------------------
+   Memory: Kartenraster
+   ----------------------------------- */
+
+#memoryTestRaster {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 3px;
+    padding: 3px;
+}
+
+/* -----------------------------------
+   Memory: Einzelne Spielkarte
+   ----------------------------------- */
+
+.memoryTestKarte {
+    width: 100%;
+    aspect-ratio: 5 / 7;
+    object-fit: fill;
+    display: block;
+    min-width: 0;
+
+    /* Bilder nicht markieren oder ziehen */
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
+}
+
+/* =========================================================
+   MEMORY - 3D-KARTENWENDUNG
+   ========================================================= */
+
+/* Äußerer Kartenrahmen */
+
+.memoryTestKarte {
+    position: relative;
+    perspective: 800px;
+    cursor: pointer;
+}
+
+/* Drehbarer Teil der Karte */
+
+.memoryKartenInneres {
+    position: relative;
+    width: 100%;
+    height: 100%;
+
+    transform-style: preserve-3d;
+    transition: transform 0.4s ease-in-out;
+}
+
+/* Karte umdrehen */
+
+.memoryTestKarte.aufgedeckt .memoryKartenInneres {
+    transform: rotateY(180deg);
+}
+
+/* Beide Kartenseiten */
+
+.memoryKartenSeite {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+/* Bilder auf Vorder- und Rückseite */
+
+.memoryKartenSeite img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
+}
+
+/* Vorderseite zunächst nach hinten gedreht */
+
+.memoryKartenVorne {
+    transform: rotateY(180deg);
+}
+
+/* Ende Memory - 3D-Kartenwendung */
+/* -----------------------------------
+   Memory: Gefundenes Paar leuchtet
+   ----------------------------------- */
+
+/* Nur die sichtbare Vorderseite leuchtet */
+
+.memoryTestKarte.gefunden .memoryKartenVorne {
+    animation: memoryPaarLeuchten 750ms ease-in-out infinite alternate;
+}
+
+@keyframes memoryPaarLeuchten {
+
+    from {
+        filter: brightness(1)
+                drop-shadow(0 0 2px rgba(255, 210, 70, 0.5));
+    }
+
+    to {
+        filter: brightness(1.2)
+                drop-shadow(0 0 10px rgba(255, 210, 70, 1));
+    }
+
+}
+
+/* Ende Memory: Gefundenes Paar leuchtet */
+/* -----------------------------------
+   Memory: Gefundenes Paar verschwindet
+   ----------------------------------- */
+
+.memoryTestKarte.memoryPaarVerschwindet {
+    animation: memoryPaarVerschwinden 500ms ease-in forwards;
+    pointer-events: none;
+}
+
+.memoryTestKarte.memoryPaarVerschwindet .memoryKartenInneres {
+    animation: none;
+}
+
+@keyframes memoryPaarVerschwinden {
+
+    from {
+        transform: rotate(0deg) scale(1);
+        opacity: 1;
+    }
+
+    to {
+        transform: rotate(360deg) scale(0);
+        opacity: 0;
+    }
+
+}
+
+/* Ende Memory: Gefundenes Paar verschwindet */
+/* =========================================================
+   MEMORY - ZOOM-SICHTFENSTER
+   ========================================================= */
+
+/* Sichtbarer Bereich des Spielfelds */
+
+#memorySichtfenster {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    touch-action: none;
+}
+
+/* Ebene, die später vergrößert und verschoben wird */
+
+#memoryZoomEbene {
+    width: 100%;
+    transform-origin: 0 0;
+    will-change: transform;
+}
+
+/* Animation nur bei automatischer Zoom-Rückkehr */
+
+#memoryZoomEbene.memoryZoomRueckkehr {
+    transition: transform 500ms ease-in-out;
+}
+
+/* Ende Memory - Zoom-Sichtfenster */
+/* =========================================================
+   ENDE MEMORY - STYLESHEET
+   ========================================================= */

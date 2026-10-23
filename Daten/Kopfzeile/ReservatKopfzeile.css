@@ -1,0 +1,222 @@
+/* =========================================================
+SPIELFELD-KOPF
+Ort links - Symbole rechts
+========================================================= */
+
+.spielfeld-kopf {
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+    min-width: 0;
+
+    box-sizing: border-box;
+
+    border: 1px solid #888;
+    padding: 2px 4px;
+}
+
+/* -----------------------------------
+Ortsname
+----------------------------------- */
+
+.spielfeld-kopf h2 {
+    flex: 1 1 auto;
+    min-width: 0;
+
+    margin: 0;
+}
+
+/* -----------------------------------
+Symbole rechts
+----------------------------------- */
+
+#kopfSymbole {
+    display: flex;
+    align-items: center;
+
+    flex: 0 0 auto;
+
+    margin-left: auto;
+    gap: 4px;
+}
+
+
+/* -----------------------------------
+Firebase-Verbindungsstatus
+----------------------------------- */
+
+#firebaseVerbindungsstatus {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#firebaseVerbindungsIcon {
+    width: 42px;
+    height: 42px;
+
+    display: block;
+
+    object-fit: contain;
+}
+/* Ende Firebase-Verbindungsstatus */
+
+/* -----------------------------------
+Sound an / aus
+----------------------------------- */
+
+#soundButton {
+    width: 44px;
+    height: 44px;
+
+    margin: 0;
+    padding: 0;
+
+    background: transparent;
+    border: none;
+    box-shadow: none;
+
+    cursor: pointer;
+
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#soundButton img {
+    width: 32px;
+    height: 32px;
+
+    display: block;
+    margin: auto;
+
+    object-fit: contain;
+
+    pointer-events: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+}
+
+#soundButton:hover,
+#soundButton:focus,
+#soundButton:active {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* Ende Sound an / aus */
+/* Ende Spielfeld-Kopf */
+
+
+/* =========================================================
+ABMELDEN-SYMBOL
+========================================================= */
+
+#abmeldenButton {
+    width: 44px;
+    height: 44px;
+
+    padding: 0;
+	background: transparent;
+border: none;
+box-shadow: none;
+
+    font-size: 27px;
+    line-height: 44px;
+    text-align: center;
+
+    cursor: pointer;
+}
+#abmeldenButton img {
+    width: 32px;
+    height: 32px;
+
+    display: block;
+    margin: auto;
+
+    object-fit: contain;
+}
+/* Ende Abmelden-Symbol */
+
+/* =========================================================
+VOLLBILD-SYMBOL
+========================================================= */
+
+#vollbildButton {
+    width: 44px;
+    height: 44px;
+
+    padding: 0;
+
+    background: transparent;
+    border: none;
+    box-shadow: none;
+
+    line-height: 44px;
+    text-align: center;
+
+    cursor: pointer;
+    touch-action: manipulation;
+
+    -webkit-tap-highlight-color: transparent;
+}
+
+#vollbildButton img {
+    width: 32px;
+    height: 32px;
+
+    display: block;
+    margin: auto;
+
+    object-fit: contain;
+
+    pointer-events: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+}
+
+/* SugarCube-/Browser-Effekte unterdrücken */
+
+#vollbildButton:hover,
+#vollbildButton:focus,
+#vollbildButton:active {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* Ende Vollbild-Symbol */
+/* =========================================================
+MEMORY - SCHLIESSEN-SYMBOL
+========================================================= */
+
+#memoryZurueckButton {
+    width: 44px;
+    height: 44px;
+
+    margin: 0;
+    padding: 0;
+
+    background: transparent;
+    border: none;
+    box-shadow: none;
+
+    cursor: pointer;
+}
+
+#memoryZurueckButton img {
+    width: 32px;
+    height: 32px;
+
+    display: block;
+    margin: auto;
+
+    object-fit: contain;
+}
+
+/* Ende Memory - Schliessen-Symbol */

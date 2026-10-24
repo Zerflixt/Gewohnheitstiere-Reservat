@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "standardDeck": "standard",
+  "decks": [
+    {
+      "id": "standard",
+      "name": "Die Gewohnheitstiere",
+      "beschreibung": "Das kostenlose Standarddeck des Reservats",
+      "immerVerfuegbar": true,
+      "kartenpfad": "Daten/memory/Decks/Standard/",
+      "rueckseite": "Daten/Icons/SpielkartenIcon.png",
+      "karten": [
+        "2026-10-24_Memory_standard_Alexander.png",
+        "2026-10-24_Memory_standard_Fiero.png",
+        "2026-10-24_Memory_standard_Aura_Dastler Tv.png",
+        "2026-10-24_Memory_standard_Warloktron.png",
+        "2026-10-24_Memory_standard_Vava.png",
+        "2026-10-24_Memory_standard_Vivi.png",
+        "2026-10-24_Memory_standard_Iris.png",
+        "2026-10-24_Memory_standard_Flusenkopp.png",
+        "2026-10-24_Memory_standard_Mimi95.png",
+        "2026-10-24_Memory_standard_Anna-Nas.png",
+        "2026-10-24_Memory_standard_Łukasz.png",
+        "2026-10-24_Memory_standard_Fireball78.png",
+        "2026-10-24_Memory_standard_LittleFox.png",
+        "2026-10-24_Memory_standard_Habit Man.png",
+        "2026-10-24_Memory_standard_Stephie.png",
+        "2026-10-24_Memory_standard_Skymaroni.png",
+        "2026-10-24_Memory_standard_Mellix.png",
+        "2026-10-24_Memory_standard_Sam.png",
+        "2026-10-24_Memory_standard_mjutox.png",
+        "2026-10-24_Memory_standard_binesch.png",
+        "2026-10-24_Memory_standard__Da_Vinci_.png",
+        "2026-10-24_Memory_standard_Jacqueline.png",
+        "2026-10-24_Memory_standard_Austriangirl.png",
+        "2026-10-24_Memory_standard_Einsal.png",
+        "2026-10-24_Memory_standard_Zerflixt.png",
+        "2026-10-24_Memory_standard_roseandkey19.png",
+        "2026-10-24_Memory_standard_Yasue.png",
+        "2026-10-24_Memory_standard_Solovej der Rastlose.png",
+        "2026-10-24_Memory_standard_schorfi.png",
+        "2026-10-24_Memory_standard_HOODWATCHER.png"
+      ]
+    }
+  ]
+}

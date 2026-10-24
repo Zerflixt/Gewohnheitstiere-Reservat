@@ -6,26 +6,39 @@
    ----------------------------------- */
 
 window.memorySpielStarten = function () {
+/* -----------------------------------
+   Memory: Deck-Katalog laden
+   ----------------------------------- */
 
-const dateien = [
-    "Alexander",
-    "Vivi",
-    "schorfi",
-    "binesch",
-    "Fireball78",
-    "Flusenkopp",
-    "Stephie",
-    "Warloktron",
-    "mjutox",
-    "LittleFox",
-    "Mimi95",
-    "Zerflixt",
-    "Aura_Dastler Tv",
-    "Iris",
-    "Yasue"
-];
+async function memoryDeckKatalogLaden() {
 
-const rueckseite = "Daten/Icons/SpielkartenIcon.png";
+    const antwort = await fetch(
+        "Daten/memory/decks.json"
+    );
+
+    if (!antwort.ok) {
+        throw new Error(
+            "Memory-Deck-Katalog konnte nicht geladen werden."
+        );
+    }
+
+    return await antwort.json();
+
+} /* Ende memoryDeckKatalogLaden */
+
+/* Ende Memory: Deck-Katalog laden */
+/* -----------------------------------
+   Memory: Karten des aktiven Decks
+   ----------------------------------- */
+
+let dateien = [];
+let kartenpfad = "";
+
+let rueckseite = "Daten/Icons/SpielkartenIcon.png";
+
+/* Ende Memory: Karten des aktiven Decks */
+
+
 
 const raster = document.getElementById("memoryTestRaster");
 const ladeanzeige = document.getElementById("memoryLadeanzeige");
@@ -613,22 +626,55 @@ async function memoryGrafikenVorbereiten() {
     raster.replaceChildren();
 
     ladeanzeige.textContent = "Spielkarten werden geladen ...";
+	let zeitbegrenzung;
 
-    const pfade = dateien.map(function (name) {
+try {
+/* -----------------------------------
+   Memory: Standarddeck auswählen
+   ----------------------------------- */
 
-        return "Daten/memory/thumbnails/" +
-            "2026-10-23_WaS023_" +
-            encodeURIComponent(name) +
-            "_thumb.png";
-    });
+const katalog = await memoryDeckKatalogLaden();
+
+const deck = katalog.decks.find(function (eintrag) {
+    return eintrag.id === katalog.standardDeck;
+});
+
+if (!deck || !Array.isArray(deck.karten) ||
+    deck.karten.length < 15) {
+
+    throw new Error("Standarddeck fehlt oder enthält zu wenige Karten.");
+}
+
+kartenpfad = deck.kartenpfad;
+rueckseite = deck.rueckseite;
+
+/* 15 verschiedene Motive zufällig auswählen */
+
+const gemischt = [...deck.karten];
+
+for (let i = gemischt.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [gemischt[i], gemischt[j]] = [gemischt[j], gemischt[i]];
+}
+
+dateien = gemischt.slice(0, 15);
+
+/* Ende Memory: Standarddeck auswählen */
+/* -----------------------------------
+   Memory: Bildpfade des Decks erzeugen
+   ----------------------------------- */
+
+const pfade = dateien.map(function (dateiname) {
+
+    return kartenpfad + encodeURIComponent(dateiname);
+
+});
+
+/* Ende Memory: Bildpfade des Decks erzeugen */
 
     pfade.push(rueckseite);
 
-    let zeitbegrenzung;
-
-    try {
-
-        /* Alle 16 Bilder parallel laden */
+    /* Alle 16 Bilder parallel laden */
 
         const laden = Promise.all(
             pfade.map(memoryBildLaden)
@@ -716,11 +762,14 @@ for (const name of karten) {
 
     const vorderbild = document.createElement("img");
 
-    vorderbild.src =
-        "Daten/memory/thumbnails/" +
-        "2026-10-23_WaS023_" +
-        encodeURIComponent(name) +
-        "_thumb.png";
+/* -----------------------------------
+   Memory: Vorderseite aus aktivem Deck
+   ----------------------------------- */
+
+vorderbild.src =
+    kartenpfad + encodeURIComponent(name);
+
+/* Ende Memory: Vorderseite aus aktivem Deck */
 
     vorderbild.alt = name;
     vorderbild.draggable = false;

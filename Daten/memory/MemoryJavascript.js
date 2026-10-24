@@ -13,7 +13,7 @@ window.memorySpielStarten = function () {
 async function memoryDeckKatalogLaden() {
 
     const antwort = await fetch(
-        "Daten/memory/decks.json"
+        "Daten/memory/decks.json?v=2"
     );
 
     if (!antwort.ok) {

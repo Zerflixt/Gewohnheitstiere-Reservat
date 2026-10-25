@@ -2380,7 +2380,7 @@ cursor: pointer;
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.407";
+window.multiplayerTestVersion = "0.413";
 
 /* Ende Testversion */
 /* =========================================================
@@ -2389,7 +2389,7 @@ GEMEINSAME KOPFZEILE - CSS LADEN
 
 window.reservatKopfzeileCssGeladen =
     importStyles(
-        "Daten/Kopfzeile/ReservatKopfzeile.css?v=1"
+        "Daten/Kopfzeile/ReservatKopfzeile.css?v=2"
     );
 
 /* Ende gemeinsame Kopfzeile - CSS laden */
@@ -2399,7 +2399,7 @@ MEMORY - STYLESHEET LADEN
 
 window.memoryStylesheetGeladen =
     importStyles(
-        "Daten/memory/MemoryStylesheet.css?v=1"
+        "Daten/memory/MemoryStylesheet.css?v=3"
     );
 
 /* Ende Memory - Stylesheet laden */
@@ -2409,7 +2409,7 @@ MEMORY - JAVASCRIPT LADEN
 
 window.memoryJavascriptGeladen =
     importScripts(
-        "Daten/memory/MemoryJavascript.js?v=3"
+        "Daten/memory/MemoryJavascript.js?v=7"
     );
 
 /* Ende Memory - JavaScript laden */
@@ -3514,7 +3514,35 @@ async function () {
 
 				/* Ende Informationsobjekt öffnen */
 
+            /* -----------------------------------
+            Twine-Passagenwechsel ausführen
+            ----------------------------------- */
 
+            case "passagenwechsel":
+
+                if (
+                    sonderfeld.zielPassage &&
+                    SugarCube.Story.has(
+                        sonderfeld.zielPassage
+                    )
+                ) {
+
+                    SugarCube.Engine.play(
+                        sonderfeld.zielPassage
+                    );
+
+                } else {
+
+                    console.warn(
+                        "Zielpassage nicht gefunden:",
+                        sonderfeld.zielPassage
+                    );
+
+                }
+
+                break;
+
+            /* Ende Twine-Passagenwechsel */
 			default:
 
                 console.warn(
@@ -10656,10 +10684,11 @@ async function () {
 
     try {
 
-        const antwort =
-            await fetch(
-                "Daten/Schnappschuss_aktuell.json"
-            );
+		const antwort =
+			await fetch(
+				"Daten/Schnappschuss_aktuell.json",
+				{ cache: "no-store" }
+			);
 
 
         if (!antwort.ok) {
@@ -15154,9 +15183,7 @@ function (zielPassage) {
 
 &lt;div
     id=&quot;firebaseVerbindungsstatus&quot;
-    title=&quot;Memory-Test öffnen&quot;
-    onclick=&quot;SugarCube.Engine.play(&#39;memory_test&#39;)&quot;
-    style=&quot;cursor: pointer;&quot;
+    title=&quot;Firebase-Verbindungsstatus&quot;
 &gt;
     &lt;img
         id=&quot;firebaseVerbindungsIcon&quot;
@@ -15748,7 +15775,7 @@ function (zielPassage) {
 
 &lt;/div&gt;
 
-&lt;&lt;/nobr&gt;&gt;</tw-passagedata><tw-passagedata pid="7" name="memory_test" tags="" position="675,525" size="100,100">&lt;&lt;nobr&gt;&gt;
+&lt;&lt;/nobr&gt;&gt;</tw-passagedata><tw-passagedata pid="7" name="Memory-Kartenspiel" tags="" position="675,525" size="100,100">&lt;&lt;nobr&gt;&gt;
 
 &lt;!-- =================================================
      MEMORY: GEMEINSAME KOPFZEILE
@@ -15803,13 +15830,12 @@ function (zielPassage) {
         &lt;/button&gt;
 
         &lt;!-- Memory verlassen --&gt;
-        &lt;button
-            id=&quot;memoryZurueckButton&quot;
-            type=&quot;button&quot;
-            onclick=&quot;SugarCube.Engine.play(&#39;Spielfeld&#39;)&quot;
-            title=&quot;Zurück ins Reservat&quot;
-            aria-label=&quot;Memory verlassen&quot;
-        &gt;
+			&lt;button
+				id=&quot;memoryZurueckButton&quot;
+				type=&quot;button&quot;
+				title=&quot;Zurück ins Reservat&quot;
+				aria-label=&quot;Memory verlassen&quot;
+			&gt;
             &lt;img
                 src=&quot;Daten/Icons/Goldenes_X.png&quot;
                 alt=&quot;&quot;
@@ -15830,10 +15856,40 @@ function (zielPassage) {
 
 &lt;div id=&quot;memoryTestBereich&quot;&gt;
 
-    &lt;div id=&quot;memoryTestInfo&quot;&gt;
-		&lt;span id=&quot;memoryPaareAnzeige&quot;&gt;Paare: 0 / 15&lt;/span&gt;
-		&lt;span id=&quot;memoryZeitAnzeige&quot;&gt;Zeit: 00:00&lt;/span&gt;
+&lt;!-- -----------------------------------
+     Memory: Spielstand und Duell-Anzeige
+     ----------------------------------- --&gt;
+
+&lt;div id=&quot;memoryTestInfo&quot;&gt;
+
+    &lt;!-- Linke Seite: eigener Spieler --&gt;
+
+    &lt;div id=&quot;memorySpielerLinks&quot;&gt;
+
+        &lt;div id=&quot;memorySpielerAvatar&quot;&gt;&lt;/div&gt;
+
+        &lt;div id=&quot;memorySpielerWerte&quot;&gt;
+
+            &lt;span id=&quot;memoryPaareAnzeige&quot;&gt;0/15&lt;/span&gt;
+
+            &lt;span id=&quot;memoryVersucheAnzeige&quot;
+                  title=&quot;Versuche&quot;&gt;0&lt;/span&gt;
+
+        &lt;/div&gt;
+
     &lt;/div&gt;
+
+    &lt;!-- Mitte: gemeinsame Stoppuhr --&gt;
+
+    &lt;div id=&quot;memoryZeitAnzeige&quot;&gt;00:00&lt;/div&gt;
+
+    &lt;!-- Rechte Seite: zukünftiger Duellgegner --&gt;
+
+    &lt;div id=&quot;memorySpielerRechts&quot;&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;!-- Ende Memory: Spielstand und Duell-Anzeige --&gt;
 
     &lt;!-- -----------------------------------
          Memory: Ladeanzeige

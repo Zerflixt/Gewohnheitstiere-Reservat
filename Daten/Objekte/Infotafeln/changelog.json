@@ -1,6 +1,18 @@
 {
     "eintraege": [
 		{
+            "version": "0.413",
+            "datum": "2026-10-25",
+            "titel": "Tiertreff und Memory",
+            "text": "Der Tiertreff ist eröffnet und man kann nun Memory spielen. Die Ergebnisse werden zunächst nur gespeichert, eine Rangliste folgt später"
+        },
+		{
+            "version": "0.389",
+            "datum": "2026-10-23",
+            "titel": "Minispiel-Vorbereitung",
+            "text": "Im Zusammenhang mit unserem ersten Minispiel sind die allgemeingültigen Icons verschoben worden und ein eigener Bereich für die Kopfzeile erstellt worden. Dies ist eine interne Änderung ohne Auswirkung auf das Reservat"
+        },
+		{
             "version": "0.386",
             "datum": "2026-10-20",
             "titel": "Brandschutz",

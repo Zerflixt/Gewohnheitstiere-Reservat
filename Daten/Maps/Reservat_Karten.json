@@ -592,8 +592,24 @@
                     "typ": "ortswechsel",
                     "text": "Zur Bücherei gehen?",
                     "zielKarte": "buecherei",
-                   
-                    "zielPosition": [9,5]
+                    "zielPosition": [
+                        9,
+                        5
+                    ]
+                },
+                {
+                    "position": [
+                        5,
+                        3
+                    ],
+                    "trigger": "aktion",
+                    "typ": "ortswechsel",
+                    "text": "Den Tiertreff betreten?",
+                    "zielKarte": "tiertreff_innen",
+                    "zielPosition": [
+                        1,
+                        4
+                    ]
                 }
             ],
             "soundquellen": [
@@ -601,7 +617,10 @@
                     "id": "vogelgezwitscher_tiertreff",
                     "datei": "Daten/Sounds/Umgebung/Vogelgezwitscher_Loop_001_lang.ogg",
                     "quellfelder": [
-                        [8,8]
+                        [
+                            8,
+                            8
+                        ]
                     ],
                     "reichweite": 7,
                     "maxLautstaerke": 0.15,
@@ -611,10 +630,12 @@
                     "id": "waldkauz_tiertreff",
                     "datei": "Daten/Sounds/Umgebung/Waldkauz_Rufe_Loop_002_60s.ogg",
                     "quellfelder": [
-                        [8,8]
+                        [
+                            8,
+                            8
+                        ]
                     ],
                     "reichweite": 7,
-                   
                     "maxLautstaerke": 0.3,
                     "tageszeit": "nacht"
                 },
@@ -622,15 +643,100 @@
                     "id": "grillen_tiertreff",
                     "datei": "Daten/Sounds/Umgebung/Nacht_Grillen_Loop_60s.ogg",
                     "quellfelder": [
-                        [3,1]
+                        [
+                            3,
+                            1
+                        ]
                     ],
                     "reichweite": 7,
                     "maxLautstaerke": 0.25,
                     "tageszeit": "nacht"
                 }
             ]
-
-
+        },
+        "tiertreff_innen": {
+            "name": "Im Tiertreff",
+            "indoor": true,
+            "ebene1": "Daten/Maps/Tiertreff_Innen/Karte_Kneipe_Ebene1.png",
+            "ebene3": "Daten/Maps/Tiertreff_Innen/Karte_Kneipe_Ebene3.png",
+            "gesperrteFelder": [
+                [0,0], [1,0], [2,0], [3,0], [4,0], [5,0], [6,0], [7,0], [8,0], [9,0],
+                [0,1], [2,1], [4,1], [5,1], [7,1], [9,1],
+                [0,2], [2,2], [7,2], [9,2],
+                [0,3], [7,3], [9,3],
+                [7,4], [9,4],
+                [0,5], [9,5],
+                [0,6], [9,6],
+                [0,7], [1,7], [8,7], [9,7],
+                [0,8], [1,8], [8,8], [9,8],
+                [0,9], [1,9], [8,9], [9,9]
+            ],
+            "avatarEbene2Felder": [
+                [3,1],
+                [8,2],
+                [8,3],
+                [0,4], [8,4],
+                [2,9], [3,9], [4,9], [5,9], [6,9], [7,9]
+            ],
+            "sonderfelder": [
+				{
+					"position": [0, 4],
+					"trigger": "aktion",
+					"typ": "ortswechsel",
+					"text": "Den Tiertreff verlassen?",
+					"zielKarte": "vor_tiertreff",
+					"zielPosition": [5, 3]
+				},
+				{
+					"position": [1, 1],
+					"trigger": "aktion",
+					"typ": "passagenwechsel",
+					"text": "Memory spielen?",
+					"zielPassage": "Memory-Kartenspiel"
+				},
+				{
+					"position": [1, 2],
+					"trigger": "aktion",
+					"typ": "passagenwechsel",
+					"text": "Memory spielen?",
+					"zielPassage": "Memory-Kartenspiel"
+				},
+				{
+					"position": [1, 3],
+					"trigger": "aktion",
+					"typ": "passagenwechsel",
+					"text": "Memory spielen?",
+					"zielPassage": "Memory-Kartenspiel"
+				},
+				{
+					"position": [2, 3],
+					"trigger": "aktion",
+					"typ": "passagenwechsel",
+					"text": "Memory spielen?",
+					"zielPassage": "Memory-Kartenspiel"
+				},
+				{
+					"position": [3, 3],
+					"trigger": "aktion",
+					"typ": "passagenwechsel",
+					"text": "Memory spielen?",
+					"zielPassage": "Memory-Kartenspiel"
+				},
+				{
+					"position": [3, 2],
+					"trigger": "aktion",
+					"typ": "passagenwechsel",
+					"text": "Memory spielen?",
+					"zielPassage": "Memory-Kartenspiel"
+				},
+				{
+					"position": [3, 1],
+					"trigger": "aktion",
+					"typ": "passagenwechsel",
+					"text": "Memory spielen?",
+					"zielPassage": "Memory-Kartenspiel"
+				}
+			]
         }
     }
 }

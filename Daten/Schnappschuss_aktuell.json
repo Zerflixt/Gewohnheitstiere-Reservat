@@ -1,6 +1,6 @@
 {
-  "datum": "2026-10-21T17:05:57.118Z",
-  "anzahlMitglieder": 30,
+  "datum": "2026-10-24T18:08:44.402Z",
+  "anzahlMitglieder": 29,
   "mitgliederUebersicht": [
     {
       "id": "01f56c9f-f930-4ef8-b941-6d8ed13f833f",
@@ -29,10 +29,6 @@
     {
       "id": "3724969d-1abb-49a2-a2ee-c32afc04aa6f",
       "name": "Zerflixt"
-    },
-    {
-      "id": "37d244e3-369d-4d16-bfe0-8d70abd995da",
-      "name": "Sam"
     },
     {
       "id": "3a5ff05e-4515-4982-b104-45cf1f810e56",
@@ -132,8 +128,8 @@
         },
         "timestamps": {
           "created": "2026-08-17T07:03:32.619Z",
-          "loggedin": "2026-10-16T22:36:47.712Z",
-          "updated": "2026-10-17T18:53:50.380Z"
+          "loggedin": "2026-10-23T03:00:24.419Z",
+          "updated": "2026-10-23T03:01:10.671Z"
         }
       },
       "achievements": {
@@ -145,7 +141,7 @@
         },
         "streak": 4,
         "challenges": [],
-        "perfect": 41,
+        "perfect": 42,
         "quests": {
           "treeling": 1,
           "moonstone1": 1,
@@ -288,8 +284,8 @@
           "goodluckReceived": []
         },
         "lastDrop": {
-          "count": 3,
-          "date": "2026-10-17T18:53:18.712Z"
+          "count": 1,
+          "date": "2026-10-23T03:01:10.677Z"
         },
         "currentPet": "Dragon-Shade",
         "currentMount": "Dragon-BlackPearl",
@@ -355,7 +351,7 @@
           "Base": 0,
           "CottonCandyBlue": 1,
           "BlackPearl": 0,
-          "White": 1,
+          "White": 2,
           "SolarSystem": 1,
           "Shade": 0,
           "Red": 2,
@@ -391,14 +387,14 @@
       },
       "party": {
         "quest": {
-          "key": "atom1",
+          "key": "dog",
           "progress": {
-            "up": 7,
+            "up": 6,
             "down": 0,
             "collect": {},
-            "collectedItems": 2
+            "collectedItems": 0
           },
-          "completed": "raccoon",
+          "completed": null,
           "RSVPNeeded": true
         },
         "order": "level",
@@ -439,10 +435,10 @@
       },
       "stats": {
         "buffs": {
-          "str": 72,
-          "int": 70,
-          "per": 302,
-          "con": 700,
+          "str": 19,
+          "int": 45,
+          "per": 19,
+          "con": 415,
           "stealth": 0,
           "streaks": false,
           "seafoam": false,
@@ -457,24 +453,24 @@
           "con": 0
         },
         "hp": 50,
-        "mp": 244,
-        "exp": 829,
-        "gp": 906,
-        "lvl": 36,
+        "mp": 248,
+        "exp": 69,
+        "gp": 919,
+        "lvl": 37,
         "class": "wizard",
         "points": 0,
         "str": 9,
         "con": 8,
-        "int": 11,
+        "int": 12,
         "per": 8,
-        "toNextLevel": 820,
+        "toNextLevel": 850,
         "maxHealth": 50,
-        "maxMP": 348
+        "maxMP": 300
       },
       "inbox": {
         "optOut": false
       },
-      "loginIncentives": 55,
+      "loginIncentives": 56,
       "id": "01f56c9f-f930-4ef8-b941-6d8ed13f833f"
     },
     {
@@ -485,8 +481,8 @@
         },
         "timestamps": {
           "created": "2026-09-02T15:15:39.854Z",
-          "loggedin": "2026-10-21T07:11:45.392Z",
-          "updated": "2026-10-21T13:42:38.893Z"
+          "loggedin": "2026-10-24T13:11:23.401Z",
+          "updated": "2026-10-24T14:32:42.319Z"
         }
       },
       "achievements": {
@@ -496,9 +492,9 @@
           "rogue": false,
           "warrior": false
         },
-        "streak": 14,
+        "streak": 18,
         "challenges": [],
-        "perfect": 34,
+        "perfect": 36,
         "quests": {
           "dustbunnies": 1,
           "moon1": 1,
@@ -516,7 +512,9 @@
           "horse": 1,
           "stoikalmCalamity1": 1,
           "mayhemMistiflying1": 1,
-          "raccoon": 1
+          "raccoon": 1,
+          "atom1": 1,
+          "atom2": 1
         },
         "createdTask": true,
         "completedTask": true,
@@ -531,7 +529,7 @@
         "seeingRed": true,
         "primedForPainting": true,
         "goodAsGold": true,
-        "questCount": 2,
+        "questCount": 4,
         "dustDevil": true,
         "tickledPink": true
       },
@@ -680,8 +678,8 @@
           "goodluckReceived": []
         },
         "lastDrop": {
-          "count": 2,
-          "date": "2026-10-21T13:42:37.267Z"
+          "count": 1,
+          "date": "2026-10-24T13:21:14.930Z"
         },
         "currentPet": "Raccoon-Base",
         "currentMount": "Dragon-Skeleton",
@@ -791,15 +789,15 @@
           "Raccoon-Base": 5
         },
         "eggs": {
-          "Dragon": 7,
+          "Dragon": 11,
           "TigerCub": 6,
-          "FlyingPig": 5,
-          "Fox": 1,
+          "FlyingPig": 6,
+          "Fox": 4,
           "Wolf": 1,
-          "PandaCub": 3,
-          "BearCub": 14,
+          "PandaCub": 5,
+          "BearCub": 17,
           "LionCub": 1,
-          "Cactus": 0,
+          "Cactus": 4,
           "Monkey": 0,
           "Triceratops": 0,
           "Cheetah": 0,
@@ -808,29 +806,30 @@
         },
         "hatchingPotions": {
           "Red": 4,
-          "Desert": 3,
-          "CottonCandyBlue": 0,
+          "Desert": 4,
+          "CottonCandyBlue": 1,
           "Shade": 0,
           "Golden": 1,
-          "CottonCandyPink": 1,
+          "CottonCandyPink": 2,
           "White": 4,
           "RoyalPurple": 2,
           "Base": 4,
-          "Skeleton": 2,
+          "Skeleton": 3,
           "Zombie": 2,
           "SolarSystem": 3
         },
         "food": {
           "Chocolate": 1,
           "Potatoe": 4,
-          "RottenMeat": 7,
-          "CottonCandyBlue": 2,
-          "Fish": 8,
+          "RottenMeat": 10,
+          "CottonCandyBlue": 4,
+          "Fish": 9,
           "Strawberry": 14,
-          "Milk": 0,
-          "CottonCandyPink": 8,
-          "Meat": 2,
-          "Honey": 4
+          "Milk": 3,
+          "CottonCandyPink": 10,
+          "Meat": 5,
+          "Honey": 5,
+          "Saddle": 1
         },
         "mounts": {
           "PandaCub-Shade": true,
@@ -855,12 +854,12 @@
         "order": "level",
         "orderAscending": "ascending",
         "quest": {
-          "key": "atom1",
+          "key": "dog",
           "progress": {
-            "up": 9,
+            "up": 8,
             "down": 0,
             "collect": {},
-            "collectedItems": 3
+            "collectedItems": 1
           },
           "completed": "",
           "RSVPNeeded": false
@@ -901,10 +900,10 @@
       },
       "stats": {
         "buffs": {
-          "str": 26,
-          "int": 39,
-          "per": 26,
-          "con": 26,
+          "str": 0,
+          "int": 0,
+          "per": 0,
+          "con": 114,
           "stealth": 0,
           "streaks": false,
           "seafoam": false,
@@ -919,24 +918,24 @@
           "con": 0
         },
         "hp": 50,
-        "mp": 146,
-        "exp": 438,
-        "gp": 415,
-        "lvl": 52,
+        "mp": 114,
+        "exp": 1179,
+        "gp": 1086,
+        "lvl": 53,
         "class": "rogue",
         "points": 0,
         "str": 11,
-        "con": 8,
+        "con": 9,
         "int": 10,
         "per": 23,
-        "toNextLevel": 1340,
+        "toNextLevel": 1370,
         "maxHealth": 50,
-        "maxMP": 192
+        "maxMP": 114
       },
       "inbox": {
         "optOut": false
       },
-      "loginIncentives": 49,
+      "loginIncentives": 52,
       "id": "157ac7ec-a287-4c8f-9841-03c03178d02a"
     },
     {
@@ -1253,7 +1252,7 @@
       },
       "party": {
         "quest": {
-          "key": "atom1",
+          "key": "dog",
           "progress": {
             "up": 5,
             "down": 0,
@@ -1301,10 +1300,10 @@
       },
       "stats": {
         "buffs": {
-          "str": 150,
-          "int": 181,
+          "str": 168,
+          "int": 220,
           "per": 708,
-          "con": 2280,
+          "con": 2796,
           "stealth": 0,
           "streaks": false,
           "seafoam": false,
@@ -1319,7 +1318,7 @@
           "con": 0
         },
         "hp": 50,
-        "mp": 354,
+        "mp": 402,
         "exp": 1548,
         "gp": 10033,
         "lvl": 75,
@@ -1331,7 +1330,7 @@
         "per": 32,
         "toNextLevel": 2300,
         "maxHealth": 50,
-        "maxMP": 528
+        "maxMP": 606
       },
       "inbox": {
         "optOut": false
@@ -1347,8 +1346,8 @@
         },
         "timestamps": {
           "created": "2025-03-02T15:05:30.578Z",
-          "loggedin": "2026-10-21T02:56:37.093Z",
-          "updated": "2026-10-21T15:59:42.275Z"
+          "loggedin": "2026-10-24T05:19:58.926Z",
+          "updated": "2026-10-24T16:16:32.618Z"
         }
       },
       "achievements": {
@@ -1360,11 +1359,11 @@
         },
         "streak": 342,
         "challenges": [],
-        "perfect": 595,
+        "perfect": 598,
         "quests": {
           "vice3": 3,
           "dustbunnies": 3,
-          "atom1": 4,
+          "atom1": 5,
           "dilatoryDistress3": 2,
           "otter": 2,
           "ferret": 1,
@@ -1383,7 +1382,7 @@
           "mayhemMistiflying2": 2,
           "mayhemMistiflying3": 2,
           "gryphon": 2,
-          "atom2": 2,
+          "atom2": 3,
           "atom3": 2,
           "stoikalmCalamity1": 3,
           "stoikalmCalamity2": 3,
@@ -1485,7 +1484,7 @@
         "royallyLoyal": true,
         "freshwaterFriends": true,
         "seafoam": 1,
-        "questCount": 2
+        "questCount": 4
       },
       "backer": {},
       "contributor": {},
@@ -1502,9 +1501,9 @@
             "shield": "shield_mystery_202610"
           },
           "costume": {
-            "weapon": "weapon_wizard_2",
-            "armor": "armor_special_fall2017Mage",
-            "head": "head_armoire_blackSpookySorceryHat",
+            "weapon": "weapon_special_fall2018Mage",
+            "armor": "armor_wizard_4",
+            "head": "head_special_fall2018Mage",
             "shield": "shield_base_0",
             "headAccessory": "headAccessory_special_yellowHeadband"
           },
@@ -1763,7 +1762,13 @@
             "weapon_special_fall2015Mage": true,
             "weapon_mystery_202610": true,
             "head_mystery_202610": true,
-            "shield_mystery_202610": true
+            "shield_mystery_202610": true,
+            "weapon_special_fall2018Mage": true,
+            "head_special_fall2018Mage": true,
+            "armor_special_fall2018Mage": true,
+            "head_special_fallMage": true,
+            "armor_special_fallMage": true,
+            "weapon_special_fallMage": true
           }
         },
         "special": {
@@ -1794,11 +1799,11 @@
           "goodluckReceived": []
         },
         "lastDrop": {
-          "count": 11,
-          "date": "2026-10-21T02:56:50.271Z"
+          "count": 14,
+          "date": "2026-10-24T16:16:32.623Z"
         },
         "currentPet": "Snake-Skeleton",
-        "currentMount": "Spider-Shade",
+        "currentMount": "Aether-Invisible",
         "pets": {
           "Dragon-Red": -1,
           "BearCub-White": -1,
@@ -2049,24 +2054,24 @@
           "Hippo-CottonCandyPink": -1,
           "Cow-Skeleton": -1,
           "Raccoon-Red": -1,
-          "Raccoon-Skeleton": 30,
+          "Raccoon-Skeleton": -1,
           "Snake-Zombie": -1,
-          "Snake-Skeleton": 25,
+          "Snake-Skeleton": 30,
           "Alligator-White": 20
         },
         "eggs": {
-          "Fox": 162,
+          "Fox": 163,
           "Cactus": 161,
-          "BearCub": 157,
-          "Dragon": 164,
-          "FlyingPig": 168,
-          "LionCub": 166,
+          "BearCub": 158,
+          "Dragon": 165,
+          "FlyingPig": 171,
+          "LionCub": 167,
           "Wolf": 165,
           "PandaCub": 151,
           "Otter": 4,
           "Ferret": 1,
           "Slime": 4,
-          "TigerCub": 152,
+          "TigerCub": 154,
           "Gryphon": 3,
           "Unicorn": 9,
           "SeaSerpent": 2,
@@ -2117,15 +2122,15 @@
           "Squirrel": 0
         },
         "hatchingPotions": {
-          "White": 213,
-          "Red": 157,
-          "Desert": 203,
+          "White": 215,
+          "Red": 158,
+          "Desert": 204,
           "RoyalPurple": 4,
-          "Shade": 150,
+          "Shade": 151,
           "Skeleton": 175,
-          "Base": 179,
-          "Golden": 80,
-          "Zombie": 117,
+          "Base": 180,
+          "Golden": 81,
+          "Zombie": 118,
           "CottonCandyPink": 105,
           "CottonCandyBlue": 92,
           "Windup": 0,
@@ -2152,11 +2157,11 @@
           "Potatoe": 4,
           "Chocolate": 7,
           "Fish": 0,
-          "Meat": 11,
-          "Honey": 12,
+          "Meat": 13,
+          "Honey": 11,
           "CottonCandyPink": 8,
-          "Strawberry": 3,
-          "CottonCandyBlue": 3,
+          "Strawberry": 5,
+          "CottonCandyBlue": 6,
           "Pie_Red": 0,
           "Pie_Base": 0,
           "Pie_CottonCandyBlue": 0,
@@ -2167,7 +2172,7 @@
           "Pie_Skeleton": 0,
           "Pie_White": 0,
           "Pie_Zombie": 0,
-          "Milk": 3,
+          "Milk": 4,
           "Saddle": 5,
           "Cake_Base": 0,
           "Cake_CottonCandyBlue": 0,
@@ -2387,7 +2392,8 @@
           "TRex-Shade": true,
           "Monkey-Desert": true,
           "TRex-CottonCandyBlue": true,
-          "Snake-Zombie": true
+          "Snake-Zombie": true,
+          "Raccoon-Skeleton": true
         },
         "quests": {
           "dustbunnies": 1,
@@ -2431,12 +2437,12 @@
         "order": "level",
         "orderAscending": "ascending",
         "quest": {
-          "key": "atom1",
+          "key": "dog",
           "progress": {
-            "up": 13,
+            "up": 20,
             "down": 0,
             "collect": {},
-            "collectedItems": 9
+            "collectedItems": 15
           },
           "completed": "",
           "RSVPNeeded": false
@@ -2477,10 +2483,10 @@
       },
       "stats": {
         "hp": 50,
-        "mp": 352,
-        "exp": 6139,
-        "gp": 109511,
-        "lvl": 148,
+        "mp": 356,
+        "exp": 844,
+        "gp": 110570,
+        "lvl": 149,
         "class": "wizard",
         "points": 0,
         "str": 14,
@@ -2491,7 +2497,7 @@
           "str": 50,
           "int": 63,
           "per": 50,
-          "con": 50,
+          "con": 239,
           "stealth": 0,
           "streaks": false,
           "seafoam": false,
@@ -2505,14 +2511,14 @@
           "str": 0,
           "con": 0
         },
-        "toNextLevel": 7100,
+        "toNextLevel": 7180,
         "maxHealth": 50,
         "maxMP": 378
       },
       "inbox": {
         "optOut": false
       },
-      "loginIncentives": 598,
+      "loginIncentives": 601,
       "id": "2f95eae1-e2db-48c2-8d3b-f96db4fb7729"
     },
     {
@@ -2560,7 +2566,8 @@
           "owl": 1,
           "vice2": 1,
           "solarSystem": 1,
-          "horse": 1
+          "horse": 1,
+          "atom1": 1
         },
         "completedTask": true,
         "purchasedEquipment": true,
@@ -2574,7 +2581,8 @@
         "shinySeed": 1,
         "habiticaDays": 1,
         "seafoam": 1,
-        "bareNecessities": true
+        "bareNecessities": true,
+        "questCount": 1
       },
       "backer": {},
       "contributor": {},
@@ -2867,7 +2875,7 @@
       },
       "party": {
         "quest": {
-          "key": "atom1",
+          "key": "dog",
           "progress": {
             "up": 2,
             "down": 0,
@@ -2875,7 +2883,7 @@
             "collectedItems": 0
           },
           "completed": null,
-          "RSVPNeeded": false
+          "RSVPNeeded": true
         },
         "order": "level",
         "orderAscending": "ascending",
@@ -2915,10 +2923,10 @@
       },
       "stats": {
         "buffs": {
-          "str": 22,
-          "int": 22,
+          "str": 40,
+          "int": 61,
           "per": 22,
-          "con": 22,
+          "con": 538,
           "stealth": 0,
           "streaks": false,
           "seafoam": false,
@@ -2933,9 +2941,9 @@
           "con": 0
         },
         "hp": 50,
-        "mp": 164,
-        "exp": 428,
-        "gp": 923,
+        "mp": 212,
+        "exp": 478,
+        "gp": 930,
         "lvl": 44,
         "class": "rogue",
         "points": 0,
@@ -2945,7 +2953,7 @@
         "per": 27,
         "toNextLevel": 1060,
         "maxHealth": 50,
-        "maxMP": 164
+        "maxMP": 242
       },
       "inbox": {
         "optOut": false
@@ -2961,8 +2969,8 @@
         },
         "timestamps": {
           "created": "2025-01-06T17:47:12.517Z",
-          "loggedin": "2026-10-21T09:21:00.087Z",
-          "updated": "2026-10-21T14:51:15.255Z"
+          "loggedin": "2026-10-24T05:50:55.572Z",
+          "updated": "2026-10-24T18:04:50.003Z"
         }
       },
       "achievements": {
@@ -2972,15 +2980,15 @@
           "rogue": false,
           "warrior": false
         },
-        "streak": 201,
+        "streak": 203,
         "challenges": [],
-        "perfect": 607,
+        "perfect": 610,
         "quests": {
           "dustbunnies": 6,
           "moon1": 6,
           "basilist": 10,
-          "atom1": 7,
-          "atom2": 3,
+          "atom1": 8,
+          "atom2": 4,
           "dilatoryDistress1": 3,
           "moon2": 3,
           "dilatoryDistress2": 4,
@@ -3117,7 +3125,7 @@
         "bugBonanza": true,
         "royallyLoyal": true,
         "freshwaterFriends": true,
-        "questCount": 2
+        "questCount": 4
       },
       "backer": {},
       "contributor": {},
@@ -3128,22 +3136,22 @@
       "items": {
         "gear": {
           "equipped": {
-            "weapon": "weapon_armoire_regalSceptre",
-            "armor": "armor_healer_5",
-            "head": "head_healer_5",
-            "shield": "shield_armoire_royalCane",
+            "weapon": "weapon_special_fall2026Healer",
+            "armor": "armor_special_fall2026Healer",
+            "head": "head_special_fall2026Healer",
+            "shield": "shield_special_fall2026Healer",
             "back": "back_special_aetherCloak",
-            "headAccessory": "headAccessory_special_greenHeadband",
+            "headAccessory": "headAccessory_special_blackHeadband",
             "eyewear": "eyewear_armoire_goofyGlasses",
             "body": "body_special_aetherAmulet"
           },
           "costume": {
-            "weapon": "weapon_base_0",
-            "armor": "armor_armoire_mushroomDruidArmor",
-            "head": "head_armoire_mushroomDruidCap",
-            "shield": "shield_armoire_mushroomDruidShield",
+            "weapon": "weapon_armoire_spookyCandyBucket",
+            "armor": "armor_special_fallHealer",
+            "head": "head_special_fallHealer",
+            "shield": "shield_special_wakizashi",
             "back": "back_base_0",
-            "headAccessory": "headAccessory_special_blackHeadband",
+            "headAccessory": "headAccessory_armoire_comicalArrow",
             "eyewear": "eyewear_base_0",
             "body": "body_base_0"
           },
@@ -3621,7 +3629,8 @@
             "weapon_armoire_gardenRake": true,
             "shield_armoire_spanishGuitar": true,
             "head_armoire_birdsNest": true,
-            "shield_armoire_springPetalUchiwa": true
+            "shield_armoire_springPetalUchiwa": true,
+            "shield_special_fall2017Healer": true
           }
         },
         "special": {
@@ -3640,19 +3649,17 @@
           "birthday": 0,
           "birthdayReceived": [],
           "congrats": 0,
-          "congratsReceived": [
-            "Zerflixt"
-          ],
+          "congratsReceived": [],
           "getwell": 0,
           "getwellReceived": [],
           "goodluck": 0,
           "goodluckReceived": []
         },
         "lastDrop": {
-          "count": 9,
-          "date": "2026-10-21T14:51:14.475Z"
+          "count": 10,
+          "date": "2026-10-24T16:01:47.249Z"
         },
-        "currentPet": "Raccoon-Base",
+        "currentPet": "JackOLantern-Base",
         "currentMount": "",
         "pets": {
           "Cactus-Golden": 5,
@@ -3886,13 +3893,13 @@
           "Rock-Base": 5
         },
         "eggs": {
-          "Cactus": 140,
+          "Cactus": 142,
           "Wolf": 148,
-          "BearCub": 170,
-          "Dragon": 156,
-          "LionCub": 154,
-          "FlyingPig": 159,
-          "TigerCub": 173,
+          "BearCub": 173,
+          "Dragon": 157,
+          "LionCub": 156,
+          "FlyingPig": 161,
+          "TigerCub": 175,
           "Fox": 165,
           "PandaCub": 173,
           "Axolotl": 1,
@@ -3951,15 +3958,15 @@
         "hatchingPotions": {
           "Base": 175,
           "Golden": 64,
-          "Skeleton": 159,
+          "Skeleton": 161,
           "RoyalPurple": 14,
-          "Desert": 164,
+          "Desert": 165,
           "Red": 129,
-          "White": 193,
+          "White": 195,
           "Shade": 140,
-          "CottonCandyBlue": 111,
+          "CottonCandyBlue": 112,
           "Zombie": 122,
-          "CottonCandyPink": 114,
+          "CottonCandyPink": 115,
           "Silver": 0,
           "Celestial": 0,
           "Windup": 5,
@@ -3971,7 +3978,7 @@
           "PinkMarble": 4,
           "Turquoise": 3,
           "BlackPearl": 4,
-          "Vampire": 0,
+          "Vampire": 1,
           "Fluorite": 7,
           "Frost": 0,
           "Onyx": 2,
@@ -3989,18 +3996,20 @@
           "StarryNight": 0,
           "Sunset": 1,
           "Glow": 1,
-          "AutumnLeaf": 2
+          "AutumnLeaf": 2,
+          "Ghost": 1,
+          "Spooky": 1
         },
         "food": {
-          "Honey": 105,
-          "Meat": 73,
-          "RottenMeat": 206,
-          "CottonCandyPink": 175,
-          "Strawberry": 188,
+          "Honey": 106,
+          "Meat": 76,
+          "RottenMeat": 207,
+          "CottonCandyPink": 178,
+          "Strawberry": 190,
           "Chocolate": 163,
           "CottonCandyBlue": 171,
           "Milk": 144,
-          "Potatoe": 149,
+          "Potatoe": 150,
           "Fish": 197,
           "Cake_Base": 0,
           "Cake_CottonCandyBlue": 4,
@@ -4166,12 +4175,12 @@
       },
       "party": {
         "quest": {
-          "key": "atom1",
+          "key": "dog",
           "progress": {
-            "up": 26,
+            "up": 34,
             "down": 0,
             "collect": {},
-            "collectedItems": 12
+            "collectedItems": 13
           },
           "completed": "",
           "RSVPNeeded": false
@@ -4196,7 +4205,7 @@
         "costume": true,
         "sleep": false,
         "disableClasses": false,
-        "background": "daytime_misty_forest",
+        "background": "",
         "tasks": {
           "groupByChallenge": false,
           "confirmScoreNotes": false,
@@ -4215,9 +4224,9 @@
       "stats": {
         "buffs": {
           "str": 50,
-          "int": 50,
+          "int": 63,
           "per": 50,
-          "con": 50,
+          "con": 239,
           "stealth": 0,
           "streaks": false,
           "seafoam": false,
@@ -4232,9 +4241,9 @@
           "con": 0
         },
         "hp": 50,
-        "mp": 404,
-        "exp": 4255,
-        "gp": 18672,
+        "mp": 448,
+        "exp": 6602,
+        "gp": 19170,
         "lvl": 155,
         "class": "healer",
         "points": 0,
@@ -4244,12 +4253,12 @@
         "per": 15,
         "toNextLevel": 7700,
         "maxHealth": 50,
-        "maxMP": 404
+        "maxMP": 448
       },
       "inbox": {
         "optOut": false
       },
-      "loginIncentives": 635,
+      "loginIncentives": 638,
       "id": "369c9989-275b-40e2-a089-967362fe14cd"
     },
     {
@@ -4260,8 +4269,8 @@
         },
         "timestamps": {
           "created": "2025-01-02T12:51:26.220Z",
-          "loggedin": "2026-10-21T06:53:27.187Z",
-          "updated": "2026-10-21T13:03:56.776Z"
+          "loggedin": "2026-10-24T09:00:11.396Z",
+          "updated": "2026-10-24T15:04:36.794Z"
         }
       },
       "achievements": {
@@ -4273,15 +4282,15 @@
         },
         "streak": 357,
         "challenges": [],
-        "perfect": 627,
+        "perfect": 630,
         "quests": {
           "taskwoodsTerror1": 4,
           "taskwoodsTerror2": 3,
           "dustbunnies": 7,
           "moon1": 6,
           "basilist": 11,
-          "atom1": 8,
-          "atom2": 3,
+          "atom1": 9,
+          "atom2": 4,
           "dilatoryDistress1": 3,
           "moon2": 3,
           "dilatoryDistress2": 4,
@@ -4407,7 +4416,7 @@
         "royallyLoyal": true,
         "freshwaterFriends": true,
         "birthday": 3,
-        "questCount": 2
+        "questCount": 4
       },
       "backer": {},
       "contributor": {},
@@ -4609,7 +4618,7 @@
         "special": {
           "snowball": 20,
           "spookySparkles": 0,
-          "shinySeed": 25,
+          "shinySeed": 24,
           "seafoam": 12,
           "valentine": 0,
           "valentineReceived": [],
@@ -4631,8 +4640,8 @@
           "goodluckReceived": []
         },
         "lastDrop": {
-          "count": 3,
-          "date": "2026-10-21T13:03:54.212Z"
+          "count": 17,
+          "date": "2026-10-24T15:04:36.875Z"
         },
         "currentPet": "",
         "currentMount": "",
@@ -4679,15 +4688,15 @@
           "Wolf-Alien": 5
         },
         "eggs": {
-          "Fox": 231,
-          "FlyingPig": 222,
-          "Cactus": 212,
-          "Dragon": 255,
-          "BearCub": 209,
-          "LionCub": 258,
+          "Fox": 233,
+          "FlyingPig": 224,
+          "Cactus": 213,
+          "Dragon": 257,
+          "BearCub": 213,
+          "LionCub": 259,
           "TigerCub": 210,
-          "Wolf": 207,
-          "PandaCub": 216,
+          "Wolf": 208,
+          "PandaCub": 218,
           "Axolotl": 5,
           "Penguin": 3,
           "Cat": 2,
@@ -4743,16 +4752,16 @@
           "Squirrel": 3
         },
         "hatchingPotions": {
-          "Golden": 115,
-          "Base": 263,
-          "Skeleton": 219,
-          "CottonCandyPink": 156,
+          "Golden": 116,
+          "Base": 265,
+          "Skeleton": 222,
+          "CottonCandyPink": 158,
           "Red": 226,
           "RoyalPurple": 17,
           "CottonCandyBlue": 148,
           "White": 272,
-          "Desert": 252,
-          "Shade": 202,
+          "Desert": 255,
+          "Shade": 205,
           "Zombie": 142,
           "Silver": 3,
           "Windup": 8,
@@ -4771,16 +4780,16 @@
           "MossyStone": 6
         },
         "food": {
-          "Strawberry": 248,
-          "Milk": 229,
-          "Meat": 246,
-          "CottonCandyBlue": 254,
-          "Potatoe": 250,
-          "Honey": 280,
+          "Strawberry": 249,
+          "Milk": 233,
+          "Meat": 249,
+          "CottonCandyBlue": 255,
+          "Potatoe": 252,
+          "Honey": 282,
           "Chocolate": 267,
-          "CottonCandyPink": 261,
-          "Fish": 280,
-          "RottenMeat": 246,
+          "CottonCandyPink": 265,
+          "Fish": 282,
+          "RottenMeat": 247,
           "Cake_Base": 6,
           "Cake_CottonCandyBlue": 7,
           "Cake_CottonCandyPink": 8,
@@ -4867,12 +4876,12 @@
         "order": "level",
         "orderAscending": "ascending",
         "quest": {
-          "key": "atom1",
+          "key": "dog",
           "progress": {
-            "up": 7,
+            "up": 29,
             "down": 0,
             "collect": {},
-            "collectedItems": 1
+            "collectedItems": 17
           },
           "completed": "",
           "RSVPNeeded": false
@@ -4914,9 +4923,9 @@
       "stats": {
         "buffs": {
           "str": 50,
-          "int": 63,
+          "int": 50,
           "per": 50,
-          "con": 50,
+          "con": 164,
           "stealth": 0,
           "streaks": false,
           "seafoam": false,
@@ -4931,499 +4940,25 @@
           "con": 0
         },
         "hp": 50,
-        "mp": 386,
-        "exp": 6387,
-        "gp": 21637,
-        "lvl": 157,
+        "mp": 362,
+        "exp": 100,
+        "gp": 22020,
+        "lvl": 158,
         "class": "healer",
         "points": 0,
         "str": 1,
         "con": 28,
         "int": 56,
         "per": 15,
-        "toNextLevel": 7870,
+        "toNextLevel": 7960,
         "maxHealth": 50,
-        "maxMP": 388
+        "maxMP": 362
       },
       "inbox": {
         "optOut": false
       },
-      "loginIncentives": 657,
+      "loginIncentives": 660,
       "id": "3724969d-1abb-49a2-a2ee-c32afc04aa6f"
-    },
-    {
-      "_id": "37d244e3-369d-4d16-bfe0-8d70abd995da",
-      "auth": {
-        "local": {
-          "username": "sam_loves_foxes"
-        },
-        "timestamps": {
-          "created": "2026-02-25T07:47:00.493Z",
-          "loggedin": "2026-09-26T08:14:00.011Z",
-          "updated": "2026-09-26T08:14:10.565Z"
-        }
-      },
-      "achievements": {
-        "ultimateGearSets": {
-          "healer": false,
-          "wizard": false,
-          "rogue": false,
-          "warrior": false
-        },
-        "streak": 15,
-        "challenges": [],
-        "perfect": 115,
-        "quests": {
-          "basilist": 2,
-          "guineapig": 1,
-          "bunny": 1,
-          "cheetah": 1,
-          "peacock": 1,
-          "cow": 1,
-          "dustbunnies": 1,
-          "rooster": 1,
-          "otter": 1,
-          "egg": 1,
-          "jade": 1,
-          "spider": 1,
-          "waffle": 1,
-          "virtualpet": 1,
-          "alligator": 2,
-          "snake": 1,
-          "robot": 1,
-          "platypus": 1,
-          "octopus": 2,
-          "sloth": 1,
-          "pterodactyl": 1,
-          "triceratops": 2,
-          "velociraptor": 1,
-          "giraffe": 1,
-          "trex": 1,
-          "unicorn": 1,
-          "hippo": 1,
-          "fluorite": 1,
-          "windup": 1,
-          "treeling": 1,
-          "moonstone1": 1,
-          "moonstone2": 1,
-          "moonstone3": 1,
-          "blackPearl": 1,
-          "owl": 1,
-          "goldenknight1": 1,
-          "goldenknight3": 1
-        },
-        "completedTask": true,
-        "purchasedEquipment": true,
-        "createdTask": true,
-        "hatchedPet": true,
-        "fedPet": true,
-        "partyOn": true,
-        "partyUp": true,
-        "congrats": 2,
-        "habiticaDays": 1,
-        "seafoam": 3
-      },
-      "backer": {},
-      "contributor": {},
-      "flags": {
-        "verifiedUsername": true,
-        "classSelected": true
-      },
-      "items": {
-        "gear": {
-          "equipped": {
-            "weapon": "weapon_special_fall2026Rogue",
-            "armor": "armor_special_fall2026Rogue",
-            "head": "head_special_fall2026Rogue",
-            "shield": "shield_special_fall2026Rogue",
-            "back": "back_armoire_harpsichord",
-            "headAccessory": "headAccessory_base_0",
-            "eyewear": "eyewear_base_0",
-            "body": "body_armoire_cozyScarf"
-          },
-          "costume": {
-            "weapon": "weapon_warrior_0",
-            "armor": "armor_armoire_shepherdRobes",
-            "head": "head_base_0",
-            "shield": "shield_armoire_gladiatorShield",
-            "back": "back_special_foxTail",
-            "headAccessory": "headAccessory_special_foxEars",
-            "eyewear": "eyewear_special_blackTopFrame"
-          },
-          "owned": {
-            "headAccessory_special_blackHeadband": true,
-            "headAccessory_special_blueHeadband": true,
-            "headAccessory_special_greenHeadband": true,
-            "headAccessory_special_pinkHeadband": true,
-            "headAccessory_special_redHeadband": true,
-            "headAccessory_special_whiteHeadband": true,
-            "headAccessory_special_yellowHeadband": true,
-            "eyewear_special_blackTopFrame": true,
-            "eyewear_special_blueTopFrame": true,
-            "eyewear_special_greenTopFrame": true,
-            "eyewear_special_pinkTopFrame": true,
-            "eyewear_special_redTopFrame": true,
-            "eyewear_special_whiteTopFrame": true,
-            "eyewear_special_yellowTopFrame": true,
-            "eyewear_special_blackHalfMoon": true,
-            "eyewear_special_blueHalfMoon": true,
-            "eyewear_special_greenHalfMoon": true,
-            "eyewear_special_pinkHalfMoon": true,
-            "eyewear_special_redHalfMoon": true,
-            "eyewear_special_whiteHalfMoon": true,
-            "eyewear_special_yellowHalfMoon": true,
-            "weapon_warrior_0": true,
-            "back_special_foxTail": true,
-            "headAccessory_special_foxEars": true,
-            "armor_special_bardRobes": true,
-            "head_special_bardHat": true,
-            "weapon_special_winter2025Mage": true,
-            "armor_special_winter2025Mage": true,
-            "head_special_winter2025Mage": true,
-            "head_special_piDay": true,
-            "shield_special_piDay": true,
-            "weapon_special_bardInstrument": true,
-            "weapon_rogue_0": true,
-            "shield_rogue_0": true,
-            "armor_special_pageArmor": true,
-            "head_special_pageHelm": true,
-            "weapon_special_pageBanner": true,
-            "shield_special_diamondStave": true,
-            "back_armoire_harpsichord": true,
-            "head_armoire_shootingStarCrown": true,
-            "armor_armoire_strawRaincoat": true,
-            "head_armoire_veilOfSpades": true,
-            "weapon_armoire_potionZombie": true,
-            "armor_armoire_greenFestivalYukata": true,
-            "head_armoire_jadeHelm": true,
-            "shield_armoire_gladiatorShield": true,
-            "weapon_armoire_potionWhite": true,
-            "weapon_armoire_jugglingBalls": true,
-            "armor_special_2": true,
-            "weapon_special_skeletonKey": true,
-            "shield_special_lootBag": true,
-            "weapon_armoire_pinkLongbow": true,
-            "shield_armoire_weaversShuttle": true,
-            "weapon_armoire_buoyantBubbles": true,
-            "weapon_special_fall2026Rogue": true,
-            "head_special_fall2026Rogue": true,
-            "armor_special_fall2026Rogue": true,
-            "shield_special_fall2026Rogue": true,
-            "head_armoire_flyFishingHat": true,
-            "shield_armoire_buoyantBeachBall": true,
-            "shield_armoire_softWhitePillow": true,
-            "head_armoire_matchMakersBeret": true,
-            "armor_armoire_shepherdRobes": true,
-            "head_armoire_jesterCap": true,
-            "body_armoire_cozyScarf": true,
-            "head_armoire_dragonKnightsHelm": true,
-            "weapon_armoire_basicLongbow": true,
-            "shield_special_goldenknight": true
-          }
-        },
-        "special": {
-          "snowball": 0,
-          "spookySparkles": 0,
-          "shinySeed": 0,
-          "seafoam": 0,
-          "valentine": 0,
-          "valentineReceived": [],
-          "nye": 0,
-          "nyeReceived": [],
-          "greeting": 0,
-          "greetingReceived": [],
-          "thankyou": 0,
-          "thankyouReceived": [],
-          "birthday": 0,
-          "birthdayReceived": [],
-          "congrats": 0,
-          "congratsReceived": [
-            "Zerflixt",
-            "Zerflixt"
-          ],
-          "getwell": 0,
-          "getwellReceived": [],
-          "goodluck": 0,
-          "goodluckReceived": []
-        },
-        "lastDrop": {
-          "count": 0,
-          "date": "2026-09-26T08:13:59.705Z"
-        },
-        "currentPet": "Fox-BlackPearl",
-        "currentMount": "Fox-Desert",
-        "pets": {
-          "Wolf-Golden": -1,
-          "Fox-Base": -1,
-          "Fox-Skeleton": -1,
-          "FlyingPig-RoyalPurple": 15,
-          "Dragon-RoseGold": 10,
-          "Fox-Cryptid": 5,
-          "Fox-TeaShop": 5,
-          "Fox-Veggie": 5,
-          "Fox-StainedGlass": 5,
-          "Fox-BirchBark": 5,
-          "Fox-CottonCandyBlue": -1,
-          "Fox-CottonCandyPink": -1,
-          "Fox-Desert": -1,
-          "Fox-Golden": -1,
-          "Fox-Red": -1,
-          "Fox-Shade": -1,
-          "Fox-White": -1,
-          "Fox-Zombie": -1,
-          "Fox-Jade": 5,
-          "Fox-RoyalPurple": -1,
-          "Fox-Dessert": 5,
-          "Fox-VirtualPet": 5,
-          "Fox-Balloon": 15,
-          "Fox-Glass": -1,
-          "Fox-Shimmer": 5,
-          "Fox-Fairy": 5,
-          "Fox-Floral": 5,
-          "Fox-RoseQuartz": 5,
-          "Fox-Koi": 5,
-          "Fox-Rainbow": 20,
-          "Fox-Sunshine": 5,
-          "Fox-Moonglow": 5,
-          "Fox-SandSculpture": 25,
-          "Fox-Watery": 5,
-          "Fox-Windup": 5,
-          "Fox-Fluorite": 5,
-          "Fox-Aquatic": 5,
-          "Fox-StarryNight": 5,
-          "Fox-Sunset": 5,
-          "Fox-BlackPearl": 10,
-          "Peacock-Shade": 40,
-          "Peacock-Golden": 25
-        },
-        "eggs": {
-          "Wolf": 5,
-          "Fox": 0,
-          "FlyingPig": 6,
-          "GuineaPig": 3,
-          "Bunny": 3,
-          "Dragon": 3,
-          "LionCub": 9,
-          "Cheetah": 3,
-          "Peacock": 1,
-          "Cow": 3,
-          "BearCub": 8,
-          "Rooster": 3,
-          "Otter": 3,
-          "PandaCub": 5,
-          "Egg": 10,
-          "Spider": 3,
-          "TigerCub": 3,
-          "Alligator": 6,
-          "Snake": 3,
-          "Robot": 3,
-          "Cactus": 5,
-          "Platypus": 3,
-          "Octopus": 6,
-          "Sloth": 3,
-          "Pterodactyl": 3,
-          "Triceratops": 6,
-          "Velociraptor": 3,
-          "Giraffe": 3,
-          "TRex": 3,
-          "Unicorn": 3,
-          "Hippo": 3,
-          "Treeling": 3,
-          "Owl": 3
-        },
-        "hatchingPotions": {
-          "Golden": 5,
-          "Skeleton": 3,
-          "Base": 4,
-          "RoyalPurple": 13,
-          "Shade": 3,
-          "RoseGold": 0,
-          "Desert": 6,
-          "BirchBark": 0,
-          "StainedGlass": 0,
-          "Zombie": 5,
-          "CottonCandyPink": 2,
-          "Red": 3,
-          "White": 6,
-          "Jade": 2,
-          "CottonCandyBlue": 3,
-          "Cryptid": 0,
-          "TeaShop": 0,
-          "Veggie": 1,
-          "Dessert": 2,
-          "VirtualPet": 2,
-          "Glass": 0,
-          "Balloon": 0,
-          "Shimmer": 0,
-          "Fairy": 0,
-          "Floral": 0,
-          "RoseQuartz": 0,
-          "Koi": 0,
-          "Rainbow": 0,
-          "Sunshine": 0,
-          "Moonglow": 0,
-          "SandSculpture": 0,
-          "Watery": 0,
-          "Fluorite": 2,
-          "Windup": 2,
-          "Sunset": 0,
-          "StarryNight": 0,
-          "Aquatic": 0,
-          "BlackPearl": 2
-        },
-        "food": {
-          "Potatoe": 0,
-          "Saddle": 1,
-          "Milk": 3,
-          "Meat": 0,
-          "Chocolate": 0,
-          "CottonCandyPink": 1,
-          "Fish": 3,
-          "Honey": 4,
-          "CottonCandyBlue": 0,
-          "Strawberry": 4,
-          "Pie_Base": 0,
-          "Pie_CottonCandyBlue": 0,
-          "Pie_CottonCandyPink": 0,
-          "Pie_Desert": 0,
-          "Pie_Golden": 0,
-          "Pie_Red": 0,
-          "Pie_Shade": 0,
-          "Pie_Skeleton": 0,
-          "Pie_White": 0,
-          "Pie_Zombie": 0,
-          "RottenMeat": 5,
-          "Cake_Base": 0,
-          "Cake_CottonCandyBlue": 0,
-          "Cake_CottonCandyPink": 0,
-          "Cake_Desert": 0,
-          "Cake_Golden": 0,
-          "Cake_Red": 1,
-          "Cake_Shade": 0,
-          "Cake_Skeleton": 1,
-          "Cake_White": 0,
-          "Cake_Zombie": 0
-        },
-        "mounts": {
-          "Wolf-Golden": true,
-          "Fox-Base": true,
-          "Fox-Skeleton": true,
-          "Fox-RoyalPurple": true,
-          "Fox-Golden": true,
-          "Fox-Glass": true,
-          "Fox-Shade": true,
-          "Orca-Base": true,
-          "Gryphon-RoyalPurple": true,
-          "Fox-Red": true,
-          "Fox-CottonCandyBlue": true,
-          "Fox-Desert": true,
-          "Fox-White": true,
-          "Fox-Zombie": true,
-          "Fox-CottonCandyPink": true
-        },
-        "quests": {
-          "dustbunnies": 1,
-          "basilist": 0,
-          "moon1": 1,
-          "moon2": 1,
-          "atom1": 1,
-          "moon3": 1,
-          "dilatory_derby": 1,
-          "turtle": 1,
-          "whale": 1,
-          "opal": 1,
-          "vice1": 1,
-          "goldenknight1": 1
-        }
-      },
-      "party": {
-        "quest": {
-          "key": "atom1",
-          "progress": {
-            "up": 0,
-            "down": 0,
-            "collect": {},
-            "collectedItems": 0
-          },
-          "completed": null,
-          "RSVPNeeded": true
-        },
-        "order": "level",
-        "orderAscending": "ascending",
-        "_id": "6f3af9a8-6862-4c6a-b7e9-ccb590ac7ef1"
-      },
-      "preferences": {
-        "size": "slim",
-        "hair": {
-          "color": "blond",
-          "base": 0,
-          "bangs": 3,
-          "beard": 0,
-          "mustache": 0,
-          "flower": 3
-        },
-        "skin": "f5a76e",
-        "shirt": "black",
-        "chair": "chair_none",
-        "costume": true,
-        "sleep": false,
-        "disableClasses": false,
-        "background": "on_a_strange_planet",
-        "tasks": {
-          "groupByChallenge": false,
-          "confirmScoreNotes": false,
-          "mirrorGroupTasks": [],
-          "activeFilter": {
-            "habit": "all",
-            "daily": "all",
-            "todo": "remaining",
-            "reward": "all"
-          }
-        }
-      },
-      "profile": {
-        "name": "Sam",
-        "blurb": "Ist zurückhaltend und beobachtet die Welt aus der eigenen kleinen Blase. Gedanken flitzen schnell, Gefühle brennen intensiv, manchmal stürmisch, manchmal vorsichtig. Loyal zu dem, was wirklich zählt und echt zu allen, die nah genug kommen."
-      },
-      "stats": {
-        "buffs": {
-          "str": 293,
-          "int": 269,
-          "per": 1164,
-          "con": 3539,
-          "stealth": 0,
-          "streaks": false,
-          "seafoam": false,
-          "shinySeed": false,
-          "snowball": false,
-          "spookySparkles": false
-        },
-        "training": {
-          "int": 0,
-          "per": 0,
-          "str": 0,
-          "con": 0
-        },
-        "hp": 50,
-        "mp": 430,
-        "exp": 1790,
-        "gp": 1181,
-        "lvl": 45,
-        "class": "rogue",
-        "points": 0,
-        "str": 13,
-        "con": 6,
-        "int": 7,
-        "per": 19,
-        "toNextLevel": 1100,
-        "maxHealth": 50,
-        "maxMP": 638
-      },
-      "inbox": {
-        "optOut": false
-      },
-      "loginIncentives": 147,
-      "id": "37d244e3-369d-4d16-bfe0-8d70abd995da"
     },
     {
       "_id": "3a5ff05e-4515-4982-b104-45cf1f810e56",
@@ -5433,8 +4968,8 @@
         },
         "timestamps": {
           "created": "2024-12-19T20:56:50.664Z",
-          "loggedin": "2026-10-21T14:35:13.860Z",
-          "updated": "2026-10-21T14:57:25.195Z"
+          "loggedin": "2026-10-23T16:10:12.438Z",
+          "updated": "2026-10-23T16:10:22.631Z"
         }
       },
       "achievements": {
@@ -5444,7 +4979,7 @@
           "rogue": false,
           "warrior": false
         },
-        "streak": 4,
+        "streak": 5,
         "challenges": [],
         "perfect": 49,
         "quests": {
@@ -5466,7 +5001,9 @@
           "cheetah": 1,
           "taskwoodsTerror1": 1,
           "stoikalmCalamity1": 1,
-          "mayhemMistiflying1": 1
+          "mayhemMistiflying1": 1,
+          "atom1": 1,
+          "atom2": 1
         },
         "createdTask": true,
         "completedTask": true,
@@ -5479,7 +5016,7 @@
         "seafoam": 2,
         "habiticaDays": 1,
         "snowball": 1,
-        "questCount": 1
+        "questCount": 3
       },
       "backer": {},
       "contributor": {},
@@ -5492,7 +5029,7 @@
           "equipped": {
             "weapon": "weapon_special_pageBanner",
             "armor": "armor_special_summer2026Rogue",
-            "head": "head_special_pageHelm",
+            "head": "head_special_clandestineCowl",
             "shield": "shield_special_takeThis",
             "headAccessory": "headAccessory_base_0",
             "eyewear": "eyewear_base_0"
@@ -5502,6 +5039,7 @@
             "armor": "armor_special_fall2026Rogue",
             "head": "head_special_fall2019Rogue",
             "shield": "shield_special_fall2026Rogue",
+            "headAccessory": "headAccessory_special_blackHeadband",
             "eyewear": "eyewear_special_fall2019Rogue"
           },
           "owned": {
@@ -5567,7 +5105,9 @@
             "shield_special_lootBag": true,
             "head_special_pyromancersTurban": true,
             "armor_special_mammothRiderArmor": true,
-            "armor_special_roguishRainbowMessengerRobes": true
+            "armor_special_roguishRainbowMessengerRobes": true,
+            "head_special_clandestineCowl": true,
+            "armor_special_sneakthiefRobes": true
           }
         },
         "special": {
@@ -5593,8 +5133,8 @@
           "goodluckReceived": []
         },
         "lastDrop": {
-          "count": 0,
-          "date": "2026-10-20T20:04:39.704Z"
+          "count": 1,
+          "date": "2026-10-23T16:10:18.883Z"
         },
         "currentPet": "Wolf-Shade",
         "currentMount": "",
@@ -5612,9 +5152,9 @@
           "PandaCub": 9,
           "LionCub": 18,
           "Wolf": 10,
-          "BearCub": 15,
-          "TigerCub": 17,
-          "Dragon": 10,
+          "BearCub": 16,
+          "TigerCub": 18,
+          "Dragon": 11,
           "Pterodactyl": 3,
           "Cactus": 6,
           "Triceratops": 6,
@@ -5629,10 +5169,10 @@
           "Cheetah": 3
         },
         "hatchingPotions": {
-          "White": 15,
+          "White": 16,
           "CottonCandyPink": 5,
           "Golden": 8,
-          "Base": 9,
+          "Base": 11,
           "Desert": 15,
           "RoyalPurple": 14,
           "Skeleton": 11,
@@ -5691,15 +5231,15 @@
         "order": "level",
         "orderAscending": "ascending",
         "quest": {
-          "key": "atom1",
+          "key": "dog",
           "progress": {
             "up": 5,
             "down": 0,
             "collect": {},
-            "collectedItems": 0
+            "collectedItems": 1
           },
-          "completed": null,
-          "RSVPNeeded": false
+          "completed": "atom2",
+          "RSVPNeeded": true
         },
         "_id": "6f3af9a8-6862-4c6a-b7e9-ccb590ac7ef1"
       },
@@ -5738,9 +5278,9 @@
       "stats": {
         "buffs": {
           "str": 0,
-          "int": 0,
+          "int": 13,
           "per": 0,
-          "con": 0,
+          "con": 321,
           "stealth": 0,
           "streaks": false,
           "seafoam": false,
@@ -5755,24 +5295,24 @@
           "con": 0
         },
         "hp": 50,
-        "mp": 124,
-        "exp": 3,
-        "gp": 1874,
+        "mp": 142,
+        "exp": 379,
+        "gp": 1970,
         "lvl": 45,
         "class": "rogue",
-        "points": 1,
+        "points": 0,
         "str": 3,
         "con": 12,
-        "int": 20,
+        "int": 21,
         "per": 9,
         "toNextLevel": 1100,
         "maxHealth": 50,
-        "maxMP": 124
+        "maxMP": 152
       },
       "inbox": {
         "optOut": false
       },
-      "loginIncentives": 149,
+      "loginIncentives": 151,
       "id": "3a5ff05e-4515-4982-b104-45cf1f810e56"
     },
     {
@@ -5783,8 +5323,8 @@
         },
         "timestamps": {
           "created": "2026-09-16T23:50:18.820Z",
-          "loggedin": "2026-10-21T06:44:29.389Z",
-          "updated": "2026-10-21T13:36:34.447Z"
+          "loggedin": "2026-10-24T09:30:23.723Z",
+          "updated": "2026-10-24T17:05:53.094Z"
         }
       },
       "achievements": {
@@ -5796,7 +5336,7 @@
         },
         "streak": 6,
         "challenges": [],
-        "perfect": 24,
+        "perfect": 27,
         "quests": {
           "goldenknight3": 1,
           "vice2": 1,
@@ -5808,7 +5348,9 @@
           "horse": 1,
           "stoikalmCalamity1": 1,
           "mayhemMistiflying1": 1,
-          "raccoon": 1
+          "raccoon": 1,
+          "atom1": 1,
+          "atom2": 1
         },
         "completedTask": true,
         "hatchedPet": true,
@@ -5818,7 +5360,8 @@
         "purchasedEquipment": true,
         "partyUp": true,
         "partyOn": true,
-        "questCount": 2
+        "questCount": 4,
+        "spookySparkles": 1
       },
       "backer": {},
       "contributor": {},
@@ -5832,7 +5375,7 @@
             "weapon": "weapon_special_fall2026Healer",
             "armor": "armor_special_fall2026Healer",
             "head": "head_special_fall2026Healer",
-            "shield": "shield_special_goldenknight",
+            "shield": "shield_special_fall2026Healer",
             "back": "back_base_0",
             "headAccessory": "headAccessory_armoire_comicalArrow",
             "eyewear": "eyewear_base_0",
@@ -5904,7 +5447,17 @@
             "armor_special_mammothRiderArmor": true,
             "head_armoire_secretsHood": true,
             "armor_special_roguishRainbowMessengerRobes": true,
-            "armor_armoire_robeOfSpades": true
+            "armor_armoire_robeOfSpades": true,
+            "weapon_healer_1": true,
+            "weapon_healer_2": true,
+            "weapon_healer_3": true,
+            "weapon_healer_4": true,
+            "weapon_healer_5": true,
+            "armor_healer_1": true,
+            "head_healer_2": true,
+            "shield_healer_1": true,
+            "armor_armoire_layerCakeArmor": true,
+            "weapon_armoire_sandySpade": true
           }
         },
         "special": {
@@ -5930,8 +5483,8 @@
           "goodluckReceived": []
         },
         "lastDrop": {
-          "count": 3,
-          "date": "2026-10-21T06:44:47.901Z"
+          "count": 1,
+          "date": "2026-10-24T17:03:54.442Z"
         },
         "currentPet": "Phoenix-Base",
         "currentMount": "Hippogriff-Hopeful",
@@ -5963,26 +5516,26 @@
           "BearCub-RoyalPurple": 5
         },
         "eggs": {
-          "PandaCub": 1,
+          "PandaCub": 2,
           "BearCub": 1,
           "Dragon": 1,
           "Fox": 1,
           "Cactus": 2,
-          "TigerCub": 1,
+          "TigerCub": 2,
           "FlyingPig": 6,
           "Wolf": 0,
-          "LionCub": 3,
+          "LionCub": 4,
           "Cheetah": 2,
           "Horse": 2,
           "Raccoon": 3
         },
         "hatchingPotions": {
-          "Desert": 5,
+          "Desert": 6,
           "White": 9,
           "CottonCandyPink": 4,
           "Base": 0,
-          "RoyalPurple": 0,
-          "Red": 4,
+          "RoyalPurple": 1,
+          "Red": 5,
           "CottonCandyBlue": 4,
           "Golden": 0,
           "Zombie": 3,
@@ -5992,14 +5545,14 @@
         },
         "food": {
           "Milk": 0,
-          "Fish": 0,
+          "Fish": 1,
           "Honey": 0,
           "Chocolate": 1,
           "Meat": 1,
           "CottonCandyPink": 1,
-          "Strawberry": 1,
-          "Potatoe": 0,
-          "CottonCandyBlue": 0,
+          "Strawberry": 2,
+          "Potatoe": 3,
+          "CottonCandyBlue": 2,
           "RottenMeat": 1
         },
         "mounts": {
@@ -6021,12 +5574,12 @@
       },
       "party": {
         "quest": {
-          "key": "atom1",
+          "key": "dog",
           "progress": {
-            "up": 4,
+            "up": 9,
             "down": 0,
             "collect": {},
-            "collectedItems": 2
+            "collectedItems": 3
           },
           "completed": "",
           "RSVPNeeded": false
@@ -6070,15 +5623,15 @@
       "stats": {
         "buffs": {
           "str": 17,
-          "int": 30,
+          "int": 17,
           "per": 17,
-          "con": 17,
+          "con": 131,
           "stealth": 0,
           "streaks": false,
-          "seafoam": false,
-          "shinySeed": false,
           "snowball": false,
-          "spookySparkles": false
+          "spookySparkles": false,
+          "shinySeed": false,
+          "seafoam": false
         },
         "training": {
           "int": 0,
@@ -6086,25 +5639,25 @@
           "str": 0,
           "con": 0
         },
-        "hp": 48,
-        "mp": 158,
-        "exp": 225,
-        "gp": 392,
-        "lvl": 33,
+        "hp": 50,
+        "mp": 73,
+        "exp": 274,
+        "gp": 8,
+        "lvl": 34,
         "class": "healer",
         "points": 0,
         "str": 5,
         "con": 14,
-        "int": 9,
+        "int": 10,
         "per": 5,
-        "toNextLevel": 740,
+        "toNextLevel": 770,
         "maxHealth": 50,
-        "maxMP": 204
+        "maxMP": 182
       },
       "inbox": {
         "optOut": false
       },
-      "loginIncentives": 34,
+      "loginIncentives": 37,
       "id": "3ab5f69d-5d4d-49fe-894e-3189066ae484"
     },
     {
@@ -6115,8 +5668,8 @@
         },
         "timestamps": {
           "created": "2026-05-05T12:25:34.667Z",
-          "loggedin": "2026-10-20T18:34:52.072Z",
-          "updated": "2026-10-20T18:35:35.767Z"
+          "loggedin": "2026-10-24T16:20:28.002Z",
+          "updated": "2026-10-24T16:20:41.502Z"
         }
       },
       "achievements": {
@@ -6276,8 +5829,8 @@
           "goodluckReceived": []
         },
         "lastDrop": {
-          "count": 6,
-          "date": "2026-10-20T18:35:17.812Z"
+          "count": 0,
+          "date": "2026-10-22T18:51:56.224Z"
         },
         "currentPet": "TRex-Desert",
         "currentMount": "Gryphon-RoyalPurple",
@@ -6331,7 +5884,7 @@
         },
         "eggs": {
           "TigerCub": 8,
-          "BearCub": 9,
+          "BearCub": 10,
           "LionCub": 8,
           "Cactus": 11,
           "Dragon": 3,
@@ -6359,7 +5912,7 @@
           "Cheetah": 3
         },
         "hatchingPotions": {
-          "CottonCandyBlue": 3,
+          "CottonCandyBlue": 4,
           "Desert": 11,
           "White": 8,
           "Red": 9,
@@ -6368,7 +5921,7 @@
           "CottonCandyPink": 4,
           "RoyalPurple": 9,
           "Skeleton": 8,
-          "Base": 6,
+          "Base": 7,
           "MossyStone": 2,
           "Shade": 5,
           "Fluorite": 3,
@@ -6421,12 +5974,12 @@
         "order": "level",
         "orderAscending": "ascending",
         "quest": {
-          "key": "atom1",
+          "key": "dog",
           "progress": {
-            "up": 22,
+            "up": 0,
             "down": 0,
             "collect": {},
-            "collectedItems": 5
+            "collectedItems": 0
           },
           "completed": null,
           "RSVPNeeded": true
@@ -6468,9 +6021,9 @@
       "stats": {
         "buffs": {
           "str": 0,
-          "int": 13,
+          "int": 0,
           "per": 0,
-          "con": 0,
+          "con": 114,
           "stealth": 0,
           "streaks": false,
           "seafoam": false,
@@ -6484,10 +6037,10 @@
           "str": 0,
           "con": 0
         },
-        "hp": 49,
-        "mp": 182,
-        "exp": 1184,
-        "gp": 6203,
+        "hp": 50,
+        "mp": 166,
+        "exp": 1286,
+        "gp": 6235,
         "lvl": 57,
         "class": "healer",
         "points": 0,
@@ -6497,12 +6050,12 @@
         "per": 16,
         "toNextLevel": 1520,
         "maxHealth": 50,
-        "maxMP": 192
+        "maxMP": 166
       },
       "inbox": {
         "optOut": false
       },
-      "loginIncentives": 96,
+      "loginIncentives": 98,
       "id": "47968a91-b62b-4e43-9424-0eeaeec292bc"
     },
     {
@@ -6513,8 +6066,8 @@
         },
         "timestamps": {
           "created": "2024-11-26T21:17:20.224Z",
-          "loggedin": "2026-10-19T04:59:03.362Z",
-          "updated": "2026-10-19T04:59:36.390Z"
+          "loggedin": "2026-10-24T12:07:21.573Z",
+          "updated": "2026-10-24T12:07:23.577Z"
         }
       },
       "achievements": {
@@ -6526,7 +6079,7 @@
         },
         "streak": 29,
         "challenges": [],
-        "perfect": 272,
+        "perfect": 274,
         "quests": {
           "atom1": 7,
           "atom3": 4,
@@ -6560,7 +6113,7 @@
           "mayhemMistiflying2": 2,
           "mayhemMistiflying3": 2,
           "gryphon": 2,
-          "atom2": 2,
+          "atom2": 3,
           "stoikalmCalamity1": 3,
           "stoikalmCalamity3": 2,
           "unicorn": 3,
@@ -6673,7 +6226,7 @@
         "triadBingo": true,
         "snowball": 1,
         "seafoam": 1,
-        "questCount": 2
+        "questCount": 3
       },
       "backer": {},
       "contributor": {},
@@ -6883,7 +6436,7 @@
         },
         "lastDrop": {
           "count": 0,
-          "date": "2026-10-19T04:59:03.145Z"
+          "date": "2026-10-24T12:07:21.352Z"
         },
         "currentPet": "LionCub-Veggie",
         "currentMount": "Otter-Golden",
@@ -7053,7 +6606,7 @@
           "BearCub": 43,
           "TigerCub": 55,
           "PandaCub": 45,
-          "Fox": 51,
+          "Fox": 54,
           "Dragon": 64,
           "FlyingPig": 40,
           "Wolf": 44,
@@ -7114,7 +6667,7 @@
           "Skeleton": 50,
           "CottonCandyBlue": 24,
           "RoyalPurple": 13,
-          "Red": 34,
+          "Red": 35,
           "Desert": 57,
           "White": 75,
           "Shade": 44,
@@ -7147,11 +6700,11 @@
           "Meat": 6,
           "CottonCandyPink": 4,
           "Strawberry": 9,
-          "Potatoe": 4,
+          "Potatoe": 5,
           "CottonCandyBlue": 6,
-          "RottenMeat": 5,
+          "RottenMeat": 6,
           "Honey": 10,
-          "Fish": 6,
+          "Fish": 7,
           "Milk": 11,
           "Saddle": 2,
           "Cake_Base": 1,
@@ -7320,15 +6873,15 @@
         "order": "level",
         "orderAscending": "ascending",
         "quest": {
-          "key": "atom1",
+          "key": "dog",
           "progress": {
             "up": 0,
             "down": 0,
             "collect": {},
             "collectedItems": 0
           },
-          "completed": "raccoon",
-          "RSVPNeeded": true
+          "completed": "",
+          "RSVPNeeded": false
         },
         "_id": "6f3af9a8-6862-4c6a-b7e9-ccb590ac7ef1"
       },
@@ -7367,9 +6920,9 @@
       "stats": {
         "buffs": {
           "str": 0,
-          "int": 39,
-          "per": 142,
-          "con": 489,
+          "int": 0,
+          "per": 0,
+          "con": 114,
           "stealth": 0,
           "streaks": false,
           "seafoam": false,
@@ -7384,24 +6937,24 @@
           "con": 0
         },
         "hp": 50,
-        "mp": 250,
-        "exp": 4157,
-        "gp": 24567,
-        "lvl": 114,
+        "mp": 202,
+        "exp": 165,
+        "gp": 24671,
+        "lvl": 115,
         "class": "warrior",
         "points": 0,
         "str": 93,
         "con": 0,
         "int": 1,
         "per": 6,
-        "toNextLevel": 4530,
+        "toNextLevel": 4600,
         "maxHealth": 50,
-        "maxMP": 280
+        "maxMP": 202
       },
       "inbox": {
         "optOut": false
       },
-      "loginIncentives": 619,
+      "loginIncentives": 622,
       "id": "6758f3a4-67a3-4dd7-9313-4cbe6885be77"
     },
     {
@@ -7412,8 +6965,8 @@
         },
         "timestamps": {
           "created": "2025-01-01T12:49:31.534Z",
-          "loggedin": "2026-10-21T04:33:13.336Z",
-          "updated": "2026-10-21T04:33:13.336Z"
+          "loggedin": "2026-10-22T17:11:04.498Z",
+          "updated": "2026-10-22T17:11:13.943Z"
         }
       },
       "achievements": {
@@ -7425,11 +6978,11 @@
         },
         "streak": 146,
         "challenges": [],
-        "perfect": 207,
+        "perfect": 208,
         "quests": {
-          "atom2": 3,
+          "atom2": 4,
           "dilatoryDistress1": 3,
-          "atom1": 6,
+          "atom1": 7,
           "dustbunnies": 4,
           "moon2": 3,
           "dilatoryDistress2": 3,
@@ -7530,7 +7083,7 @@
         "lostMasterclasser": true,
         "valentine": 1,
         "congrats": 2,
-        "questCount": 2
+        "questCount": 4
       },
       "backer": {},
       "contributor": {},
@@ -7730,7 +7283,7 @@
         },
         "lastDrop": {
           "count": 0,
-          "date": "2026-10-21T04:33:13.140Z"
+          "date": "2026-10-22T17:11:04.205Z"
         },
         "currentPet": "Gryphon-Desert",
         "currentMount": "Aether-Invisible",
@@ -7766,7 +7319,7 @@
         "eggs": {
           "BearCub": 91,
           "LionCub": 83,
-          "Wolf": 83,
+          "Wolf": 84,
           "FlyingPig": 65,
           "Fox": 69,
           "Dragon": 96,
@@ -7823,12 +7376,12 @@
           "Shade": 90,
           "RoyalPurple": 17,
           "CottonCandyPink": 52,
-          "White": 108,
+          "White": 109,
           "CottonCandyBlue": 50,
           "Skeleton": 79,
           "Silver": 3,
           "Red": 59,
-          "Golden": 53,
+          "Golden": 54,
           "Zombie": 46,
           "Windup": 6,
           "SolarSystem": 12,
@@ -7906,15 +7459,15 @@
       },
       "party": {
         "quest": {
-          "key": "atom1",
+          "key": "dog",
           "progress": {
-            "up": 0,
+            "up": 2,
             "down": 0,
             "collect": {},
             "collectedItems": 0
           },
-          "completed": "",
-          "RSVPNeeded": false
+          "completed": "atom2",
+          "RSVPNeeded": true
         },
         "order": "level",
         "orderAscending": "ascending",
@@ -7954,12 +7507,16 @@
       },
       "stats": {
         "buffs": {
-          "str": 50,
-          "int": 63,
+          "str": 68,
+          "int": 76,
           "per": 50,
-          "con": 50,
+          "con": 446,
           "stealth": 0,
-          "streaks": false
+          "streaks": false,
+          "seafoam": false,
+          "shinySeed": false,
+          "snowball": false,
+          "spookySparkles": false
         },
         "training": {
           "int": 0,
@@ -7969,8 +7526,8 @@
         },
         "hp": 50,
         "mp": 374,
-        "exp": 371,
-        "gp": 2715,
+        "exp": 630,
+        "gp": 2767,
         "lvl": 115,
         "class": "wizard",
         "points": 0,
@@ -7980,12 +7537,12 @@
         "per": 23,
         "toNextLevel": 4600,
         "maxHealth": 50,
-        "maxMP": 400
+        "maxMP": 426
       },
       "inbox": {
         "optOut": false
       },
-      "loginIncentives": 364,
+      "loginIncentives": 365,
       "id": "6bae49dd-a971-400d-bacb-62594931c6e2"
     },
     {
@@ -7996,8 +7553,8 @@
         },
         "timestamps": {
           "created": "2024-11-15T10:11:25.762Z",
-          "loggedin": "2026-10-21T07:50:38.827Z",
-          "updated": "2026-10-21T07:50:38.827Z"
+          "loggedin": "2026-10-23T22:45:15.639Z",
+          "updated": "2026-10-23T22:45:15.639Z"
         }
       },
       "achievements": {
@@ -8009,10 +7566,10 @@
         },
         "streak": 4,
         "challenges": [],
-        "perfect": 113,
+        "perfect": 115,
         "quests": {
           "dustbunnies": 2,
-          "atom1": 3,
+          "atom1": 4,
           "dilatoryDistress3": 1,
           "ferret": 1,
           "moon1": 2,
@@ -8064,7 +7621,8 @@
         "habiticaDays": 2,
         "spookySparkles": 1,
         "seafoam": 1,
-        "congrats": 1
+        "congrats": 1,
+        "questCount": 1
       },
       "backer": {},
       "contributor": {},
@@ -8217,7 +7775,7 @@
         },
         "lastDrop": {
           "count": 0,
-          "date": "2026-10-20T19:56:36.783Z"
+          "date": "2026-10-22T22:46:55.779Z"
         },
         "currentPet": "Cactus-Windup",
         "currentMount": "Gryphon-RoyalPurple",
@@ -8325,7 +7883,7 @@
           "Seahorse": 0,
           "Cuttlefish": 0,
           "Sloth": 2,
-          "PandaCub": 10,
+          "PandaCub": 12,
           "FlyingPig": 14,
           "Chameleon": 0,
           "Unicorn": 2,
@@ -8354,7 +7912,7 @@
           "Windup": 0,
           "Red": 21,
           "PinkMarble": 0,
-          "Base": 12,
+          "Base": 13,
           "SolarSystem": 0,
           "CottonCandyPink": 9,
           "Onyx": 0,
@@ -8424,7 +7982,7 @@
       },
       "party": {
         "quest": {
-          "key": "atom1",
+          "key": "dog",
           "progress": {
             "up": 0,
             "down": 0,
@@ -8432,7 +7990,7 @@
             "collectedItems": 0
           },
           "completed": null,
-          "RSVPNeeded": false
+          "RSVPNeeded": true
         },
         "order": "level",
         "orderAscending": "ascending",
@@ -8475,9 +8033,13 @@
           "str": 33,
           "int": 46,
           "per": 33,
-          "con": 33,
+          "con": 222,
           "stealth": 0,
-          "streaks": false
+          "streaks": false,
+          "seafoam": false,
+          "shinySeed": false,
+          "snowball": false,
+          "spookySparkles": false
         },
         "training": {
           "int": 0,
@@ -8487,8 +8049,8 @@
         },
         "hp": 50,
         "mp": 286,
-        "exp": 1231,
-        "gp": 4233,
+        "exp": 1425,
+        "gp": 4264,
         "lvl": 66,
         "class": "healer",
         "points": 16,
@@ -8503,7 +8065,7 @@
       "inbox": {
         "optOut": false
       },
-      "loginIncentives": 251,
+      "loginIncentives": 253,
       "id": "6d51e91e-3043-468a-883e-dae0b0f6beca"
     },
     {
@@ -8514,8 +8076,8 @@
         },
         "timestamps": {
           "created": "2025-07-19T08:25:08.795Z",
-          "loggedin": "2026-10-21T08:09:12.486Z",
-          "updated": "2026-10-21T08:09:36.680Z"
+          "loggedin": "2026-10-24T13:40:51.547Z",
+          "updated": "2026-10-24T13:41:22.519Z"
         }
       },
       "achievements": {
@@ -8527,7 +8089,7 @@
         },
         "streak": 188,
         "challenges": [],
-        "perfect": 433,
+        "perfect": 436,
         "quests": {
           "sloth": 2,
           "treeling": 2,
@@ -8553,7 +8115,7 @@
           "axolotl": 1,
           "owl": 2,
           "vice1": 1,
-          "atom1": 1,
+          "atom1": 2,
           "vice2": 2,
           "vice3": 2,
           "falcon": 1,
@@ -8652,7 +8214,7 @@
         "beastMaster": true,
         "mountMaster": true,
         "redLetterDay": true,
-        "questCount": 2
+        "questCount": 3
       },
       "backer": {},
       "contributor": {},
@@ -8822,7 +8384,7 @@
         },
         "lastDrop": {
           "count": 9,
-          "date": "2026-10-21T08:09:36.250Z"
+          "date": "2026-10-24T13:41:19.360Z"
         },
         "currentPet": "",
         "currentMount": "Gryphon-RoyalPurple",
@@ -8983,16 +8545,16 @@
         },
         "eggs": {
           "Fox": 119,
-          "LionCub": 103,
-          "BearCub": 106,
-          "FlyingPig": 105,
+          "LionCub": 104,
+          "BearCub": 108,
+          "FlyingPig": 106,
           "Sloth": 3,
           "PandaCub": 106,
           "Cactus": 114,
-          "TigerCub": 96,
+          "TigerCub": 98,
           "Treeling": 3,
-          "Dragon": 116,
-          "Wolf": 115,
+          "Dragon": 117,
+          "Wolf": 116,
           "Whale": 0,
           "Seahorse": 0,
           "Velociraptor": 3,
@@ -9040,17 +8602,17 @@
         },
         "hatchingPotions": {
           "Shade": 95,
-          "Base": 125,
+          "Base": 126,
           "Skeleton": 97,
           "Desert": 112,
-          "White": 123,
+          "White": 124,
           "RoyalPurple": 11,
           "Golden": 67,
-          "CottonCandyPink": 58,
+          "CottonCandyPink": 59,
           "Turquoise": 0,
-          "Red": 93,
-          "Zombie": 74,
-          "CottonCandyBlue": 73,
+          "Red": 94,
+          "Zombie": 75,
+          "CottonCandyBlue": 74,
           "SolarSystem": 8,
           "Windup": 3,
           "Fluorite": 9,
@@ -9065,14 +8627,14 @@
         "food": {
           "Chocolate": 54,
           "RottenMeat": 67,
-          "Strawberry": 55,
-          "Meat": 15,
-          "CottonCandyBlue": 34,
-          "Honey": 51,
-          "Milk": 39,
+          "Strawberry": 56,
+          "Meat": 17,
+          "CottonCandyBlue": 35,
+          "Honey": 52,
+          "Milk": 40,
           "CottonCandyPink": 31,
-          "Fish": 24,
-          "Potatoe": 28,
+          "Fish": 26,
+          "Potatoe": 31,
           "Cake_CottonCandyPink": 0,
           "Cake_Zombie": 0,
           "Pie_Base": 0,
@@ -9258,14 +8820,14 @@
         "order": "level",
         "orderAscending": "ascending",
         "quest": {
-          "key": "atom1",
+          "key": "dog",
           "progress": {
-            "up": 16,
+            "up": 15,
             "down": 0,
             "collect": {},
-            "collectedItems": 8
+            "collectedItems": 9
           },
-          "completed": "",
+          "completed": null,
           "RSVPNeeded": false
         },
         "_id": "6f3af9a8-6862-4c6a-b7e9-ccb590ac7ef1"
@@ -9305,9 +8867,9 @@
       "stats": {
         "buffs": {
           "str": 50,
-          "int": 63,
+          "int": 50,
           "per": 50,
-          "con": 50,
+          "con": 164,
           "stealth": 0,
           "streaks": false,
           "seafoam": false,
@@ -9322,9 +8884,9 @@
           "con": 0
         },
         "hp": 50,
-        "mp": 368,
-        "exp": 141,
-        "gp": 43118,
+        "mp": 352,
+        "exp": 1461,
+        "gp": 43554,
         "lvl": 126,
         "class": "healer",
         "points": 0,
@@ -9334,12 +8896,12 @@
         "per": 14,
         "toNextLevel": 5370,
         "maxHealth": 50,
-        "maxMP": 378
+        "maxMP": 352
       },
       "inbox": {
         "optOut": false
       },
-      "loginIncentives": 441,
+      "loginIncentives": 444,
       "id": "7565e068-7850-4b6d-9930-3d7a8f4628d6"
     },
     {
@@ -9350,8 +8912,8 @@
         },
         "timestamps": {
           "created": "2019-03-24T11:35:04.255Z",
-          "loggedin": "2026-10-21T08:39:46.932Z",
-          "updated": "2026-10-21T14:58:26.052Z"
+          "loggedin": "2026-10-24T08:19:34.722Z",
+          "updated": "2026-10-24T10:27:12.832Z"
         }
       },
       "achievements": {
@@ -9362,7 +8924,7 @@
           "warrior": false
         },
         "challenges": [],
-        "perfect": 465,
+        "perfect": 468,
         "quests": {
           "goldenknight1": 2,
           "goldenknight2": 2,
@@ -9378,7 +8940,7 @@
           "velociraptor": 2,
           "gryphon": 1,
           "dustbunnies": 2,
-          "atom2": 1,
+          "atom2": 2,
           "moon1": 1,
           "moon2": 1,
           "moon3": 1,
@@ -9395,7 +8957,7 @@
           "axolotl": 1,
           "owl": 2,
           "vice1": 1,
-          "atom1": 1,
+          "atom1": 2,
           "vice2": 2,
           "vice3": 2,
           "falcon": 1,
@@ -9465,7 +9027,7 @@
         "completedTask": true,
         "createdTask": true,
         "hatchedPet": true,
-        "streak": 200,
+        "streak": 201,
         "fedPet": true,
         "purchasedEquipment": true,
         "partyOn": true,
@@ -9479,7 +9041,7 @@
         "bugBonanza": true,
         "freshwaterFriends": true,
         "seafoam": 1,
-        "questCount": 2
+        "questCount": 4
       },
       "backer": {},
       "contributor": {},
@@ -9693,14 +9255,14 @@
           "JackOLantern-Glow": 5
         },
         "eggs": {
-          "Wolf": 126,
+          "Wolf": 127,
           "Fox": 117,
-          "LionCub": 125,
-          "Dragon": 140,
-          "PandaCub": 126,
-          "TigerCub": 128,
+          "LionCub": 127,
+          "Dragon": 141,
+          "PandaCub": 127,
+          "TigerCub": 130,
           "FlyingPig": 112,
-          "Cactus": 106,
+          "Cactus": 107,
           "Turtle": 2,
           "Platypus": 6,
           "Robot": 11,
@@ -9714,7 +9276,7 @@
           "SeaSerpent": 1,
           "Pterodactyl": 6,
           "Butterfly": 6,
-          "BearCub": 104,
+          "BearCub": 106,
           "Parrot": 3,
           "Axolotl": 3,
           "Owl": 6,
@@ -9752,19 +9314,19 @@
           "Squirrel": 3
         },
         "hatchingPotions": {
-          "Red": 109,
-          "Desert": 154,
+          "Red": 110,
+          "Desert": 155,
           "RoyalPurple": 17,
           "Base": 148,
-          "CottonCandyPink": 79,
-          "White": 135,
-          "Skeleton": 123,
+          "CottonCandyPink": 80,
+          "White": 137,
+          "Skeleton": 124,
           "Shade": 106,
           "Golden": 76,
           "PinkMarble": 6,
           "Zombie": 79,
           "Turquoise": 3,
-          "CottonCandyBlue": 82,
+          "CottonCandyBlue": 83,
           "SolarSystem": 12,
           "BlackPearl": 6,
           "Windup": 6,
@@ -9807,16 +9369,16 @@
           "Pie_Skeleton": 8,
           "Pie_White": 4,
           "Pie_Zombie": 9,
-          "Potatoe": 139,
-          "Chocolate": 139,
+          "Potatoe": 140,
+          "Chocolate": 141,
           "Meat": 146,
-          "CottonCandyPink": 150,
-          "CottonCandyBlue": 142,
+          "CottonCandyPink": 153,
+          "CottonCandyBlue": 144,
           "RottenMeat": 158,
-          "Fish": 133,
+          "Fish": 138,
           "Milk": 133,
-          "Honey": 168,
-          "Strawberry": 133,
+          "Honey": 170,
+          "Strawberry": 135,
           "Saddle": 7
         },
         "mounts": {
@@ -9869,14 +9431,14 @@
         },
         "lastDrop": {
           "count": 0,
-          "date": "2026-10-21T08:39:46.670Z"
+          "date": "2026-10-23T18:44:11.789Z"
         },
         "currentMount": "SeaSerpent-Golden",
         "currentPet": ""
       },
       "party": {
         "quest": {
-          "key": "atom1",
+          "key": "dog",
           "progress": {
             "up": 0,
             "down": 0,
@@ -9924,7 +9486,7 @@
           "str": 50,
           "int": 63,
           "per": 50,
-          "con": 50,
+          "con": 164,
           "stealth": 0,
           "streaks": false,
           "seafoam": false,
@@ -9940,23 +9502,23 @@
         },
         "hp": 50,
         "mp": 343,
-        "exp": 5164,
-        "gp": 44122,
-        "lvl": 132,
+        "exp": 1979,
+        "gp": 44646,
+        "lvl": 133,
         "class": "wizard",
         "points": 0,
         "str": 40,
         "con": 10,
         "int": 40,
         "per": 10,
-        "toNextLevel": 5820,
+        "toNextLevel": 5890,
         "maxHealth": 50,
         "maxMP": 434
       },
       "inbox": {
         "optOut": false
       },
-      "loginIncentives": 482,
+      "loginIncentives": 485,
       "profile": {
         "name": "HOODWATCHER"
       },
@@ -9970,8 +9532,8 @@
         },
         "timestamps": {
           "created": "2025-03-13T19:23:08.910Z",
-          "loggedin": "2026-10-19T18:30:17.483Z",
-          "updated": "2026-10-19T18:30:33.240Z"
+          "loggedin": "2026-10-23T20:06:14.172Z",
+          "updated": "2026-10-23T20:06:21.144Z"
         }
       },
       "achievements": {
@@ -10274,7 +9836,9 @@
             "armor_special_birthday": true,
             "head_special_dandyHat": true,
             "weapon_special_fencingFoil": true,
-            "armor_special_dandySuit": true
+            "armor_special_dandySuit": true,
+            "weapon_special_tachi": true,
+            "armor_special_samuraiArmor": true
           }
         },
         "special": {
@@ -10304,8 +9868,8 @@
           "goodluckReceived": []
         },
         "lastDrop": {
-          "count": 3,
-          "date": "2026-10-19T18:30:32.331Z"
+          "count": 0,
+          "date": "2026-10-21T18:31:03.230Z"
         },
         "currentPet": "",
         "currentMount": "Fox-SolarSystem",
@@ -10393,7 +9957,7 @@
         "hatchingPotions": {
           "Zombie": 38,
           "Base": 61,
-          "White": 65,
+          "White": 66,
           "RoyalPurple": 16,
           "Desert": 54,
           "Red": 37,
@@ -10432,8 +9996,8 @@
           "Potatoe": 28,
           "Strawberry": 43,
           "RottenMeat": 57,
-          "CottonCandyBlue": 62,
-          "Fish": 63,
+          "CottonCandyBlue": 63,
+          "Fish": 64,
           "Honey": 59,
           "Saddle": 8,
           "Cake_Base": 3,
@@ -10493,12 +10057,12 @@
       },
       "party": {
         "quest": {
-          "key": "atom1",
+          "key": "dog",
           "progress": {
-            "up": 8,
+            "up": 3,
             "down": 0,
             "collect": {},
-            "collectedItems": 5
+            "collectedItems": 2
           },
           "completed": null,
           "RSVPNeeded": true
@@ -10542,9 +10106,9 @@
       "stats": {
         "buffs": {
           "str": 0,
-          "int": 26,
-          "per": 142,
-          "con": 135,
+          "int": 13,
+          "per": 0,
+          "con": 246,
           "stealth": 0,
           "streaks": false,
           "seafoam": false,
@@ -10559,9 +10123,9 @@
           "con": 0
         },
         "hp": 50,
-        "mp": 204,
-        "exp": 1918,
-        "gp": 11009,
+        "mp": 188,
+        "exp": 2047,
+        "gp": 11067,
         "lvl": 92,
         "class": "rogue",
         "points": 0,
@@ -10571,12 +10135,12 @@
         "per": 40,
         "toNextLevel": 3180,
         "maxHealth": 50,
-        "maxMP": 224
+        "maxMP": 198
       },
       "inbox": {
         "optOut": false
       },
-      "loginIncentives": 448,
+      "loginIncentives": 450,
       "id": "85e1644b-d678-4c24-90a7-a19264d3bc58"
     },
     {
@@ -10587,8 +10151,8 @@
         },
         "timestamps": {
           "created": "2022-06-21T13:03:37.168Z",
-          "loggedin": "2026-10-20T19:28:12.804Z",
-          "updated": "2026-10-20T21:05:33.025Z"
+          "loggedin": "2026-10-24T09:20:45.977Z",
+          "updated": "2026-10-24T12:37:25.904Z"
         }
       },
       "achievements": {
@@ -10598,7 +10162,7 @@
           "rogue": false,
           "warrior": true
         },
-        "streak": 42,
+        "streak": 43,
         "challenges": [],
         "perfect": 478,
         "quests": {
@@ -10606,8 +10170,8 @@
           "moon1": 2,
           "moon2": 1,
           "moon3": 2,
-          "atom1": 2,
-          "atom2": 2,
+          "atom1": 3,
+          "atom2": 3,
           "atom3": 1,
           "basilist": 3,
           "mayhemMistiflying1": 3,
@@ -10711,7 +10275,7 @@
         "congrats": 1,
         "freshwaterFriends": true,
         "lostMasterclasser": true,
-        "questCount": 2
+        "questCount": 4
       },
       "backer": {},
       "contributor": {},
@@ -10916,8 +10480,8 @@
           "goodluckReceived": []
         },
         "lastDrop": {
-          "count": 1,
-          "date": "2026-10-20T21:05:33.031Z"
+          "count": 2,
+          "date": "2026-10-24T12:13:05.157Z"
         },
         "pets": {
           "TigerCub-Red": 25,
@@ -10983,7 +10547,7 @@
           "Turkey-Gilded": 5
         },
         "eggs": {
-          "TigerCub": 51,
+          "TigerCub": 52,
           "BearCub": 61,
           "Wolf": 41,
           "Cactus": 61,
@@ -11038,16 +10602,16 @@
           "Squirrel": 3
         },
         "hatchingPotions": {
-          "Red": 41,
+          "Red": 42,
           "CottonCandyPink": 35,
           "CottonCandyBlue": 35,
           "Desert": 45,
           "RoyalPurple": 9,
-          "White": 67,
+          "White": 68,
           "Shade": 55,
           "Skeleton": 45,
           "Base": 61,
-          "Golden": 32,
+          "Golden": 33,
           "Zombie": 43,
           "RoseQuartz": 1,
           "PinkMarble": 6,
@@ -11081,7 +10645,7 @@
           "RottenMeat": 67,
           "Strawberry": 66,
           "Potatoe": 72,
-          "Fish": 98,
+          "Fish": 99,
           "Cake_Base": 5,
           "Cake_CottonCandyBlue": 5,
           "Cake_CottonCandyPink": 8,
@@ -11164,9 +10728,9 @@
         "order": "level",
         "orderAscending": "ascending",
         "quest": {
-          "key": "atom1",
+          "key": "dog",
           "progress": {
-            "up": 4,
+            "up": 7,
             "down": 0,
             "collect": {},
             "collectedItems": 1
@@ -11207,10 +10771,10 @@
       },
       "stats": {
         "buffs": {
-          "str": 50,
-          "int": 63,
-          "per": 50,
-          "con": 50,
+          "str": 0,
+          "int": 0,
+          "per": 0,
+          "con": 114,
           "stealth": 0,
           "streaks": false,
           "seafoam": false,
@@ -11219,15 +10783,15 @@
           "spookySparkles": false
         },
         "training": {
-          "int": 8.697144929873525,
-          "per": 9.199439295605826,
-          "str": 6.025956704627065,
-          "con": 7.212397742751699
+          "int": 13.016383577839798,
+          "per": 10.93886828158053,
+          "str": 7.025956704627065,
+          "con": 4.893159094785426
         },
         "hp": 50,
-        "mp": 350,
-        "exp": 2252,
-        "gp": 14483,
+        "mp": 234,
+        "exp": 2643,
+        "gp": 14558,
         "lvl": 101,
         "class": "warrior",
         "points": 0,
@@ -11237,12 +10801,12 @@
         "per": 26,
         "toNextLevel": 3700,
         "maxHealth": 50,
-        "maxMP": 360
+        "maxMP": 234
       },
       "inbox": {
         "optOut": false
       },
-      "loginIncentives": 731,
+      "loginIncentives": 735,
       "profile": {
         "name": "Aura_Dastler Tv"
       },
@@ -11256,8 +10820,8 @@
         },
         "timestamps": {
           "created": "2026-08-15T08:56:53.028Z",
-          "loggedin": "2026-10-21T15:30:59.897Z",
-          "updated": "2026-10-21T15:48:05.896Z"
+          "loggedin": "2026-10-24T08:00:35.138Z",
+          "updated": "2026-10-24T08:05:28.019Z"
         }
       },
       "achievements": {
@@ -11270,7 +10834,10 @@
         "streak": 0,
         "challenges": [],
         "perfect": 0,
-        "quests": {},
+        "quests": {
+          "atom1": 1,
+          "atom2": 1
+        },
         "createdTask": true,
         "completedTask": true,
         "hatchedPet": true,
@@ -11278,7 +10845,8 @@
         "fedPet": true,
         "joinedChallenge": true,
         "partyUp": true,
-        "partyOn": true
+        "partyOn": true,
+        "questCount": 2
       },
       "backer": {},
       "contributor": {},
@@ -11289,10 +10857,10 @@
       "items": {
         "gear": {
           "equipped": {
-            "weapon": "weapon_warrior_4",
+            "weapon": "weapon_wizard_1",
             "armor": "armor_warrior_3",
-            "head": "head_special_bardHat",
-            "shield": "shield_special_takeThis"
+            "head": "head_wizard_2",
+            "shield": "shield_base_0"
           },
           "costume": {
             "armor": "armor_base_0",
@@ -11336,7 +10904,10 @@
             "weapon_warrior_4": true,
             "weapon_wizard_0": true,
             "shield_special_takeThis": true,
-            "head_special_fall2026Mage": false
+            "head_special_fall2026Mage": false,
+            "weapon_wizard_1": true,
+            "head_wizard_1": true,
+            "head_wizard_2": true
           }
         },
         "special": {
@@ -11362,10 +10933,10 @@
           "goodluckReceived": []
         },
         "lastDrop": {
-          "count": 1,
-          "date": "2026-10-21T15:39:12.318Z"
+          "count": 3,
+          "date": "2026-10-24T08:04:47.181Z"
         },
-        "currentPet": "Wolf-White",
+        "currentPet": "Wolf-RoyalPurple",
         "currentMount": "",
         "pets": {
           "TigerCub-Red": 17,
@@ -11376,20 +10947,25 @@
           "TigerCub-CottonCandyPink": 20,
           "TigerCub-RoyalPurple": 10,
           "FlyingPig-Base": 7,
-          "TigerCub-Golden": 20,
+          "TigerCub-Golden": 25,
           "FlyingPig-CottonCandyPink": 12,
           "Cactus-Golden": 20,
           "Cactus-Red": 20,
-          "Wolf-Shade": 10,
-          "Cactus-Zombie": 10,
+          "Wolf-Shade": 15,
+          "Cactus-Zombie": 15,
           "TigerCub-Skeleton": 5,
           "LionCub-Shade": 5,
           "TigerCub-Base": 5,
-          "Cactus-CottonCandyBlue": 20,
+          "Cactus-CottonCandyBlue": 25,
           "Wolf-White": 15,
           "Cactus-Skeleton": 5,
-          "FlyingPig-Desert": 10,
-          "LionCub-Red": 5
+          "FlyingPig-Desert": 15,
+          "LionCub-Red": 5,
+          "FlyingPig-Shade": 5,
+          "Wolf-Desert": 15,
+          "LionCub-CottonCandyPink": 5,
+          "Cactus-CottonCandyPink": 5,
+          "Wolf-RoyalPurple": 10
         },
         "eggs": {
           "TigerCub": 0,
@@ -11401,11 +10977,11 @@
         },
         "hatchingPotions": {
           "Red": 2,
-          "Skeleton": 0,
-          "RoyalPurple": 2,
+          "Skeleton": 1,
+          "RoyalPurple": 1,
           "Shade": 1,
           "Base": 3,
-          "CottonCandyPink": 2,
+          "CottonCandyPink": 0,
           "Golden": 0,
           "Desert": 4,
           "CottonCandyBlue": 0,
@@ -11419,7 +10995,7 @@
           "Fish": 0,
           "Chocolate": 0,
           "CottonCandyBlue": 0,
-          "Potatoe": 3,
+          "Potatoe": 0,
           "Strawberry": 0,
           "RottenMeat": 0,
           "Milk": 0
@@ -11434,14 +11010,15 @@
       },
       "party": {
         "quest": {
+          "key": "dog",
           "progress": {
-            "up": 7,
+            "up": 25,
             "down": 0,
             "collect": {},
-            "collectedItems": 2
+            "collectedItems": 3
           },
-          "RSVPNeeded": false,
-          "key": "atom1"
+          "completed": "atom2",
+          "RSVPNeeded": true
         },
         "order": "level",
         "orderAscending": "ascending",
@@ -11482,9 +11059,9 @@
       "stats": {
         "buffs": {
           "str": 0,
-          "int": 0,
+          "int": 13,
           "per": 0,
-          "con": 0,
+          "con": 189,
           "stealth": 0,
           "streaks": false,
           "seafoam": false,
@@ -11498,25 +11075,25 @@
           "str": 0,
           "con": 0
         },
-        "hp": 31,
-        "mp": 66,
-        "exp": 215,
-        "gp": 42,
-        "lvl": 10,
+        "hp": 41,
+        "mp": 64,
+        "exp": 302,
+        "gp": 124,
+        "lvl": 13,
         "class": "wizard",
         "points": 0,
-        "str": 1,
-        "con": 1,
+        "str": 2,
+        "con": 2,
         "int": 5,
-        "per": 3,
-        "toNextLevel": 260,
+        "per": 4,
+        "toNextLevel": 310,
         "maxHealth": 50,
-        "maxMP": 66
+        "maxMP": 90
       },
       "inbox": {
         "optOut": false
       },
-      "loginIncentives": 41,
+      "loginIncentives": 44,
       "id": "ad8b98c4-3bc8-4212-81d3-3feeb817051a"
     },
     {
@@ -12624,14 +12201,14 @@
         "order": "level",
         "orderAscending": "ascending",
         "quest": {
-          "key": "atom1",
+          "key": "dog",
           "progress": {
             "up": 0,
             "down": 0,
             "collect": {},
             "collectedItems": 0
           },
-          "completed": "raccoon",
+          "completed": null,
           "RSVPNeeded": true
         },
         "_id": "6f3af9a8-6862-4c6a-b7e9-ccb590ac7ef1"
@@ -12670,10 +12247,10 @@
       },
       "stats": {
         "buffs": {
-          "str": 24,
-          "int": 52,
+          "str": 42,
+          "int": 91,
           "per": 142,
-          "con": 682,
+          "con": 1198,
           "stealth": 11,
           "streaks": false,
           "seafoam": false,
@@ -12688,7 +12265,7 @@
           "con": 0
         },
         "hp": 50,
-        "mp": 211,
+        "mp": 259,
         "exp": 5084,
         "gp": 1847,
         "lvl": 117,
@@ -12700,7 +12277,7 @@
         "per": 72,
         "toNextLevel": 4730,
         "maxHealth": 50,
-        "maxMP": 296
+        "maxMP": 374
       },
       "inbox": {
         "optOut": false
@@ -12716,8 +12293,8 @@
         },
         "timestamps": {
           "created": "2024-06-07T09:55:05.445Z",
-          "loggedin": "2026-10-21T12:06:47.356Z",
-          "updated": "2026-10-21T14:28:54.018Z"
+          "loggedin": "2026-10-24T10:17:01.303Z",
+          "updated": "2026-10-24T10:17:17.785Z"
         }
       },
       "achievements": {
@@ -12729,12 +12306,12 @@
         },
         "streak": 36,
         "challenges": [],
-        "perfect": 424,
+        "perfect": 425,
         "quests": {
           "basilist": 8,
           "moon1": 3,
           "moon2": 2,
-          "atom1": 5,
+          "atom1": 6,
           "vice2": 3,
           "moon3": 2,
           "vice3": 2,
@@ -12851,7 +12428,8 @@
         "bugBonanza": true,
         "freshwaterFriends": true,
         "seafoam": 1,
-        "questCount": 1
+        "questCount": 2,
+        "shinySeed": 1
       },
       "backer": {},
       "contributor": {},
@@ -13040,7 +12618,7 @@
         },
         "lastDrop": {
           "count": 0,
-          "date": "2026-10-21T12:06:47.166Z"
+          "date": "2026-10-24T10:17:01.070Z"
         },
         "currentPet": "",
         "currentMount": "Wolf-Shade",
@@ -13124,7 +12702,7 @@
         },
         "hatchingPotions": {
           "Skeleton": 40,
-          "White": 51,
+          "White": 52,
           "Golden": 46,
           "Base": 52,
           "Desert": 48,
@@ -13237,14 +12815,14 @@
         "order": "level",
         "orderAscending": "ascending",
         "quest": {
-          "key": "atom1",
+          "key": "dog",
           "progress": {
-            "up": 0,
+            "up": 3,
             "down": 0,
             "collect": {},
-            "collectedItems": 0
+            "collectedItems": 2
           },
-          "completed": "",
+          "completed": null,
           "RSVPNeeded": false
         },
         "_id": "6f3af9a8-6862-4c6a-b7e9-ccb590ac7ef1"
@@ -13283,10 +12861,10 @@
       },
       "stats": {
         "buffs": {
-          "str": 0,
-          "int": 0,
-          "per": 0,
-          "con": 0,
+          "str": 50,
+          "int": 50,
+          "per": 50,
+          "con": 164,
           "stealth": 0,
           "streaks": false,
           "seafoam": false,
@@ -13300,10 +12878,10 @@
           "str": 0,
           "con": 0
         },
-        "hp": 48,
-        "mp": 422,
-        "exp": 3018,
-        "gp": 18180,
+        "hp": 50,
+        "mp": 496,
+        "exp": 3219,
+        "gp": 18203,
         "lvl": 116,
         "class": "wizard",
         "points": 0,
@@ -13313,12 +12891,12 @@
         "per": 10,
         "toNextLevel": 4660,
         "maxHealth": 50,
-        "maxMP": 422
+        "maxMP": 522
       },
       "inbox": {
         "optOut": false
       },
-      "loginIncentives": 679,
+      "loginIncentives": 680,
       "id": "b2107b32-cd34-4a2b-9ff8-f3cc78f1bc4c"
     },
     {
@@ -13376,7 +12954,7 @@
           "harpy": 1,
           "axolotl": 1,
           "owl": 1,
-          "atom1": 1,
+          "atom1": 2,
           "vice2": 1,
           "vice3": 2,
           "frog": 1,
@@ -13441,7 +13019,7 @@
         "congrats": 1,
         "bareNecessities": true,
         "freshwaterFriends": true,
-        "questCount": 1
+        "questCount": 2
       },
       "backer": {},
       "contributor": {},
@@ -13968,15 +13546,15 @@
         "order": "level",
         "orderAscending": "ascending",
         "quest": {
-          "key": "atom1",
+          "key": "dog",
           "progress": {
             "up": 0,
             "down": 0,
             "collect": {},
             "collectedItems": 0
           },
-          "completed": "",
-          "RSVPNeeded": false
+          "completed": null,
+          "RSVPNeeded": true
         },
         "_id": "6f3af9a8-6862-4c6a-b7e9-ccb590ac7ef1"
       },
@@ -14014,9 +13592,9 @@
       },
       "stats": {
         "hp": 50,
-        "mp": 345,
-        "exp": 428,
-        "gp": 4340,
+        "mp": 393,
+        "exp": 478,
+        "gp": 4347,
         "lvl": 92,
         "class": "rogue",
         "points": 0,
@@ -14025,10 +13603,10 @@
         "int": 8,
         "per": 39,
         "buffs": {
-          "str": 46,
-          "int": 46,
+          "str": 64,
+          "int": 85,
           "per": 46,
-          "con": 46,
+          "con": 562,
           "stealth": 0,
           "streaks": false,
           "seafoam": false,
@@ -14044,7 +13622,7 @@
         },
         "toNextLevel": 3180,
         "maxHealth": 50,
-        "maxMP": 350
+        "maxMP": 428
       },
       "inbox": {
         "optOut": false
@@ -14060,8 +13638,8 @@
         },
         "timestamps": {
           "created": "2025-02-09T08:39:14.118Z",
-          "loggedin": "2026-10-21T11:52:25.589Z",
-          "updated": "2026-10-21T11:53:08.420Z"
+          "loggedin": "2026-10-24T14:45:43.367Z",
+          "updated": "2026-10-24T14:45:50.940Z"
         }
       },
       "achievements": {
@@ -14071,16 +13649,16 @@
           "rogue": false,
           "warrior": true
         },
-        "streak": 205,
+        "streak": 206,
         "challenges": [],
-        "perfect": 482,
+        "perfect": 484,
         "quests": {
           "dustbunnies": 3,
           "basilist": 4,
           "evilsanta": 2,
           "cat": 1,
           "vice1": 2,
-          "atom1": 3,
+          "atom1": 4,
           "vice2": 3,
           "dilatoryDistress3": 2,
           "otter": 2,
@@ -14117,7 +13695,7 @@
           "robot": 3,
           "sloth": 1,
           "treeling": 1,
-          "atom2": 1,
+          "atom2": 2,
           "chameleon": 1,
           "unicorn": 2,
           "seaserpent": 1,
@@ -14179,7 +13757,7 @@
         "seafoam": 1,
         "bareNecessities": true,
         "royallyLoyal": true,
-        "questCount": 1
+        "questCount": 3
       },
       "backer": {},
       "contributor": {},
@@ -14837,8 +14415,8 @@
           "goodluckReceived": []
         },
         "lastDrop": {
-          "count": 7,
-          "date": "2026-10-21T11:53:05.167Z"
+          "count": 5,
+          "date": "2026-10-24T14:45:50.952Z"
         },
         "currentPet": "Alligator-Base",
         "currentMount": "",
@@ -14886,15 +14464,15 @@
           "Gryphon-RoyalPurple": 5
         },
         "eggs": {
-          "Cactus": 114,
+          "Cactus": 115,
           "TigerCub": 147,
           "PandaCub": 122,
           "LionCub": 138,
           "Wolf": 128,
           "Dragon": 135,
-          "Fox": 139,
+          "Fox": 142,
           "FlyingPig": 122,
-          "BearCub": 122,
+          "BearCub": 123,
           "Cat": 2,
           "Otter": 5,
           "Ferret": 2,
@@ -14942,13 +14520,13 @@
           "Base": 127,
           "Zombie": 94,
           "Shade": 118,
-          "Desert": 135,
+          "Desert": 136,
           "RoyalPurple": 16,
           "CottonCandyPink": 66,
           "White": 128,
           "CottonCandyBlue": 82,
           "Red": 95,
-          "Golden": 92,
+          "Golden": 94,
           "Skeleton": 99,
           "Windup": 5,
           "SolarSystem": 4,
@@ -14970,10 +14548,10 @@
           "Potatoe": 157,
           "Chocolate": 178,
           "Meat": 108,
-          "Honey": 154,
+          "Honey": 155,
           "Fish": 137,
           "Strawberry": 155,
-          "CottonCandyBlue": 139,
+          "CottonCandyBlue": 141,
           "Pie_Desert": 4,
           "Pie_Base": 8,
           "Pie_CottonCandyBlue": 8,
@@ -15049,15 +14627,15 @@
         "order": "level",
         "orderAscending": "ascending",
         "quest": {
-          "key": "atom1",
+          "key": "dog",
           "progress": {
-            "up": 23,
+            "up": 17,
             "down": 0,
             "collect": {},
-            "collectedItems": 10
+            "collectedItems": 6
           },
-          "completed": null,
-          "RSVPNeeded": false
+          "completed": "",
+          "RSVPNeeded": true
         },
         "_id": "6f3af9a8-6862-4c6a-b7e9-ccb590ac7ef1"
       },
@@ -15098,7 +14676,7 @@
           "str": 50,
           "int": 50,
           "per": 50,
-          "con": 50,
+          "con": 164,
           "stealth": 0,
           "streaks": false,
           "seafoam": false,
@@ -15114,8 +14692,8 @@
         },
         "hp": 50,
         "mp": 314,
-        "exp": 2457,
-        "gp": 6,
+        "exp": 3216,
+        "gp": 323,
         "lvl": 125,
         "class": "warrior",
         "points": 0,
@@ -15130,7 +14708,7 @@
       "inbox": {
         "optOut": false
       },
-      "loginIncentives": 503,
+      "loginIncentives": 505,
       "id": "b8159701-ae32-4165-b60c-5540cce192c4"
     },
     {
@@ -15141,8 +14719,8 @@
         },
         "timestamps": {
           "created": "2025-07-04T21:44:35.231Z",
-          "loggedin": "2026-10-03T20:23:04.465Z",
-          "updated": "2026-10-03T20:23:16.431Z"
+          "loggedin": "2026-10-24T07:50:54.411Z",
+          "updated": "2026-10-24T15:46:34.916Z"
         }
       },
       "achievements": {
@@ -15152,7 +14730,7 @@
           "rogue": false,
           "warrior": false
         },
-        "streak": 5,
+        "streak": 6,
         "challenges": [],
         "perfect": 170,
         "quests": {
@@ -15202,7 +14780,8 @@
           "alien": 1,
           "virtualpet": 1,
           "velociraptor": 1,
-          "vice2": 1
+          "vice2": 1,
+          "atom2": 1
         },
         "createdTask": true,
         "completedTask": true,
@@ -15216,7 +14795,8 @@
         "spookySparkles": 1,
         "habitBirthdays": 1,
         "bareNecessities": true,
-        "seafoam": 1
+        "seafoam": 1,
+        "questCount": 1
       },
       "backer": {},
       "contributor": {},
@@ -15323,8 +14903,8 @@
           "goodluckReceived": []
         },
         "lastDrop": {
-          "count": 2,
-          "date": "2026-10-03T20:23:09.384Z"
+          "count": 1,
+          "date": "2026-10-24T07:51:00.047Z"
         },
         "currentPet": "Cactus-Base",
         "currentMount": "Gryphon-RoyalPurple",
@@ -15371,7 +14951,7 @@
           "Whale": 2,
           "Seahorse": 2,
           "Gryphon": 3,
-          "BearCub": 10,
+          "BearCub": 11,
           "Chameleon": 2,
           "Unicorn": 5,
           "SeaSerpent": 2,
@@ -15383,7 +14963,7 @@
           "Falcon": 3,
           "Crab": 3,
           "Frog": 3,
-          "Wolf": 5,
+          "Wolf": 6,
           "Rat": 3,
           "Rock": 3,
           "Snail": 3,
@@ -15399,12 +14979,12 @@
         "hatchingPotions": {
           "Desert": 14,
           "CottonCandyBlue": 4,
-          "Base": 9,
-          "White": 6,
+          "Base": 10,
+          "White": 7,
           "Shade": 6,
           "RoyalPurple": 18,
           "Zombie": 9,
-          "Red": 13,
+          "Red": 15,
           "Skeleton": 12,
           "PinkMarble": 3,
           "Turquoise": 2,
@@ -15423,7 +15003,7 @@
           "Potatoe": 9,
           "Chocolate": 11,
           "CottonCandyBlue": 9,
-          "Honey": 17,
+          "Honey": 18,
           "RottenMeat": 13,
           "Strawberry": 10,
           "Cake_Base": 3,
@@ -15480,14 +15060,14 @@
       },
       "party": {
         "quest": {
-          "key": "atom1",
+          "key": "dog",
           "progress": {
-            "up": 76.65644203460664,
+            "up": 96.65644203460664,
             "down": 0,
             "collect": {},
-            "collectedItems": 25
+            "collectedItems": 31
           },
-          "completed": null,
+          "completed": "",
           "RSVPNeeded": true
         },
         "order": "level",
@@ -15508,7 +15088,7 @@
         "shirt": "green",
         "chair": "none",
         "costume": false,
-        "sleep": true,
+        "sleep": false,
         "disableClasses": false,
         "tasks": {
           "groupByChallenge": false,
@@ -15528,10 +15108,10 @@
       },
       "stats": {
         "buffs": {
-          "str": 159,
-          "int": 194,
-          "per": 708,
-          "con": 2408,
+          "str": 0,
+          "int": 13,
+          "per": 0,
+          "con": 189,
           "stealth": 0,
           "streaks": false,
           "seafoam": false,
@@ -15546,9 +15126,9 @@
           "con": 0
         },
         "hp": 50,
-        "mp": 349,
-        "exp": 537,
-        "gp": 4241,
+        "mp": 178,
+        "exp": 857,
+        "gp": 4313,
         "lvl": 56,
         "class": "rogue",
         "points": 0,
@@ -15558,12 +15138,12 @@
         "per": 24,
         "toNextLevel": 1480,
         "maxHealth": 50,
-        "maxMP": 542
+        "maxMP": 180
       },
       "inbox": {
         "optOut": false
       },
-      "loginIncentives": 261,
+      "loginIncentives": 265,
       "id": "c30d1d51-a6e0-4c53-a3b4-5947c0cdccb9"
     },
     {
@@ -15574,8 +15154,8 @@
         },
         "timestamps": {
           "created": "2025-03-05T19:23:32.206Z",
-          "loggedin": "2026-10-19T04:57:52.609Z",
-          "updated": "2026-10-19T04:57:52.609Z"
+          "loggedin": "2026-10-24T11:59:27.758Z",
+          "updated": "2026-10-24T11:59:32.807Z"
         }
       },
       "achievements": {
@@ -16428,15 +16008,15 @@
       },
       "party": {
         "quest": {
-          "key": "atom1",
+          "key": "dog",
           "progress": {
             "up": 4,
             "down": 0,
             "collect": {},
             "collectedItems": 0
           },
-          "completed": "raccoon",
-          "RSVPNeeded": true
+          "completed": null,
+          "RSVPNeeded": false
         },
         "order": "level",
         "orderAscending": "ascending",
@@ -16477,9 +16057,9 @@
       "stats": {
         "buffs": {
           "str": 0,
-          "int": 39,
-          "per": 142,
-          "con": 489,
+          "int": 0,
+          "per": 0,
+          "con": 114,
           "stealth": 0,
           "streaks": false,
           "seafoam": false,
@@ -16494,7 +16074,7 @@
           "con": 0
         },
         "hp": 50,
-        "mp": 342,
+        "mp": 390,
         "exp": 3369,
         "gp": 11610,
         "lvl": 99,
@@ -16506,12 +16086,12 @@
         "per": 21,
         "toNextLevel": 3580,
         "maxHealth": 50,
-        "maxMP": 308
+        "maxMP": 230
       },
       "inbox": {
         "optOut": false
       },
-      "loginIncentives": 539,
+      "loginIncentives": 540,
       "id": "c7d2bb98-76f1-4562-9ba4-3fc101fa4f6b"
     },
     {
@@ -16522,8 +16102,8 @@
         },
         "timestamps": {
           "created": "2019-03-17T06:50:12.998Z",
-          "loggedin": "2026-10-21T05:13:28.503Z",
-          "updated": "2026-10-21T11:41:23.204Z"
+          "loggedin": "2026-10-24T09:48:20.144Z",
+          "updated": "2026-10-24T18:04:59.162Z"
         }
       },
       "achievements": {
@@ -16534,14 +16114,14 @@
           "warrior": false
         },
         "challenges": [],
-        "perfect": 500,
+        "perfect": 503,
         "quests": {
           "mayhemMistiflying2": 2,
           "basilist": 6,
           "mayhemMistiflying3": 2,
           "gryphon": 2,
-          "atom1": 3,
-          "atom2": 2,
+          "atom1": 4,
+          "atom2": 3,
           "atom3": 2,
           "stoikalmCalamity1": 3,
           "stoikalmCalamity2": 3,
@@ -16655,7 +16235,7 @@
         "freshwaterFriends": true,
         "seafoam": 1,
         "royallyLoyal": true,
-        "questCount": 2
+        "questCount": 4
       },
       "backer": {},
       "contributor": {},
@@ -17004,8 +16584,8 @@
         "eggs": {
           "Wolf": 31,
           "BearCub": 35,
-          "PandaCub": 44,
-          "Fox": 33,
+          "PandaCub": 45,
+          "Fox": 34,
           "TigerCub": 52,
           "FlyingPig": 49,
           "LionCub": 45,
@@ -17068,7 +16648,7 @@
           "Desert": 50,
           "CottonCandyPink": 39,
           "CottonCandyBlue": 25,
-          "Skeleton": 42,
+          "Skeleton": 43,
           "Red": 39,
           "Shade": 38,
           "Zombie": 34,
@@ -17091,15 +16671,15 @@
         },
         "food": {
           "Chocolate": 40,
-          "CottonCandyPink": 44,
+          "CottonCandyPink": 45,
           "Meat": 35,
           "RottenMeat": 74,
           "Milk": 44,
           "Strawberry": 44,
           "CottonCandyBlue": 59,
           "Potatoe": 38,
-          "Fish": 54,
-          "Honey": 57,
+          "Fish": 55,
+          "Honey": 58,
           "Cake_Skeleton": 3,
           "Cake_Base": 2,
           "Cake_CottonCandyBlue": 3,
@@ -17186,20 +16766,20 @@
           "moonstone1": 1
         },
         "lastDrop": {
-          "count": 3,
-          "date": "2026-10-21T05:13:40.391Z"
+          "count": 0,
+          "date": "2026-10-24T09:48:19.578Z"
         },
         "currentPet": "TigerCub-Onyx",
         "currentMount": ""
       },
       "party": {
         "quest": {
-          "key": "atom1",
+          "key": "dog",
           "progress": {
-            "up": 4,
+            "up": 0,
             "down": 0,
             "collect": {},
-            "collectedItems": 1
+            "collectedItems": 0
           },
           "completed": "",
           "RSVPNeeded": false
@@ -17243,9 +16823,9 @@
       "stats": {
         "buffs": {
           "str": 48,
-          "int": 61,
+          "int": 48,
           "per": 48,
-          "con": 48,
+          "con": 162,
           "stealth": 0,
           "streaks": false,
           "seafoam": false,
@@ -17260,9 +16840,9 @@
           "con": 0
         },
         "hp": 50,
-        "mp": 383,
-        "exp": 378,
-        "gp": 4969,
+        "mp": 418,
+        "exp": 738,
+        "gp": 5054,
         "lvl": 95,
         "class": "wizard",
         "points": 0,
@@ -17272,12 +16852,12 @@
         "per": 27,
         "toNextLevel": 3350,
         "maxHealth": 50,
-        "maxMP": 444
+        "maxMP": 418
       },
       "inbox": {
         "optOut": false
       },
-      "loginIncentives": 550,
+      "loginIncentives": 553,
       "id": "cdfffcdf-a4e5-4caa-b600-2b0339a4e3eb"
     },
     {
@@ -17288,8 +16868,8 @@
         },
         "timestamps": {
           "created": "2026-07-01T23:55:19.129Z",
-          "loggedin": "2026-10-21T10:50:53.679Z",
-          "updated": "2026-10-21T16:38:38.774Z"
+          "loggedin": "2026-10-24T13:02:47.389Z",
+          "updated": "2026-10-24T16:26:29.924Z"
         }
       },
       "achievements": {
@@ -17299,9 +16879,9 @@
           "rogue": false,
           "warrior": true
         },
-        "streak": 23,
+        "streak": 24,
         "challenges": [],
-        "perfect": 50,
+        "perfect": 52,
         "quests": {
           "unicorn": 1,
           "dustbunnies": 1,
@@ -17327,7 +16907,9 @@
           "horse": 1,
           "stoikalmCalamity1": 1,
           "mayhemMistiflying1": 1,
-          "raccoon": 1
+          "raccoon": 1,
+          "atom1": 1,
+          "atom2": 1
         },
         "completedTask": true,
         "createdTask": true,
@@ -17346,7 +16928,7 @@
         "shadyCustomer": true,
         "primedForPainting": true,
         "tickledPink": true,
-        "questCount": 2
+        "questCount": 4
       },
       "backer": {},
       "contributor": {},
@@ -17484,12 +17066,14 @@
             "head_armoire_basicArcherCap": true,
             "armor_armoire_minerOveralls": true,
             "shield_armoire_softBluePillow": true,
-            "armor_armoire_heraldsTunic": true
+            "armor_armoire_heraldsTunic": true,
+            "head_armoire_gardenersSunHat": true,
+            "head_armoire_strawRainHat": true
           }
         },
         "special": {
           "snowball": 0,
-          "spookySparkles": 5,
+          "spookySparkles": 4,
           "shinySeed": 0,
           "seafoam": 0,
           "valentine": 0,
@@ -17510,8 +17094,8 @@
           "goodluckReceived": []
         },
         "lastDrop": {
-          "count": 1,
-          "date": "2026-10-21T16:38:34.848Z"
+          "count": 4,
+          "date": "2026-10-24T16:26:29.932Z"
         },
         "currentPet": "TigerCub-Shade",
         "currentMount": "",
@@ -17628,16 +17212,16 @@
           "TigerCub-RoyalPurple": 5
         },
         "eggs": {
-          "Cactus": 3,
-          "LionCub": 5,
-          "PandaCub": 4,
-          "Fox": 3,
-          "TigerCub": 4,
-          "Dragon": 6,
+          "Cactus": 4,
+          "LionCub": 7,
+          "PandaCub": 5,
+          "Fox": 4,
+          "TigerCub": 5,
+          "Dragon": 8,
           "Unicorn": 0,
-          "Wolf": 4,
-          "FlyingPig": 11,
-          "BearCub": 3,
+          "Wolf": 6,
+          "FlyingPig": 13,
+          "BearCub": 4,
           "Whale": 0,
           "GuineaPig": 0,
           "Penguin": 0,
@@ -17648,29 +17232,29 @@
         "hatchingPotions": {
           "Zombie": 0,
           "CottonCandyPink": 4,
-          "CottonCandyBlue": 0,
+          "CottonCandyBlue": 2,
           "Desert": 11,
           "Shade": 5,
           "Red": 5,
-          "White": 6,
+          "White": 7,
           "RoyalPurple": 4,
           "Skeleton": 11,
-          "Golden": 6,
+          "Golden": 7,
           "Base": 4,
           "Opal": 0,
           "SolarSystem": 0
         },
         "food": {
-          "CottonCandyBlue": 15,
+          "CottonCandyBlue": 17,
           "Strawberry": 11,
-          "Meat": 3,
-          "Honey": 10,
-          "Chocolate": 8,
-          "Fish": 13,
-          "Potatoe": 10,
-          "CottonCandyPink": 9,
+          "Meat": 5,
+          "Honey": 11,
+          "Chocolate": 9,
+          "Fish": 14,
+          "Potatoe": 12,
+          "CottonCandyPink": 11,
           "Milk": 5,
-          "RottenMeat": 15,
+          "RottenMeat": 17,
           "Cake_Base": 0,
           "Cake_CottonCandyBlue": 1,
           "Cake_CottonCandyPink": 1,
@@ -17703,7 +17287,7 @@
         "quests": {
           "dustbunnies": 0,
           "moon1": 0,
-          "atom1": 1,
+          "atom1": 0,
           "moon2": 0,
           "vice1": 0,
           "vice2": 0,
@@ -17721,19 +17305,21 @@
           "mayhemMistiflying1": 0,
           "taskwoodsTerror1": 0,
           "stoikalmCalamity1": 0,
-          "vice3": 0
+          "vice3": 0,
+          "atom2": 0,
+          "atom3": 1
         }
       },
       "party": {
         "order": "level",
         "orderAscending": "ascending",
         "quest": {
-          "key": "atom1",
+          "key": "dog",
           "progress": {
-            "up": 7,
+            "up": 15,
             "down": 0,
             "collect": {},
-            "collectedItems": 0
+            "collectedItems": 2
           },
           "completed": "",
           "RSVPNeeded": false
@@ -17775,10 +17361,10 @@
       },
       "stats": {
         "buffs": {
-          "str": 28,
-          "int": 28,
-          "per": 28,
-          "con": 28,
+          "str": 29,
+          "int": 29,
+          "per": 29,
+          "con": 143,
           "stealth": 0,
           "streaks": false,
           "seafoam": false,
@@ -17792,25 +17378,25 @@
           "str": 0,
           "con": 0
         },
-        "hp": 48,
-        "mp": 245,
-        "exp": 1017,
-        "gp": 199,
-        "lvl": 56,
+        "hp": 50,
+        "mp": 258,
+        "exp": 453,
+        "gp": 197,
+        "lvl": 57,
         "class": "warrior",
         "points": 0,
         "str": 0,
         "con": 0,
-        "int": 56,
+        "int": 57,
         "per": 0,
-        "toNextLevel": 1480,
+        "toNextLevel": 1520,
         "maxHealth": 50,
-        "maxMP": 254
+        "maxMP": 258
       },
       "inbox": {
         "optOut": false
       },
-      "loginIncentives": 109,
+      "loginIncentives": 112,
       "id": "d0c4b910-8891-4b07-a4c4-f3d01d614cfd"
     },
     {
@@ -18798,7 +18384,7 @@
         "order": "level",
         "orderAscending": "ascending",
         "quest": {
-          "key": "atom1",
+          "key": "dog",
           "progress": {
             "up": 759.5382334346696,
             "down": 0,
@@ -18844,10 +18430,10 @@
       },
       "stats": {
         "buffs": {
-          "str": 114,
-          "int": 91,
+          "str": 132,
+          "int": 130,
           "per": 425,
-          "con": 1084,
+          "con": 1600,
           "stealth": 0,
           "streaks": false,
           "seafoam": false,
@@ -18862,7 +18448,7 @@
           "con": 0
         },
         "hp": 50,
-        "mp": 510,
+        "mp": 558,
         "exp": 4025,
         "gp": 251,
         "lvl": 116,
@@ -18874,7 +18460,7 @@
         "per": 40,
         "toNextLevel": 4660,
         "maxHealth": 50,
-        "maxMP": 472
+        "maxMP": 550
       },
       "inbox": {
         "optOut": false
@@ -19318,7 +18904,7 @@
       },
       "party": {
         "quest": {
-          "key": "atom1",
+          "key": "dog",
           "progress": {
             "up": 7,
             "down": 0,
@@ -19366,10 +18952,10 @@
       },
       "stats": {
         "buffs": {
-          "str": 114,
-          "int": 135,
+          "str": 132,
+          "int": 174,
           "per": 570,
-          "con": 1589,
+          "con": 2105,
           "stealth": 0,
           "streaks": false,
           "seafoam": false,
@@ -19396,7 +18982,7 @@
         "per": 22,
         "toNextLevel": 2850,
         "maxHealth": 50,
-        "maxMP": 550
+        "maxMP": 628
       },
       "inbox": {
         "optOut": false
@@ -19412,8 +18998,8 @@
         },
         "timestamps": {
           "created": "2025-09-08T08:42:31.232Z",
-          "loggedin": "2026-10-21T04:29:01.697Z",
-          "updated": "2026-10-21T04:29:12.425Z"
+          "loggedin": "2026-10-24T07:22:01.841Z",
+          "updated": "2026-10-24T07:22:16.070Z"
         }
       },
       "achievements": {
@@ -19434,7 +19020,7 @@
           "owl": 1,
           "solarSystem": 1,
           "vice1": 1,
-          "atom1": 1,
+          "atom1": 2,
           "vice2": 2,
           "vice3": 2,
           "falcon": 1,
@@ -19506,7 +19092,7 @@
         "freshwaterFriends": true,
         "habiticaDays": 1,
         "birthday": 1,
-        "questCount": 1
+        "questCount": 2
       },
       "backer": {},
       "contributor": {},
@@ -19691,7 +19277,8 @@
             "armor_armoire_sillierBlueTuxedo": true,
             "armor_armoire_falconerArmor": true,
             "shield_armoire_shieldOfHonor": true,
-            "armor_armoire_smileyShirt": true
+            "armor_armoire_smileyShirt": true,
+            "shield_armoire_fancyBlownGlassVase": true
           }
         },
         "special": {
@@ -19719,8 +19306,8 @@
           "goodluckReceived": []
         },
         "lastDrop": {
-          "count": 1,
-          "date": "2026-10-21T04:29:12.430Z"
+          "count": 0,
+          "date": "2026-10-23T04:46:29.088Z"
         },
         "currentPet": "",
         "currentMount": "Monkey-Desert",
@@ -19876,7 +19463,7 @@
           "Zombie": 15,
           "SolarSystem": 0,
           "White": 34,
-          "Golden": 15,
+          "Golden": 16,
           "Fluorite": 3,
           "CottonCandyPink": 11,
           "Onyx": 0,
@@ -19969,15 +19556,15 @@
       },
       "party": {
         "quest": {
-          "key": "atom1",
+          "key": "dog",
           "progress": {
-            "up": 2,
+            "up": 0,
             "down": 0,
             "collect": {},
-            "collectedItems": 1
+            "collectedItems": 0
           },
           "completed": null,
-          "RSVPNeeded": false
+          "RSVPNeeded": true
         },
         "order": "level",
         "orderAscending": "ascending",
@@ -20021,7 +19608,7 @@
           "str": 0,
           "int": 13,
           "per": 0,
-          "con": 0,
+          "con": 189,
           "stealth": 0,
           "streaks": false,
           "seafoam": false,
@@ -20035,10 +19622,10 @@
           "str": 0,
           "con": 0
         },
-        "hp": 47,
+        "hp": 50,
         "mp": 182,
-        "exp": 881,
-        "gp": 116,
+        "exp": 983,
+        "gp": 38,
         "lvl": 78,
         "class": "warrior",
         "points": 0,
@@ -20053,7 +19640,7 @@
       "inbox": {
         "optOut": false
       },
-      "loginIncentives": 393,
+      "loginIncentives": 395,
       "id": "eef709a8-3d8e-4faf-ba6a-92daff9e3759"
     }
   ]

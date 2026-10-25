@@ -12,17 +12,82 @@
     max-width: 430px;
     margin: 0 auto;
 }
+/* -----------------------------------
+   Memory: Kopfzeile an Kartenfeld anpassen
+   ----------------------------------- */
 
+#passages:has(#memoryTestBereich) #spielfeldKopf {
+    width: 100%;
+    max-width: 422px;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+}
+
+/* Ende Memory: Kopfzeile an Kartenfeld anpassen */
 /* -----------------------------------
    Memory: Spielstand und Zeit
    ----------------------------------- */
 
+/* -----------------------------------
+   Memory: Spielstand und Duell-Anzeige
+   ----------------------------------- */
+
 #memoryTestInfo {
-    display: flex;
-    justify-content: space-between;
-    padding: 5px 8px;
-    font-size: 14px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+
+    padding: 0 8px;
+    font-size: 17px;
+    line-height: 1.2;
 }
+
+/* Eigener Spieler links */
+
+#memorySpielerLinks {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-self: start;
+}
+
+/* Avatar-Platzhalter */
+
+#memorySpielerAvatar {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+
+    position: relative;
+    top: 10px;
+}
+
+/* Paare und Versuche nebeneinander */
+
+#memorySpielerWerte {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    white-space: nowrap;
+}
+
+/* Stoppuhr exakt mittig */
+
+#memoryZeitAnzeige {
+    justify-self: center;
+    white-space: nowrap;
+    font-weight: bold;
+}
+
+/* Platz für späteren Duellgegner */
+
+#memorySpielerRechts {
+    justify-self: end;
+}
+
+/* Ende Memory: Spielstand und Duell-Anzeige */
 
 /* -----------------------------------
    Memory: Kartenraster
@@ -195,6 +260,179 @@
 }
 
 /* Ende Memory - Zoom-Sichtfenster */
+/* =========================================================
+   MEMORY - FANTASY-STARTDIALOG
+   ========================================================= */
+
+/* Dunkler Hintergrund über dem Spielfeld */
+
+#memoryStartOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 12px;
+    box-sizing: border-box;
+
+    background: rgba(0, 0, 0, 0.75);
+}
+
+/* Dialogtafel mit Fantasy-Grafik */
+
+#memoryStartDialog {
+    position: relative;
+
+    width: min(900px, 96vw);
+    aspect-ratio: 900 / 550;
+
+    background-image:
+        url("Memory_Dialogtafel_900x550.webp");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+
+    color: #f5e7bf;
+    text-align: center;
+}
+
+/* Textbereich auf der Tafel */
+
+#memoryStartInhalt {
+    position: absolute;
+
+    top: 26%;
+    left: 14%;
+    width: 72%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+}
+
+#memoryStartTitel {
+    margin: 0;
+    color: #f8dc91;
+    font-size: clamp(20px, 3vw, 36px);
+}
+
+#memoryStartText {
+    margin: 0;
+    font-size: clamp(13px, 1.8vw, 21px);
+    line-height: 1.5;
+}
+
+/* Grafische Schaltflächen */
+
+#memoryStartButtons {
+    position: absolute;
+
+    bottom: 19%;
+    left: 17%;
+    width: 66%;
+
+    display: flex;
+    justify-content: center;
+    gap: 5%;
+}
+
+.memoryDialogButton {
+    width: 45%;
+    aspect-ratio: 260 / 90;
+
+    border: none;
+    padding: 0;
+
+    background: transparent;
+    cursor: pointer;
+}
+
+.memoryDialogButton img {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.memoryDialogButton:hover {
+    filter: brightness(1.2);
+}
+
+.memoryDialogButton:active {
+    transform: scale(0.97);
+}
+
+/* Ende MEMORY - FANTASY-STARTDIALOG */
+/* =========================================================
+   MEMORY - UNERWÜNSCHTE BEDIENEFFEKTE VERHINDERN
+   ========================================================= */
+
+/* Kopfzeilenbilder und Dialogbuttons */
+
+#spielfeldKopf img,
+.memoryDialogButton,
+.memoryDialogButton img {
+
+    -webkit-user-drag: none;
+    user-drag: none;
+
+    -webkit-user-select: none;
+    user-select: none;
+
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Gesamter Dialog: keine Textmarkierung */
+
+#memoryStartOverlay,
+#memoryStartDialog,
+#memoryStartInhalt {
+
+    -webkit-user-select: none;
+    user-select: none;
+
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Keine blauen Hervorhebungen auf Dialogbuttons */
+
+.memoryDialogButton:hover,
+.memoryDialogButton:focus,
+.memoryDialogButton:active {
+
+    outline: none;
+    box-shadow: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Bisherige Hover-Aufhellung abschalten */
+
+.memoryDialogButton:hover {
+    filter: none;
+}
+/* -----------------------------------
+   Memory: Blaue Button-Hintergründe verhindern
+   ----------------------------------- */
+
+#memoryStartOverlay .memoryDialogButton,
+#memoryStartOverlay .memoryDialogButton:hover,
+#memoryStartOverlay .memoryDialogButton:focus,
+#memoryStartOverlay .memoryDialogButton:active {
+
+    background: transparent !important;
+    background-color: transparent !important;
+
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Ende Memory: Blaue Button-Hintergründe verhindern */
+/* Ende MEMORY - UNERWÜNSCHTE BEDIENEFFEKTE VERHINDERN */
 /* =========================================================
    ENDE MEMORY - STYLESHEET
    ========================================================= */

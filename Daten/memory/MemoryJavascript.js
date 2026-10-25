@@ -43,6 +43,834 @@ let rueckseite = "Daten/Icons/SpielkartenIcon.png";
 const raster = document.getElementById("memoryTestRaster");
 const ladeanzeige = document.getElementById("memoryLadeanzeige");
 /* -----------------------------------
+   Memory: Eigenen Reservatsavatar anzeigen
+   ----------------------------------- */
+
+const memoryAvatarPlatz =
+    document.getElementById("memorySpielerAvatar");
+
+const memoryEigeneUid =
+    window.firebaseAuth?.currentUser?.uid;
+
+const memoryOriginalAvatar =
+    memoryEigeneUid
+        ? window.avatarNachUid?.[memoryEigeneUid]
+        : null;
+
+if (memoryAvatarPlatz && memoryOriginalAvatar) {
+
+    const memoryAvatarKopie =
+        document.createElement("canvas");
+
+    memoryAvatarKopie.width =
+        memoryOriginalAvatar.width;
+
+    memoryAvatarKopie.height =
+        memoryOriginalAvatar.height;
+
+    const memoryAvatarKontext =
+        memoryAvatarKopie.getContext("2d");
+
+    memoryAvatarKontext.drawImage(
+        memoryOriginalAvatar,
+        0,
+        0
+    );
+
+    memoryAvatarKopie.style.width = "100%";
+    memoryAvatarKopie.style.height = "100%";
+    memoryAvatarKopie.style.objectFit = "contain";
+
+    memoryAvatarPlatz.appendChild(memoryAvatarKopie);
+
+}
+
+/* Ende Memory: Eigenen Reservatsavatar anzeigen */
+/* -----------------------------------
+   Memory: Spielzeit vorbereiten
+   ----------------------------------- */
+
+const memoryZeitAnzeige =
+    document.getElementById("memoryZeitAnzeige");
+
+let memorySpielGestartet = false;
+let memoryStartzeit = 0;
+let memoryZeitIntervall = null;
+/* -----------------------------------
+   Memory: Spielabschluss merken
+   ----------------------------------- */
+
+let memorySpielAbgeschlossen = false;
+
+/* Ende Memory: Spielabschluss merken */
+/* -----------------------------------
+   Memory: Verlassen des Spiels steuern
+   ----------------------------------- */
+
+const memoryZurueckButton =
+    document.getElementById("memoryZurueckButton");
+
+if (memoryZurueckButton) {
+
+    memoryZurueckButton.addEventListener(
+        "click",
+        function () {
+
+		/* -----------------------------------
+		   Memory: Verlassen ohne Abbruchwarnung
+		   ----------------------------------- */
+
+		/* Noch nicht gestartet oder bereits gewonnen */
+
+		if (!memorySpielGestartet || memorySpielAbgeschlossen) {
+
+			SugarCube.Engine.play("Spielfeld");
+			return;
+
+		}
+
+/* Ende Memory: Verlassen ohne Abbruchwarnung */
+
+/* -----------------------------------
+   Memory: Laufende Runde verlassen
+   ----------------------------------- */
+
+memoryAbbruchDialogAnzeigen().then(function (beenden) {
+
+    /* Spieler möchte weiterspielen */
+
+    if (!beenden) {
+        return;
+    }
+
+    /* Spieler möchte die Runde beenden */
+
+    clearInterval(memoryZeitIntervall);
+    memoryZeitIntervall = null;
+
+    SugarCube.Engine.play("Spielfeld");
+
+});
+
+/* Ende Memory: Laufende Runde verlassen */
+
+        }
+    );
+
+}
+
+/* Ende Memory: Verlassen des Spiels steuern */
+
+function memoryZeitAktualisieren() {
+
+    if (!memorySpielGestartet || !raster.isConnected) {
+
+        clearInterval(memoryZeitIntervall);
+        memoryZeitIntervall = null;
+        return;
+
+    }
+
+    const vergangeneSekunden =
+        Math.floor(
+            (Date.now() - memoryStartzeit) / 1000
+        );
+
+    const minuten =
+        Math.floor(vergangeneSekunden / 60);
+
+    const sekunden =
+        vergangeneSekunden % 60;
+
+		if (memoryZeitAnzeige) {
+
+			memoryZeitAnzeige.textContent =
+				String(minuten).padStart(2, "0") +
+				":" +
+				String(sekunden).padStart(2, "0");
+
+		}
+
+} /* Ende memoryZeitAktualisieren */
+
+/* Ende Memory: Spielzeit vorbereiten */
+/* -----------------------------------
+   Memory: Fantasy-Startdialog anzeigen
+   ----------------------------------- */
+
+function memoryStartDialogAnzeigen() {
+
+    return new Promise(function (resolve) {
+
+        /* Dunklen Hintergrund erstellen */
+
+        const overlay = document.createElement("div");
+        overlay.id = "memoryStartOverlay";
+
+        /* Dialogtafel erstellen */
+
+        const dialog = document.createElement("div");
+        dialog.id = "memoryStartDialog";
+
+        /* Textbereich erstellen */
+
+        const inhalt = document.createElement("div");
+        inhalt.id = "memoryStartInhalt";
+
+        const titel = document.createElement("h2");
+        titel.id = "memoryStartTitel";
+        titel.textContent = "Das Memory beginnt!";
+
+        const beschreibung = document.createElement("p");
+        beschreibung.id = "memoryStartText";
+        beschreibung.textContent =
+            "Finde alle 15 Kartenpaare mit möglichst " +
+            "wenigen Versuchen und in möglichst kurzer Zeit. " +
+            "Bist du bereit?";
+
+        inhalt.appendChild(titel);
+        inhalt.appendChild(beschreibung);
+
+        /* Grafische Buttons erstellen */
+
+        const buttons = document.createElement("div");
+        buttons.id = "memoryStartButtons";
+
+function buttonErstellen(datei, beschriftung, ergebnis) {
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "memoryDialogButton";
+    button.setAttribute("aria-label", beschriftung);
+
+    const bild = document.createElement("img");
+    bild.src = "Daten/memory/" + datei;
+    bild.alt = beschriftung;
+    bild.draggable = false;
+
+    button.appendChild(bild);
+
+            button.addEventListener("click", async function () {
+
+                overlay.remove();
+                resolve(ergebnis);
+
+            }, { once: true });
+
+            return button;
+        }
+
+        buttons.appendChild(
+            buttonErstellen(
+                "Memory_Button_START_260x90.webp",
+                "Start",
+                true
+            )
+        );
+
+        buttons.appendChild(
+            buttonErstellen(
+                "Memory_Button_ABBRECHEN_260x90.webp",
+                "Abbrechen",
+                false
+            )
+        );
+
+        dialog.appendChild(inhalt);
+        dialog.appendChild(buttons);
+        overlay.appendChild(dialog);
+
+        document.body.appendChild(overlay);
+
+    });
+
+} /* Ende memoryStartDialogAnzeigen */
+
+/* Ende Memory: Fantasy-Startdialog anzeigen */
+/* -----------------------------------
+   Memory: Fantasy-Abbruchdialog anzeigen
+   ----------------------------------- */
+
+function memoryAbbruchDialogAnzeigen() {
+
+    return new Promise(function (resolve) {
+
+        /* Dunklen Hintergrund erstellen */
+
+        const overlay = document.createElement("div");
+        overlay.id = "memoryStartOverlay";
+
+        /* Vorhandene Fantasy-Tafel verwenden */
+
+        const dialog = document.createElement("div");
+        dialog.id = "memoryStartDialog";
+
+        /* Warnung anzeigen */
+
+        const inhalt = document.createElement("div");
+        inhalt.id = "memoryStartInhalt";
+
+        const titel = document.createElement("h2");
+        titel.id = "memoryStartTitel";
+        titel.textContent = "Memory verlassen?";
+
+        const beschreibung = document.createElement("p");
+        beschreibung.id = "memoryStartText";
+        beschreibung.textContent =
+            "Wenn du das Memory jetzt verlässt, " +
+            "wird deine laufende Runde abgebrochen. " +
+            "Dein Ergebnis wird nicht gespeichert.";
+
+        inhalt.appendChild(titel);
+        inhalt.appendChild(beschreibung);
+
+        /* Grafische Buttons erstellen */
+
+        const buttons = document.createElement("div");
+        buttons.id = "memoryStartButtons";
+
+        function buttonErstellen(datei, beschriftung, ergebnis) {
+
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "memoryDialogButton";
+            button.setAttribute("aria-label", beschriftung);
+
+            const bild = document.createElement("img");
+            bild.src = "Daten/memory/" + datei;
+            bild.alt = beschriftung;
+
+            button.appendChild(bild);
+
+            button.addEventListener("click", function () {
+
+                overlay.remove();
+                resolve(ergebnis);
+
+            }, { once: true });
+
+            return button;
+
+        } /* Ende buttonErstellen */
+
+        buttons.appendChild(
+            buttonErstellen(
+                "Memory_Button_Weiterspielen_260x90.webp",
+                "Weiterspielen",
+                false
+            )
+        );
+
+        buttons.appendChild(
+            buttonErstellen(
+                "Memory_Button_Beenden_260x90.webp",
+                "Beenden",
+                true
+            )
+        );
+
+        dialog.appendChild(inhalt);
+        dialog.appendChild(buttons);
+        overlay.appendChild(dialog);
+
+        document.body.appendChild(overlay);
+
+    });
+
+} /* Ende memoryAbbruchDialogAnzeigen */
+
+/* Ende Memory: Fantasy-Abbruchdialog anzeigen */
+/* -----------------------------------
+   Memory: Deutsche Kalenderzeiträume
+   ----------------------------------- */
+
+function memoryZeitraeumeErmitteln() {
+
+    /* Aktuelles Datum in Deutschland */
+
+    const teile = new Intl.DateTimeFormat(
+        "en-GB",
+        {
+            timeZone: "Europe/Berlin",
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit"
+        }
+    ).formatToParts(new Date());
+
+    const wert = function (typ) {
+        return teile.find(
+            teil => teil.type === typ
+        ).value;
+    };
+
+    const jahr = Number(wert("year"));
+    const monat = wert("month");
+    const tag = wert("day");
+
+    const datum =
+        jahr + "-" + monat + "-" + tag;
+
+    /* ISO-Kalenderwoche: Montag bis Sonntag */
+
+    const wochenDatum = new Date(
+        Date.UTC(jahr, Number(monat) - 1, Number(tag))
+    );
+
+    const wochentag =
+        wochenDatum.getUTCDay() || 7;
+
+    wochenDatum.setUTCDate(
+        wochenDatum.getUTCDate() + 4 - wochentag
+    );
+
+    const wochenJahr =
+        wochenDatum.getUTCFullYear();
+
+    const jahresanfang = new Date(
+        Date.UTC(wochenJahr, 0, 1)
+    );
+
+    const kalenderwoche = Math.ceil(
+        ((wochenDatum - jahresanfang) / 86400000 + 1) / 7
+    );
+
+    return {
+        heute: datum,
+        woche: wochenJahr + "-W" +
+            String(kalenderwoche).padStart(2, "0"),
+        monat: jahr + "-" + monat,
+        alltime: "alltime",
+        datum: datum
+    };
+
+} /* Ende memoryZeitraeumeErmitteln */
+/* -----------------------------------
+   Memory: Zwei Ergebnisse vergleichen
+   ----------------------------------- */
+
+function memoryErgebnisIstBesser(
+    neueVersuche,
+    neueZeit,
+    alterRekord
+) {
+
+    /* Noch kein Rekord vorhanden */
+
+    if (!alterRekord) {
+        return true;
+    }
+
+    /* Weniger Versuche sind besser */
+
+    if (neueVersuche < alterRekord.versuche) {
+        return true;
+    }
+
+    /* Bei Gleichstand entscheidet die Zeit */
+
+    if (
+        neueVersuche === alterRekord.versuche &&
+        neueZeit < alterRekord.zeitSekunden
+    ) {
+        return true;
+    }
+
+    return false;
+
+} /* Ende memoryErgebnisIstBesser */
+/* -----------------------------------
+   Memory: Neuen Rekord prüfen
+   ----------------------------------- */
+
+function memoryIstNeuerRekord(
+    neuerRekord,
+    alterRekord
+) {
+
+    /* Neuer Kalenderzeitraum oder erster Rekord */
+
+    if (
+        !alterRekord ||
+        neuerRekord.zeitraum !== alterRekord.zeitraum
+    ) {
+        return true;
+    }
+
+    /* Innerhalb desselben Zeitraums vergleichen */
+
+    return memoryErgebnisIstBesser(
+        neuerRekord.versuche,
+        neuerRekord.zeitSekunden,
+        alterRekord
+    );
+
+} /* Ende memoryIstNeuerRekord */
+/* -----------------------------------
+   Memory: Einzelnen Bestwert speichern
+   ----------------------------------- */
+
+async function memoryBestwertSpeichern(
+    uid,
+    bereich,
+    neuerRekord
+) {
+
+    /* Speicherort des Bestwerts */
+
+    const rekordRef = window.firebaseRef(
+        window.firebaseDatabase,
+        "spieler/" + uid +
+        "/extern/taten/memory-single/bestwerte/" +
+        bereich
+    );
+
+    /* Rekord sicher vergleichen und speichern */
+
+    const ergebnis = await window.firebaseRunTransaction(
+        rekordRef,
+        function (alterRekord) {
+
+            if (
+                memoryIstNeuerRekord(
+                    neuerRekord,
+                    alterRekord
+                )
+            ) {
+                return neuerRekord;
+            }
+
+            /* Kein neuer Rekord: nichts verändern */
+
+            return undefined;
+        }
+    );
+
+    /* Zurückmelden, ob gespeichert wurde */
+
+    return ergebnis.committed;
+
+} /* Ende memoryBestwertSpeichern */
+/* -----------------------------------
+   Memory: Alle Bestwerte speichern
+   ----------------------------------- */
+
+async function memoryAlleBestwerteSpeichern(
+    uid,
+    versuche,
+    spielzeit
+) {
+
+    /* Deutsche Kalenderzeiträume bestimmen */
+
+    const zeitraeume = memoryZeitraeumeErmitteln();
+
+    /* Reihenfolge: Wichtigster Rekord zuerst */
+
+    const bereiche = [
+        "alltime",
+        "monat",
+        "woche",
+        "heute"
+    ];
+
+    const neueRekorde = [];
+
+    /* Jeden Zeitraum einzeln prüfen */
+
+    for (const bereich of bereiche) {
+
+        const neuerRekord = {
+            versuche: versuche,
+            zeitSekunden: spielzeit,
+            datum: zeitraeume.datum,
+            zeitraum: zeitraeume[bereich]
+        };
+
+        const gespeichert = await memoryBestwertSpeichern(
+            uid,
+            bereich,
+            neuerRekord
+        );
+
+        if (gespeichert) {
+            neueRekorde.push(bereich);
+        }
+    }
+
+    /* Liste der tatsächlich übernommenen Rekorde */
+
+    return neueRekorde;
+
+} /* Ende memoryAlleBestwerteSpeichern */
+/* -----------------------------------
+   Memory: Ergebnistext bestimmen
+   ----------------------------------- */
+
+function memoryErgebnistextBestimmen(neueRekorde) {
+
+    /* Wichtigsten erreichten Rekord anzeigen */
+
+    if (neueRekorde.includes("alltime")) {
+        return "Neuer persönlicher Allzeitrekord!";
+    }
+
+    if (neueRekorde.includes("monat")) {
+        return "Neuer persönlicher Monatsrekord!";
+    }
+
+    if (neueRekorde.includes("woche")) {
+        return "Neuer persönlicher Wochenrekord!";
+    }
+
+    if (neueRekorde.includes("heute")) {
+        return "Neuer persönlicher Tagesrekord!";
+    }
+
+    /* Kein neuer Rekord */
+
+    return "Dein Ergebnis wurde gespeichert.";
+
+} /* Ende memoryErgebnistextBestimmen */
+/* -----------------------------------
+   Memory: Ergebnisdialog anzeigen
+   ----------------------------------- */
+
+function memoryErgebnisDialogAnzeigen(meldung) {
+
+    /* Dunklen Hintergrund erstellen */
+
+    const overlay = document.createElement("div");
+    overlay.id = "memoryStartOverlay";
+
+    /* Vorhandene Fantasy-Tafel verwenden */
+
+    const dialog = document.createElement("div");
+    dialog.id = "memoryStartDialog";
+
+    const inhalt = document.createElement("div");
+    inhalt.id = "memoryStartInhalt";
+
+    /* Überschrift */
+
+    const titel = document.createElement("h2");
+    titel.id = "memoryStartTitel";
+    titel.textContent = "Dein Memory-Ergebnis";
+
+    /* Ergebnisnachricht */
+
+    const beschreibung = document.createElement("p");
+    beschreibung.id = "memoryStartText";
+    beschreibung.textContent = meldung;
+
+    inhalt.appendChild(titel);
+    inhalt.appendChild(beschreibung);
+
+    /* BEENDEN-Button */
+
+    const buttons = document.createElement("div");
+    buttons.id = "memoryStartButtons";
+
+const button = document.createElement("button");
+button.type = "button";
+button.className = "memoryDialogButton";
+button.setAttribute("aria-label", "Beenden");
+
+const bild = document.createElement("img");
+bild.src = "Daten/memory/Memory_Button_Beenden_260x90.webp";
+bild.alt = "Beenden";
+bild.draggable = false;
+
+button.appendChild(bild);
+
+    button.addEventListener("click", function () {
+
+        button.disabled = true;
+        overlay.remove();
+
+        /* Zurück ins Reservat */
+
+        SugarCube.Engine.play("Spielfeld");
+
+    }, { once: true });
+
+    buttons.appendChild(button);
+
+    /* Dialog zusammensetzen */
+
+    dialog.appendChild(inhalt);
+    dialog.appendChild(buttons);
+    overlay.appendChild(dialog);
+
+    document.body.appendChild(overlay);
+
+} /* Ende memoryErgebnisDialogAnzeigen */
+/* -----------------------------------
+   Memory: Fantasy-Gewinnmeldung anzeigen
+   ----------------------------------- */
+
+function memoryGewinnDialogAnzeigen(versuche, spielzeit) {
+
+    /* Dunklen Hintergrund erstellen */
+
+    const overlay = document.createElement("div");
+    overlay.id = "memoryStartOverlay";
+
+    /* Vorhandene Fantasy-Tafel verwenden */
+
+    const dialog = document.createElement("div");
+    dialog.id = "memoryStartDialog";
+
+    /* Glückwunsch und Ergebnis */
+
+    const inhalt = document.createElement("div");
+    inhalt.id = "memoryStartInhalt";
+
+    const titel = document.createElement("h2");
+    titel.id = "memoryStartTitel";
+    titel.textContent = "Hurra! Geschafft!";
+
+    const beschreibung = document.createElement("p");
+    beschreibung.id = "memoryStartText";
+
+    const minuten = Math.floor(spielzeit / 60);
+    const sekunden = spielzeit % 60;
+
+    const zeittext =
+        String(minuten).padStart(2, "0") +
+        ":" +
+        String(sekunden).padStart(2, "0");
+
+    beschreibung.textContent =
+        "Du hast alle 15 Paare gefunden! " +
+        "Benötigte Versuche: " + versuche +
+        " | Spielzeit: " + zeittext;
+
+    inhalt.appendChild(titel);
+    inhalt.appendChild(beschreibung);
+
+    /* HURRA-Button erstellen */
+
+    const buttons = document.createElement("div");
+    buttons.id = "memoryStartButtons";
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "memoryDialogButton";
+    button.setAttribute("aria-label", "Hurra");
+
+    const bild = document.createElement("img");
+    bild.src =
+        "Daten/memory/Memory_Button_Hurra_260x90.webp";
+    bild.alt = "Hurra";
+    bild.draggable = false;
+
+    button.appendChild(bild);
+
+	button.addEventListener("click", async function () {
+
+    /* Mehrfachklick verhindern */
+
+    button.disabled = true;
+
+    overlay.remove();
+
+    /* -----------------------------------
+       Memory: Abgeschlossenes Spiel zählen
+       ----------------------------------- */
+
+    try {
+
+        const uid = window.firebaseAuth.currentUser.uid;
+
+        const zaehlerRef = window.firebaseRef(
+            window.firebaseDatabase,
+            "spieler/" + uid +
+            "/extern/taten/memory-single/spieleBeendet"
+        );
+/* -----------------------------------
+   Memory: Abgeschlossene Spiele erhöhen
+   ----------------------------------- */
+
+await window.firebaseRunTransaction(
+    zaehlerRef,
+    function (bisher) {
+        return (bisher || 0) + 1;
+    }
+);
+
+/* Ende Memory: Abgeschlossene Spiele erhöhen */
+/* -----------------------------------
+   Memory: Letztes Spiel speichern
+   ----------------------------------- */
+
+const letztesSpielRef = window.firebaseRef(
+    window.firebaseDatabase,
+    "spieler/" + uid +
+    "/extern/taten/memory-single/letztesSpiel"
+);
+
+await window.firebaseSet(
+    letztesSpielRef,
+    Date.now()
+);
+
+/* Ende Memory: Letztes Spiel speichern */
+/* -----------------------------------
+   Memory: Vier Bestwerte speichern
+   ----------------------------------- */
+
+const neueRekorde = await memoryAlleBestwerteSpeichern(
+    uid,
+    versuche,
+    spielzeit
+);
+
+/* Ergebnistext für den zweiten Dialog bestimmen */
+
+const meldung = memoryErgebnistextBestimmen(
+    neueRekorde
+);
+
+/* Zweiten Ergebnisdialog anzeigen */
+
+memoryErgebnisDialogAnzeigen(meldung);
+
+/* Ende Memory: Vier Bestwerte speichern */
+
+    } catch (fehler) {
+
+        console.error(
+            "Memory: Spielabschluss konnte nicht gespeichert werden.",
+            fehler
+        );
+
+        /* Auch bei Fehler einen Abschluss ermöglichen */
+
+        memoryErgebnisDialogAnzeigen(
+            "Konnte nicht gespeichert werden."
+        );
+
+    }
+
+    /* Ende Memory: Abgeschlossenes Spiel zählen */
+
+}, { once: true });
+
+    buttons.appendChild(button);
+
+    /* Dialog zusammensetzen */
+
+    dialog.appendChild(inhalt);
+    dialog.appendChild(buttons);
+    overlay.appendChild(dialog);
+
+    document.body.appendChild(overlay);
+
+} /* Ende memoryGewinnDialogAnzeigen */
+
+/* Ende Memory: Fantasy-Gewinnmeldung anzeigen */
+/* -----------------------------------
    Memory: Zoomzustand
    ----------------------------------- */
 
@@ -704,6 +1532,13 @@ const pfade = dateien.map(function (dateiname) {
 let aufgedeckteKarten = 0;
 let ersteKarte = null;
 /* -----------------------------------
+   Memory: Spielversuche zählen
+   ----------------------------------- */
+
+let memoryVersuche = 0;
+
+/* Ende Memory: Spielversuche zählen */
+/* -----------------------------------
    Memory: Gefundene Paare zählen
    ----------------------------------- */
 
@@ -805,7 +1640,70 @@ vorderbild.src =
         if (karte.classList.contains("aufgedeckt")) {
             return;
         }
+/* -----------------------------------
+   Memory: Spiel beim ersten Klick starten
+   ----------------------------------- */
 
+if (!memorySpielGestartet) {
+
+const bestaetigt =
+    await memoryStartDialogAnzeigen();
+
+    if (!bestaetigt) {
+        return;
+    }
+
+    memorySpielGestartet = true;
+	/* -----------------------------------
+   Memory: Spielbeginn in Firebase zählen
+   ----------------------------------- */
+
+try {
+
+    const uid = window.firebaseAuth.currentUser.uid;
+
+    const zaehlerRef = window.firebaseRef(
+        window.firebaseDatabase,
+        "spieler/" + uid +
+        "/extern/taten/memory-single/spieleBegonnen"
+    );
+
+    window.firebaseRunTransaction(
+        zaehlerRef,
+        function (bisher) {
+            return (bisher || 0) + 1;
+        }
+    ).catch(function (fehler) {
+
+        console.error(
+            "Memory: Spielbeginn konnte nicht gespeichert werden.",
+            fehler
+        );
+
+    });
+
+} catch (fehler) {
+
+    console.error(
+        "Memory: Spielbeginn konnte nicht gespeichert werden.",
+        fehler
+    );
+
+}
+
+/* Ende Memory: Spielbeginn in Firebase zählen */
+    memoryStartzeit = Date.now();
+
+    memoryZeitAktualisieren();
+
+    memoryZeitIntervall = setInterval(
+        memoryZeitAktualisieren,
+        250
+    );
+
+}
+
+/* Ende Memory: Spiel beim ersten Klick starten */
         /* Karte wenden */
 
         karte.classList.add("aufgedeckt");
@@ -821,6 +1719,22 @@ vorderbild.src =
         /* Zweite Karte merken */
 
         const zweiteKarte = karte;
+		/* -----------------------------------
+		   Memory: Versuch zählen
+		   ----------------------------------- */
+
+		memoryVersuche++;
+
+		/* Versuchszahl in der Anzeige aktualisieren */
+
+		const versucheAnzeige =
+			document.getElementById("memoryVersucheAnzeige");
+
+		if (versucheAnzeige) {
+			versucheAnzeige.textContent = memoryVersuche;
+		}
+
+		/* Ende Memory: Versuch zählen */
 
         /* Aufdeckanimation abwarten: 0,4 Sekunden */
 
@@ -849,12 +1763,63 @@ vorderbild.src =
 
             gefundenePaare++;
 
-            if (paareAnzeige) {
-                paareAnzeige.textContent =
-                    "Paare: " + gefundenePaare + " / 15";
-            }
+		if (paareAnzeige) {
+			paareAnzeige.textContent =
+				gefundenePaare + "/15";
+		}
 
             /* Ende Paarzähler aktualisieren */
+			/* -----------------------------------
+   Memory: Spielende erkennen
+   ----------------------------------- */
+
+if (gefundenePaare === 15) {
+	    /* Runde erfolgreich abgeschlossen */
+
+    memorySpielAbgeschlossen = true;
+
+    /* Endgültige Spielzeit festhalten */
+
+    const memoryEndzeit = Date.now();
+
+    const memorySpielzeitSekunden =
+        Math.floor(
+            (memoryEndzeit - memoryStartzeit) / 1000
+        );
+
+    /* Stoppuhr anhalten */
+
+    clearInterval(memoryZeitIntervall);
+    memoryZeitIntervall = null;
+
+    /* Letzten Zeitstand anzeigen */
+
+    const minuten =
+        Math.floor(memorySpielzeitSekunden / 60);
+
+    const sekunden =
+        memorySpielzeitSekunden % 60;
+
+    if (memoryZeitAnzeige) {
+
+        memoryZeitAnzeige.textContent =
+            String(minuten).padStart(2, "0") +
+            ":" +
+            String(sekunden).padStart(2, "0");
+
+    }
+
+    /* Ergebnis vorerst zur Kontrolle ausgeben */
+
+    console.log(
+        "Memory geschafft!",
+        "Versuche:", memoryVersuche,
+        "Zeit:", memorySpielzeitSekunden, "Sekunden"
+    );
+
+}
+
+/* Ende Memory: Spielende erkennen */
 		/* Beide Karten bleiben 1,5 Sekunden leuchtend sichtbar */
 
 		await new Promise(function (resolve) {
@@ -900,7 +1865,25 @@ vorderbild.src =
 		aufgedeckteKarten = 0;
 
 		/* Ende gefundenes Paar verschwinden lassen */
+/* -----------------------------------
+   Memory: Gewinnmeldung nach Animation
+   ----------------------------------- */
 
+if (memorySpielAbgeschlossen) {
+
+    memoryGewinnDialogAnzeigen(
+        memoryVersuche,
+        Number(
+            memoryZeitAnzeige.textContent.split(":")[0]
+        ) * 60 +
+        Number(
+            memoryZeitAnzeige.textContent.split(":")[1]
+        )
+    );
+
+}
+
+/* Ende Memory: Gewinnmeldung nach Animation */
 		return;
         }
 

@@ -710,7 +710,22 @@ button.appendChild(bild);
    ----------------------------------- */
 
 function memoryGewinnDialogAnzeigen(versuche, spielzeit) {
+/* -----------------------------------
+   Memory: Applaus bei Spielgewinn
+   ----------------------------------- */
 
+if (
+    typeof window.reservatSoundAbspielen === "function"
+) {
+
+    window.reservatSoundAbspielen(
+        "Daten/Sounds/Memory/applaus-5sek.mp3",
+        0.3
+    );
+
+}
+
+/* Ende Memory: Applaus bei Spielgewinn */
     /* Dunklen Hintergrund erstellen */
 
     const overlay = document.createElement("div");
@@ -831,6 +846,24 @@ const neueRekorde = await memoryAlleBestwerteSpeichern(
 const meldung = memoryErgebnistextBestimmen(
     neueRekorde
 );
+
+/* -----------------------------------
+   Memory: Applaus bei neuem Rekord
+   ----------------------------------- */
+
+if (
+    neueRekorde.length > 0 &&
+    typeof window.reservatSoundAbspielen === "function"
+) {
+
+    window.reservatSoundAbspielen(
+        "Daten/Sounds/Memory/applaus-7sek.mp3",
+        0.3
+    );
+
+}
+
+/* Ende Memory: Applaus bei neuem Rekord */
 
 /* Zweiten Ergebnisdialog anzeigen */
 
@@ -1822,9 +1855,33 @@ if (gefundenePaare === 15) {
 /* Ende Memory: Spielende erkennen */
 		/* Beide Karten bleiben 1,5 Sekunden leuchtend sichtbar */
 
-		await new Promise(function (resolve) {
-			setTimeout(resolve, 1500);
-		});
+/* -----------------------------------
+   Memory: Positives Pling nach 750 ms
+   ----------------------------------- */
+
+await new Promise(function (resolve) {
+
+    setTimeout(function () {
+
+        if (
+            raster.isConnected &&
+            typeof window.reservatSoundAbspielen === "function"
+        ) {
+
+            window.reservatSoundAbspielen(
+                "Daten/Sounds/Memory/paar-pling.mp3",
+                0.3
+            );
+
+        }
+
+    }, 750);
+
+    setTimeout(resolve, 1500);
+
+});
+
+/* Ende Memory: Positives Pling */
 
 		/* Memory inzwischen verlassen? */
 
@@ -1895,9 +1952,33 @@ if (memorySpielAbgeschlossen) {
 
         /* 1,5 Sekunden Betrachtungszeit */
 
-        await new Promise(function (resolve) {
-            setTimeout(resolve, 1500);
-        });
+/* -----------------------------------
+   Memory: Negatives Pling nach 750 ms
+   ----------------------------------- */
+
+await new Promise(function (resolve) {
+
+    setTimeout(function () {
+
+        if (
+            raster.isConnected &&
+            typeof window.reservatSoundAbspielen === "function"
+        ) {
+
+            window.reservatSoundAbspielen(
+                "Daten/Sounds/Memory/paar-fail.mp3",
+                0.3
+            );
+
+        }
+
+    }, 750);
+
+    setTimeout(resolve, 1500);
+
+});
+
+/* Ende Memory: Negatives Pling */
 
         if (!raster.isConnected) {
             return;

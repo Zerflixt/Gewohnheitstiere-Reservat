@@ -105,9 +105,27 @@
 
 @media (orientation: landscape) {
 
-    #memoryTestBereich {
-        max-width: 1000px;
-    }
+    /* -----------------------------------
+       Memory: Spielfeld an Bildschirmhöhe anpassen
+       ----------------------------------- */
+
+#memoryTestBereich {
+    width: min(
+        calc(100% - 64px),
+        calc((100dvh - 85px) * 50 / 21)
+    );
+
+    max-width: 1000px;
+
+    /* Im Bereich links von der Symbolleiste zentrieren */
+    margin-left: max(
+        0px,
+        calc((100% - 64px - min(100% - 64px, (100dvh - 85px) * 50 / 21)) / 2)
+    );
+    margin-right: 64px;
+}
+
+    /* Ende Memory: Spielfeld an Bildschirmhöhe anpassen */
 
     #memoryTestRaster {
         grid-template-columns: repeat(10, minmax(0, 1fr));
@@ -120,6 +138,66 @@
 }
 
 /* Ende Memory: Kartenraster im Querformat */
+/* -----------------------------------
+   Memory: Senkrechte Kopfzeile im Querformat
+   ----------------------------------- */
+
+@media (orientation: landscape) {
+
+    /* Memory-Titel ausblenden */
+
+    #passages:has(#memoryTestBereich) #kartenName {
+        display: none;
+    }
+
+    /* Kopfzeile rechts neben das Spielfeld setzen */
+
+    #passages:has(#memoryTestBereich) #spielfeldKopf {
+        position: absolute;
+        top: 0;
+        right: 0;
+
+        width: 52px;
+		/* Rahmen über die verfügbare Spielfeldhöhe */
+		height: calc(100dvh - 24px);
+		box-sizing: border-box;
+		align-items: flex-start;
+        max-width: 52px;
+
+        margin: 0;
+        padding: 4px 2px;
+    }
+
+    /* Symbole senkrecht anordnen */
+
+    #passages:has(#memoryTestBereich) #kopfSymbole {
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        gap: 4px;
+    }
+
+    /* Reihenfolge von oben nach unten */
+
+    #memoryZurueckButton {
+        order: 1;
+    }
+
+    #vollbildButton {
+        order: 2;
+    }
+
+    #soundButton {
+        order: 3;
+    }
+
+    #firebaseVerbindungsstatus {
+        order: 4;
+    }
+
+}
+
+/* Ende Memory: Senkrechte Kopfzeile im Querformat */
 /* -----------------------------------
    Memory: Einzelne Spielkarte
    ----------------------------------- */

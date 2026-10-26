@@ -1,6 +1,12 @@
 {
     "eintraege": [
 		{
+            "version": "0.414",
+            "datum": "2026-10-26",
+            "titel": "Sounds bei Memory",
+            "text": "Anna-Nas hat tolle Soundeffekte gefunden, die nun das Memory Spiel akustisch aufwerten :) Danke!"
+        },
+		{
             "version": "0.413",
             "datum": "2026-10-25",
             "titel": "Tiertreff und Memory",

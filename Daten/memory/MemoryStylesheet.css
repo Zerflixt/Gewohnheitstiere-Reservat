@@ -99,7 +99,27 @@
     gap: 3px;
     padding: 3px;
 }
+/* -----------------------------------
+   Memory: Kartenraster im Querformat
+   ----------------------------------- */
 
+@media (orientation: landscape) {
+
+    #memoryTestBereich {
+        max-width: 1000px;
+    }
+
+    #memoryTestRaster {
+        grid-template-columns: repeat(10, minmax(0, 1fr));
+    }
+
+    #passages:has(#memoryTestBereich) #spielfeldKopf {
+        max-width: 992px;
+    }
+
+}
+
+/* Ende Memory: Kartenraster im Querformat */
 /* -----------------------------------
    Memory: Einzelne Spielkarte
    ----------------------------------- */

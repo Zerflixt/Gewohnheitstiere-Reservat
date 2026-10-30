@@ -1,6 +1,12 @@
 {
     "eintraege": [
 		{
+            "version": "0.419",
+            "datum": "2026-10-30",
+            "titel": "Halloween Karten",
+            "text": "Die Kartenansicht sollte jetzt die Halloween Karten zeigen."
+        },
+		{
             "version": "0.418",
             "datum": "2026-10-26",
             "titel": "Rangliste Memory",

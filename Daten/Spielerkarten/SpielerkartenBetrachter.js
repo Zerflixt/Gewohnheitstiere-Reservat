@@ -24,19 +24,19 @@ window.spielerkarteAdresseErmitteln =
                 "_"
             );
 
-        let dateiname =
-            "2026-10-10_WaS025_" +
-            sichererName +
-            ".png";
+		let dateiname =
+			"2026-10-30_Halloween_" +
+			sichererName +
+			".png";
 
-        /* -----------------------------------
-        GitHub-Adresse zusammensetzen
-        ----------------------------------- */
+		/* -----------------------------------
+		GitHub-Adresse zusammensetzen
+		----------------------------------- */
 
-        let basisAdresse =
-            "https://zerflixt.github.io/" +
-            "Wild-am-Sonntag-25/" +
-            "2026-10-10_WaS025_Karten/";
+		let basisAdresse =
+			"https://zerflixt.github.io/" +
+			"Wild-am-Sonntag-25/" +
+			"2026-10-31_Halloween_Karten/";
 
         return (
             basisAdresse +

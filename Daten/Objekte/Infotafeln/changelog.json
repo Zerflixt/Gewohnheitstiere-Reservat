@@ -1,6 +1,12 @@
 {
     "eintraege": [
 		{
+            "version": "0.420",
+            "datum": "2026-11-08",
+            "titel": "W.a.S. 26 Karten",
+            "text": "Die Spielerkarten sowie den Schnappschuss aktualisiert. Avatare und Karten sind nun Stand 07.11.2026"
+        },
+		{
             "version": "0.419",
             "datum": "2026-10-30",
             "titel": "Halloween Karten",

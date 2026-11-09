@@ -78,6 +78,28 @@ function () {
     ) {
         window.kartenGrafikAktualisieren();
     }
+	
+    /* -----------------------------------
+    Objektgrafiken und Hervorhebungen
+    beim Tageszeitwechsel aktualisieren
+    ----------------------------------- */
+
+    if (
+        typeof window.npcGrafikenAktualisieren ===
+        "function"
+    ) {
+        window.npcGrafikenAktualisieren();
+    }
+
+    if (
+        typeof window.kontextAktionAktualisieren ===
+        "function"
+    ) {
+        window.kontextAktionAktualisieren();
+    }
+
+    /* Ende Objektgrafiken aktualisieren */
+
     /* -----------------------------------
     Umgebungsgeräusche aktualisieren
     ----------------------------------- */

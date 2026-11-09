@@ -1,0 +1,160 @@
+
+/* =========================================================
+   ZEITUNGSKISTE – DIALOG
+   Darstellung über dem Reservat-Spielfeld
+   ========================================================= */
+
+/* Dialogebene über dem Spielfeld */
+
+#zeitungskisteDialog {
+    position: absolute;
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    z-index: 1200;
+    container-type: inline-size;
+}
+
+/* -----------------------------------
+Große Zeitungskiste hinter der Dialogtafel
+----------------------------------- */
+
+#zeitungskisteGross {
+    position: absolute;
+
+    left: 50%;
+    top: 2%;
+    transform: translateX(-50%);
+
+    width: 65%;
+    height: 70%;
+
+    object-fit: contain;
+
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Ende große Zeitungskiste */
+
+/* Dialogtafel als gemeinsame Bezugsfläche */
+
+
+/* -----------------------------------
+Dialogtafel im unteren Spielfeldbereich
+----------------------------------- */
+
+#zeitungskisteTafel {
+    position: absolute;
+
+    left: 5%;
+    bottom: 5%;
+
+    width: 90%;
+    aspect-ratio: 3 / 2;
+
+    z-index: 2;
+
+    background-image: url("Dialogtafel.webp");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+}
+
+/* Ende Dialogtafel-Positionierung */
+
+
+/* Textbereich auf der Dialogtafel */
+
+#zeitungskisteText {
+    position: absolute;
+
+    left: 15%;
+    top: 23%;
+    width: 70%;
+    height: 35%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #f8e7b5;
+    font-size: clamp(12px, 3cqw, 22px);
+    line-height: 1.35;
+    text-align: center;
+
+    text-shadow: 1px 2px 3px #000;
+}
+
+/* Gemeinsame Darstellung der Grafikbuttons */
+
+.zeitungskisteButton {
+    position: absolute;
+
+    bottom: 12%;
+    width: 32%;
+    height: 16%;
+
+    padding: 0;
+    margin: 0;
+
+    border: none;
+    background: transparent;
+    box-shadow: none;
+
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.zeitungskisteButton img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+}
+
+/* Linker Button: Abbrechen */
+
+#zeitungskisteAbbrechen {
+    left: 15%;
+}
+
+/* Rechter Button: Ja, gerne! */
+
+#zeitungskisteJa {
+    right: 15%;
+}
+
+/* Deaktivierter Ja-Button */
+
+#zeitungskisteJa:disabled {
+    opacity: 0;
+    filter: grayscale(100%);
+    cursor: default;
+}
+
+/* -----------------------------------
+Zeitungskiste – Standard-Button-Effekte
+von SugarCube unterdrücken
+----------------------------------- */
+
+#zeitungskisteDialog .zeitungskisteButton,
+#zeitungskisteDialog .zeitungskisteButton:hover,
+#zeitungskisteDialog .zeitungskisteButton:focus,
+#zeitungskisteDialog .zeitungskisteButton:active {
+    background: transparent;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    transform: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Ende Standard-Button-Effekte */
+
+/* Ende Zeitungskiste – Dialog */

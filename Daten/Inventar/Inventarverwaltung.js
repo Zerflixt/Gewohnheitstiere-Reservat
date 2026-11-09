@@ -205,6 +205,124 @@ async function () {
 }; /* Ende inventarZeitung25Hinzufuegen */
 
 /* Ende Inventar - Zeitung 25 hinzufügen */
+
+/* =========================================================
+INVENTAR – ZEITUNG ALLGEMEIN HINZUFÜGEN
+
+Speichert eine Zeitung im Inventar.
+
+Parameter:
+ausgabe = positive ganzzahlige Ausgabennummer
+quelle  = "traudel" oder "zeitungskiste"
+
+Rückgabe:
+true  = erfolgreich hinzugefügt
+false = bereits vorhanden oder Fehler
+========================================================= */
+
+window.inventarZeitungHinzufuegen =
+async function (ausgabe, quelle) {
+
+    /* Eingaben prüfen */
+
+    if (
+        !Number.isSafeInteger(ausgabe) ||
+        ausgabe < 1 ||
+        !["traudel", "zeitungskiste"].includes(quelle)
+    ) {
+
+        console.error(
+            "Zeitungsvergabe: Ungültige Ausgabe oder Quelle.",
+            ausgabe,
+            quelle
+        );
+
+        return false;
+    }
+
+    /* Angemeldeten Spieler ermitteln */
+
+    const user = window.firebaseAuth?.currentUser;
+
+    if (!user) {
+
+        console.error(
+            "Zeitungsvergabe: Kein Spieler angemeldet."
+        );
+
+        return false;
+    }
+
+    /* Vorhandenen Besitz prüfen */
+
+    const besitzt =
+        await window.inventarGegenstandBesitzt(
+            "zeitungen",
+            String(ausgabe)
+        );
+
+    if (besitzt !== false) {
+
+        if (besitzt === true) {
+
+            console.info(
+                "Ausgabe " + ausgabe +
+                " ist bereits im Inventar."
+            );
+
+        } else {
+
+            console.error(
+                "Zeitungsvergabe: Besitzprüfung fehlgeschlagen."
+            );
+
+        }
+
+        return false;
+    }
+
+    /* Speicherpfad bestimmen */
+
+    const zeitungRef = window.firebaseRef(
+        window.firebaseDatabase,
+        "spieler/" + user.uid +
+        "/intern/inventar/zeitungen/" + ausgabe
+    );
+
+    /* Zeitung speichern */
+
+    try {
+
+        await window.firebaseSet(
+            zeitungRef,
+            {
+                erhaltenAm: Date.now(),
+                quelle: quelle
+            }
+        );
+
+        console.info(
+            "Ausgabe " + ausgabe +
+            " erfolgreich erhalten."
+        );
+
+        return true;
+
+    } catch (fehler) {
+
+        console.error(
+            "Zeitungsvergabe fehlgeschlagen:",
+            fehler
+        );
+
+        return false;
+    }
+
+}; /* Ende inventarZeitungHinzufuegen */
+
+/* Ende allgemeine Zeitungsvergabe */
+
+
 /* =========================================================
 INVENTAR - ZEITUNG 25 SPENDEN
 

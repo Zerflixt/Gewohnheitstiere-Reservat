@@ -779,7 +779,63 @@ Links oben unter dem Spielfeld
 
     z-index: 5;
 }
+/* =========================================
+   ZEITUNG 26 – SCHNELLZUGRIFF
+   Gleiche Darstellung wie Ausgabe 25
+   ========================================= */
 
+#zeitung26Button {
+    width: 64px;
+    height: 64px;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#zeitung26Button img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+    user-select: none;
+}
+
+#zeitung26Button:hover,
+#zeitung26Button:focus,
+#zeitung26Button:active {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+#zeitung26Button:active img {
+    filter:
+        drop-shadow(0 0 4px white)
+        drop-shadow(0 0 8px gold);
+}
+
+/* Ausgabe 26 – zunächst nicht erhalten */
+
+#zeitung26Button img {
+    filter: grayscale(100%);
+    opacity: 0.35;
+}
+
+/* Ausgabe 26 – erhalten */
+
+#zeitung26Button.erhalten img {
+    filter: none;
+    opacity: 1;
+}
+
+/* Ende Zeitung 26 – Schnellzugriff */
 /* -----------------------------------
 Zeitungssymbol
 ----------------------------------- */
@@ -2380,7 +2436,7 @@ cursor: pointer;
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.421";
+window.multiplayerTestVersion = "0.435";
 
 /* Ende Testversion */
 /* =========================================================
@@ -2429,7 +2485,7 @@ ZENTRALE TAGESZEITSTEUERUNG LADEN
 
 window.reservatTageszeitGeladen =
     importScripts(
-        "Daten/Systeme/ReservatTageszeit.js?v=2"
+        "Daten/Systeme/ReservatTageszeit.js?v=3"
     );
 
 /* Ende zentrale Tageszeitsteuerung laden */
@@ -2453,6 +2509,28 @@ window.infotafelnGeladen =
     );
 
 /* Ende Informationsobjekte laden */
+/* =========================================================
+ZEITUNGSKISTE – STYLESHEET LADEN
+========================================================= */
+
+window.zeitungskisteCssGeladen =
+    importStyles(
+        "Daten/Objekte/Kisten/Zeitungskiste/Zeitungskiste.css?v=2"
+    );
+
+/* Ende Zeitungskiste – Stylesheet laden */
+
+/* =========================================================
+ZEITUNGSKISTE – JAVASCRIPT LADEN
+========================================================= */
+
+window.zeitungskisteJavascriptGeladen =
+    importScripts(
+        "Daten/Objekte/Kisten/Zeitungskiste/Zeitungskiste.js?v=3"
+    );
+
+/* Ende Zeitungskiste – JavaScript laden */
+
 
 /* =========================================================
 INVENTARVERWALTUNG LADEN
@@ -2460,7 +2538,7 @@ INVENTARVERWALTUNG LADEN
 
 window.inventarverwaltungGeladen =
     importScripts(
-        "Daten/Inventar/Inventarverwaltung.js?v=2"
+        "Daten/Inventar/Inventarverwaltung.js?v=3"
     );
 
 /* Ende Inventarverwaltung laden */
@@ -2914,15 +2992,16 @@ function () {
             function (sonderfeld) {
 
 				return (
-					(
-						sonderfeld.typ === "npc_dialog" ||
-						sonderfeld.typ === "info_objekt"
-					) &&
-					Array.isArray(
-						sonderfeld.position
-					) &&
-					sonderfeld.grafik
-				);
+						(
+							sonderfeld.typ === "npc_dialog" ||
+							sonderfeld.typ === "info_objekt" ||
+							sonderfeld.typ === "zeitungskiste"
+						) &&
+						Array.isArray(
+							sonderfeld.position
+						) &&
+						sonderfeld.grafik
+					);
 
             }
         );
@@ -2968,7 +3047,9 @@ function () {
 			grafik.alt =
 				sonderfeld.npc ||
 				sonderfeld.infoId ||
-				"NPC";
+				(sonderfeld.typ === "zeitungskiste"
+					? "zeitungskiste"
+					: "NPC");
 
 
             /*
@@ -3039,6 +3120,21 @@ function () {
 
             grafik.style.objectFit =
                 "contain";
+
+            /* -----------------------------------
+            Zeitungskiste nachts abdunkeln
+            ----------------------------------- */
+
+            if (sonderfeld.typ === "zeitungskiste") {
+
+                grafik.style.filter =
+                    window.reservatTageszeitBestimmen() === "nacht"
+                        ? "brightness(0.3)"
+                        : "none";
+
+            }
+
+            /* Ende Nachtabdunklung Zeitungskiste */
 
 			grafik.style.pointerEvents =
 				"none";
@@ -3271,56 +3367,89 @@ function () {
     Aktions-Sonderfeld vorhanden
     ----------------------------------- */
     /* -----------------------------------
-    NPC bei Nachbar-Aktion hervorheben
-    ----------------------------------- */
+NPC und Objekte bei Nachbar-Aktion hervorheben
+----------------------------------- */
 
-    const npcGrafiken =
-        document.querySelectorAll(
-            ".reservat-npc"
-        );
+const npcGrafiken =
+    document.querySelectorAll(
+        ".reservat-npc"
+    );
+
+
+/* Zuerst alle Hervorhebungen zurücksetzen */
+
+npcGrafiken.forEach(
+    function (grafik) {
+
+        /* Zeitungskiste nachts abdunkeln */
+
+        if (
+            grafik.alt === "zeitungskiste" &&
+            window.reservatTageszeitBestimmen() === "nacht"
+        ) {
+
+            grafik.style.filter = "brightness(0.3)";
+
+        } else {
+
+            grafik.style.filter = "none";
+
+        }
+
+    }
+);
+
+
+/* Prüfen, ob ein benachbartes Objekt aktiv ist */
+
+if (
+    sonderfeld &&
+    sonderfeld.trigger === "nachbar_aktion" &&
+    (
+        sonderfeld.typ === "npc_dialog" ||
+        sonderfeld.typ === "info_objekt" ||
+        sonderfeld.typ === "zeitungskiste"
+    )
+) {
 
     npcGrafiken.forEach(
         function (grafik) {
 
-            grafik.style.filter =
-                "none";
+            if (
+                grafik.alt === sonderfeld.npc ||
+                (
+                    sonderfeld.typ === "info_objekt" &&
+                    grafik.alt === sonderfeld.infoId
+                ) ||
+                (
+                    sonderfeld.typ === "zeitungskiste" &&
+                    grafik.alt === "zeitungskiste"
+                )
+            ) {
+
+
+                /* Vorhandene Nachtabdunklung erhalten */
+
+                const grundFilter =
+                    grafik.alt === "zeitungskiste" &&
+                    window.reservatTageszeitBestimmen() === "nacht"
+                        ? "brightness(0.3) "
+                        : "";
+
+                grafik.style.filter =
+                    grundFilter +
+                    "drop-shadow(0 0 6px white) " +
+                    "drop-shadow(0 0 10px white)";
+
+
+            }
 
         }
     );
 
+}
 
-				if (
-					sonderfeld &&
-					sonderfeld.trigger === "nachbar_aktion" &&
-					(
-						sonderfeld.typ === "npc_dialog" ||
-						sonderfeld.typ === "info_objekt"
-					)
-				) {
-
-        npcGrafiken.forEach(
-            function (grafik) {
-
-				if (
-					grafik.alt === sonderfeld.npc ||
-					(
-						sonderfeld.typ === "info_objekt" &&
-						grafik.alt === sonderfeld.infoId
-					)
-				) {
-
-                    grafik.style.filter =
-                        "drop-shadow(0 0 6px white) " +
-                        "drop-shadow(0 0 10px white)";
-
-                }
-
-            }
-        );
-
-    }
-
-    /* Ende NPC bei Nachbar-Aktion hervorheben */
+/* Ende NPC und Objekte bei Nachbar-Aktion hervorheben */
     if (
         sonderfeld &&
         (
@@ -3424,6 +3553,27 @@ async function () {
     }
 
     /* Ende offenen NPC-Dialog berücksichtigen */
+	
+    /* -----------------------------------
+    Zeitungskisten-Dialog berücksichtigen
+
+    Während der Dialog geöffnet ist,
+    darf die A-Taste keine weitere
+    Sonderfeldaktion auslösen.
+    ----------------------------------- */
+
+    if (
+        document.getElementById(
+            "zeitungskisteDialog"
+        )
+    ) {
+
+        return;
+
+    }
+
+    /* Ende Zeitungskisten-Dialog prüfen */
+
     /* -----------------------------------
     Bereits laufende Aktion abfangen
     ----------------------------------- */
@@ -3513,6 +3663,21 @@ async function () {
 				break;
 
 				/* Ende Informationsobjekt öffnen */
+
+            /* -----------------------------------
+            Zeitungskiste öffnen
+
+            Die eigentliche Dialogsteuerung
+            befindet sich in Zeitungskiste.js.
+            ----------------------------------- */
+
+            case "zeitungskiste":
+
+                window.zeitungskisteDialogAnzeigen();
+
+                break;
+
+            /* Ende Zeitungskiste öffnen */
 
             /* -----------------------------------
             Twine-Passagenwechsel ausführen
@@ -4125,6 +4290,63 @@ async function () {
 }; /* Ende zeitung25SymbolAktualisieren */
 
 /* Ende Zeitung 25 - Symbol aktualisieren */
+
+/* =========================================================
+ZEITUNG 26 – SYMBOL AKTUALISIEREN
+
+Prüft den Besitz über die vorhandene
+Inventarverwaltung.
+
+Nicht erhalten: grau
+Erhalten:       farbig
+Prüffehler:     grau
+========================================================= */
+
+window.zeitung26SymbolAktualisieren =
+async function () {
+
+    /* Zeitungssymbol suchen */
+
+    const button =
+        document.getElementById(
+            "zeitung26Button"
+        );
+
+    if (!button) {
+        return;
+    }
+
+    /* Zunächst grau anzeigen */
+
+    button.classList.remove(
+        "erhalten"
+    );
+
+    /* Besitz in Firebase prüfen */
+
+    const besitzt =
+        await window.inventarGegenstandBesitzt(
+            "zeitungen",
+            "26"
+        );
+
+    /* Symbol bei vorhandenem Besitz aktivieren */
+
+    if (
+        button.isConnected &&
+        besitzt === true
+    ) {
+
+        button.classList.add(
+            "erhalten"
+        );
+
+    }
+
+}; /* Ende zeitung26SymbolAktualisieren */
+
+/* Ende Zeitung 26 - Symbol aktualisieren */
+
 /* =========================================================
 ZEITUNG 25 - SCHNELLZUGRIFF ANKLICKEN
 
@@ -4200,6 +4422,66 @@ ereignisText.textContent =
 );
 
 /* Ende Zeitung 25 - Schnellzugriff anklicken */
+
+/* =========================================================
+ZEITUNG 26 - SCHNELLZUGRIFF ANKLICKEN
+
+Grau: Hinweis in der Ereigniszeile
+Farbig: Ausgabe 26 im Browser öffnen
+========================================================= */
+
+document.addEventListener(
+    "click",
+    function (ereignis) {
+
+        /* Zeitungssymbol erkennen */
+
+        const button =
+            ereignis.target.closest(
+                "#zeitung26Button"
+            );
+
+        if (!button) {
+            return;
+        }
+
+        /* Besitzstatus prüfen */
+
+        if (!button.classList.contains("erhalten")) {
+
+            const ereignisText =
+                document.getElementById(
+                    "schnappschussTest"
+                );
+
+            if (ereignisText) {
+
+                ereignisText.textContent =
+                    "Du besitzt Ausgabe 26 noch nicht.";
+
+            }
+
+            return;
+        }
+
+        /* Zeitung öffnen */
+
+        const zeitungFenster =
+            window.open(
+                "https://zerflixt.github.io/Wild-am-Sonntag-26/",
+                "Gewohnheitstiere_WaS26"
+            );
+
+        if (zeitungFenster) {
+            zeitungFenster.focus();
+        }
+
+        /* Ende Zeitung öffnen */
+
+    }
+);
+
+/* Ende Zeitung 26 - Schnellzugriff anklicken */
 
 /* =========================================================
 NPC-DIALOG TEST ANZEIGEN
@@ -12513,19 +12795,29 @@ async function (deltaX, deltaY) {
     }
 
     /* Ende Reservat-Bewegung gesperrt */
+
     /* -----------------------------------
-    Offenen Dialog berücksichtigen
+    Offene Spielfeld-Dialoge berücksichtigen
+
+    Während Valoria oder Zeitungskiste
+    geöffnet sind, keine Bewegung zulassen.
     ----------------------------------- */
 
     if (
         document.getElementById(
             "reservatExternerLinkDialog"
+        ) ||
+        document.getElementById(
+            "zeitungskisteDialog"
         )
     ) {
 
         return;
 
-    } /* Ende Dialogprüfung */
+    }
+
+    /* Ende Dialogprüfung */
+
 
 
     /* -----------------------------------
@@ -15287,7 +15579,24 @@ function (zielPassage) {
                     alt=&quot;&quot;
                 &gt;
             &lt;/button&gt;
+			&lt;!-- =========================================
+				 ZEITUNG 26 – INVENTAR-SCHNELLZUGRIFF
+				 ========================================= --&gt;
 
+			&lt;button
+				id=&quot;zeitung26Button&quot;
+				class=&quot;inventarTaste&quot;
+				type=&quot;button&quot;
+				title=&quot;Wild am Sonntag – Ausgabe 26 lesen&quot;
+				aria-label=&quot;Wild am Sonntag Ausgabe 26 lesen&quot;
+			&gt;
+				&lt;img
+					src=&quot;Daten/Icons/icon-wild-am-sonntag26.png&quot;
+					alt=&quot;&quot;
+				&gt;
+			&lt;/button&gt;
+
+			&lt;!-- Ende Zeitung 26 – Schnellzugriff --&gt;
             &lt;!-- -----------------------------------
                  Spielerkarte öffnen
                  Funktion wird später ergänzt
@@ -15476,6 +15785,7 @@ function (zielPassage) {
 
     &lt;&lt;run window.schnappschussTestenUndAvatarZeigen()&gt;&gt;
     &lt;&lt;run window.zeitung25SymbolAktualisieren()&gt;&gt;
+	&lt;&lt;run window.zeitung26SymbolAktualisieren()&gt;&gt;
 &lt;&lt;/done&gt;&gt;
 
 

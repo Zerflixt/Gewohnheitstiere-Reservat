@@ -1,6 +1,24 @@
 {
     "eintraege": [
 		{
+            "version": "0.458",
+            "datum": "2026-11-15",
+            "titel": "Musikbox",
+            "text": "Im Tiertreff steht nun eine Musikbox - diese spielt aktuell 2 Lieder, ich hoffe aber es werden mehr. Dies ist in erster Linie eine Vorbereitung für eine andere Idee."
+        },
+		{
+            "version": "0.447",
+            "datum": "2026-11-14",
+            "titel": "Beleuchtung Avatare",
+            "text": "Nachts oder im abgedunkelten Tiertreff sind die Avatare zukünftig dunkler, es sei denn sie befinden sich bei Lichtquellen. Dies ist noch nicht vollständig der Fall und eher ein Nebenprodukt der Musikbox, folgt aber bald dann durchgängig."
+        },
+		{
+            "version": "0.441",
+            "datum": "2026-11-13",
+            "titel": "Vorbereitung Währung",
+            "text": "Aus den Vergleichsreports kann ich nun die letzte Wochenleistung jedes Spielers ins Reservat übertragen, das ist eine Vorbereitung für die Verknüpfung von Habitica Leistungen mit Rerservats Inhalten"
+        },
+		{
             "version": "0.435",
             "datum": "2026-11-09",
             "titel": "Zeitungskiste",

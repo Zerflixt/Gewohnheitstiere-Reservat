@@ -404,6 +404,15 @@
                 "ebene1": "Daten/Maps/Nordstrand/Strand_Nord_Nacht_Ebene1.png",
                 "ebene3": "Daten/Maps/Nordstrand/Strand_Nord_Nacht_Ebene3.png"
             },
+			"lichtquellen": [
+				{
+					"id": "lagerfeuer_licht",
+					"quellfelder": [[3, 7]],
+					"reichweite": 5,
+					"maxHelligkeit": 0.95,
+					"aktivBei": "nacht"
+				}
+			],
             "gesperrteFelder": [
                 [0,0], [1,0], [2,0], [3,0], [4,0], [6,0], [7,0], [8,0], [9,0],
                 [0,1], [1,1], [3,1], [6,1], [7,1], [8,1], [9,1],
@@ -668,6 +677,40 @@
             "indoor": true,
             "ebene1": "Daten/Maps/Tiertreff_Innen/Karte_Kneipe_Ebene1.png",
             "ebene3": "Daten/Maps/Tiertreff_Innen/Karte_Kneipe_Ebene3.png",
+			"discoDunkel": {
+				"ebene1": "Daten/Maps/Tiertreff_Innen/Karte_Kneipe_Dunkel_Ebene1.png",
+				"ebene3": "Daten/Maps/Tiertreff_Innen/Karte_Kneipe_Dunkel_Ebene3.png"
+			},
+			"lichtquellen": [
+			{
+				"id": "tiertreff_licht_1",
+				"quellfelder": [[4, 0]],
+				"reichweite": 2,
+				"maxHelligkeit": 0.80,
+				"aktivBei": "disco"
+			},
+			{
+				"id": "tiertreff_licht_2",
+				"quellfelder": [[5, 0]],
+				"reichweite": 2,
+				"maxHelligkeit": 0.80,
+				"aktivBei": "disco"
+			},
+			{
+				"id": "tiertreff_licht_3",
+				"quellfelder": [[2, 1]],
+				"reichweite": 2,
+				"maxHelligkeit": 0.80,
+				"aktivBei": "disco"
+			},
+			{
+				"id": "tiertreff_licht_4",
+				"quellfelder": [[7, 1]],
+				"reichweite": 2,
+				"maxHelligkeit": 0.80,
+				"aktivBei": "disco"
+			}
+		],
             "gesperrteFelder": [
                 [0,0], [1,0], [2,0], [3,0], [4,0], [5,0], [6,0], [7,0], [8,0], [9,0],
                 [0,1], [2,1], [4,1], [5,1], [7,1], [9,1],
@@ -675,7 +718,7 @@
                 [0,3], [5,3], [7,3], [9,3],
                 [7,4], [9,4],
                 [0,5], [9,5],
-                [0,6], [9,6],
+                [0,6], [8,6], [9,6],
                 [0,7], [1,7], [8,7], [9,7],
                 [0,8], [1,8], [8,8], [9,8],
                 [0,9], [1,9], [8,9], [9,9]
@@ -783,9 +826,20 @@
                     "text": "Memory-Ruhmestafel ansehen?",
                     "grafik": "Daten/Objekte/Infotafeln/Ruhmestafel-Memory/Memory_Ruhmeshalle_Dreibein_Entwurf_04_Iris.webp",
                     "grafikSkalierung": 1.3,
-                    "grafikOffsetX": 0,
-                    "grafikOffsetY": 0
-                }
+                           "grafikOffsetX": 0,
+							"grafikOffsetY": 0
+						  },
+						  {
+							"position": [8, 6],
+							"trigger": "nachbar_aktion",
+							"typ": "musikbox",
+							"text": "Musikbox bedienen?",
+							"grafik": "Daten/Objekte/Musikbox/musikbox_neon_rechte_wand_256.png",
+							"grafikDisco": "Daten/Objekte/Musikbox/musikbox_neon_dunkel.png",
+							"grafikSkalierung": 1.5,
+							"grafikOffsetX": 0.1,
+							"grafikOffsetY": -0.3
+						  }
             ]
         }
     }

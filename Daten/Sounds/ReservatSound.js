@@ -156,8 +156,116 @@ function (
     return sound;
 
 }; /* Ende reservatSoundAbspielen */
+/* =========================================================
+BEREITS GELADENEN SOUND REGISTRIEREN
+========================================================= */
 
+/*
+Für vollständig vorgeladene Audiodateien,
+beispielsweise aus der Musikbox.
 
+Verwendet die bestehende Soundverwaltung.
+Startet selbst noch keine Wiedergabe.
+*/
+
+window.reservatGeladenenSoundRegistrieren =
+function (sound) {
+
+    if (!(sound instanceof HTMLAudioElement)) {
+
+        console.error(
+            "Reservat-Sound: Ungültiges Audio-Objekt."
+        );
+
+        return false;
+    }
+
+        /*
+    Der Sound wird erst beim tatsächlichen Start
+    in reservatLaufendeSounds aufgenommen.
+
+    Das bloße Vorladen darf ihn nicht als
+    laufenden Sound kennzeichnen.
+    */
+
+    sound.addEventListener(
+        "ended",
+        function () {
+
+            window.reservatLaufendeSounds.delete(sound);
+            window.reservatAktiveDauersounds.delete(sound);
+
+        },
+        { once: true }
+    );
+
+    return true;
+
+}; /* Ende reservatGeladenenSoundRegistrieren */
+/* =========================================================
+BEREITS GELADENEN SOUND ABSPIELEN
+========================================================= */
+
+/*
+Verwendet ein vollständig vorbereitetes Audio-Objekt.
+
+Berücksichtigt den globalen Soundschalter
+und die Sichtbarkeit des Reservats.
+
+Die Musikbox kann diese Funktion später
+für ihre vorgeladenen Songs verwenden.
+*/
+
+window.reservatGeladenenSoundAbspielen =
+async function (sound, lautstaerke = 1) {
+
+    /* Audio-Objekt überprüfen */
+
+    if (!(sound instanceof HTMLAudioElement)) {
+        return false;
+    }
+
+    /* Globale Soundeinstellungen beachten */
+
+    if (
+        window.reservatSoundAktiv !== true ||
+        document.hidden
+    ) {
+        return false;
+    }
+
+    /* Lautstärke festlegen */
+
+    sound.volume = Math.max(
+        0,
+        Math.min(1, lautstaerke)
+    );
+
+    sound.loop = false;
+
+    /* Wiedergabe starten */
+
+    try {
+
+        await sound.play();
+
+        window.reservatLaufendeSounds.add(sound);
+
+        return true;
+
+    } catch (fehler) {
+
+        console.warn(
+            "Reservat-Sound: Wiedergabe fehlgeschlagen.",
+            fehler
+        );
+
+        window.reservatLaufendeSounds.delete(sound);
+
+        return false;
+    }
+
+}; /* Ende reservatGeladenenSoundAbspielen */
 /* =========================================================
 EINEN SOUND ENDGÜLTIG STOPPEN
 ========================================================= */

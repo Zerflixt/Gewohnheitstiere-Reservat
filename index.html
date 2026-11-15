@@ -105,6 +105,12 @@ var LZString=function(){var r=String.fromCharCode,o="ABCDEFGHIJKLMNOPQRSTUVWXYZa
 		<div id="init-loading"><div>Loading&hellip;</div></div>
 	</div>
 	<tw-storydata name="Gewohnheitstiere-Reservat" startnode="1" creator="Twine" creator-version="2.10.0" format="SugarCube" format-version="2.37.3" ifid="21cc7bf7-a6b8-43e5-8f12-18d61b424893" options="" tags="" zoom="1" hidden><style role="stylesheet" id="twine-user-stylesheet" type="text/twine-css">
+/* =========================================================
+   EXTERNE SONG-ANIMATIONEN
+   ========================================================= */
+
+
+@import url("Daten/Objekte/Musikbox/SongAnimationen.css?v=1");
 
 /* =========================================================
 SUGARCUBE-SEITENLEISTE AUSBLENDEN
@@ -2436,7 +2442,7 @@ cursor: pointer;
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.435";
+window.multiplayerTestVersion = "0.458";
 
 /* Ende Testversion */
 /* =========================================================
@@ -2459,6 +2465,48 @@ window.memoryStylesheetGeladen =
     );
 
 /* Ende Memory - Stylesheet laden */
+/* =========================================================
+MUSIKBOX-DIALOG – STYLESHEET LADEN
+========================================================= */
+
+window.tiertreffMusikboxDialogCssGeladen =
+    importStyles(
+        "Daten/Objekte/Musikbox/TiertreffMusikboxDialog.css?v=1"
+    );
+
+/* Ende Musikbox-Dialog – Stylesheet laden */
+/* =========================================================
+MUSIKBOX-DIALOG – JAVASCRIPT LADEN
+========================================================= */
+
+window.tiertreffMusikboxDialogJsGeladen =
+    importScripts(
+        "Daten/Objekte/Musikbox/TiertreffMusikboxDialog.js?v=1"
+    );
+
+/* Ende Musikbox-Dialog – JavaScript laden */
+/* =========================================================
+TIERTREFF – DISCO-STEUERUNG LADEN
+========================================================= */
+
+window.tiertreffDiscoJsGeladen =
+    importScripts(
+        "Daten/Objekte/Musikbox/TiertreffDisco.js?v=1"
+    );
+
+/* Ende Tiertreff – Disco-Steuerung laden */
+
+/* =========================================================
+MUSIKBOX – FIREBASE-STEUERUNG LADEN
+========================================================= */
+
+window.tiertreffMusikboxFirebaseGeladen =
+    importScripts(
+        "Daten/Objekte/Musikbox/TiertreffMusikboxFirebase.js?v=1"
+    );
+
+/* Ende Musikbox – Firebase-Steuerung laden */
+
 /* =========================================================
 MEMORY - JAVASCRIPT LADEN
 ========================================================= */
@@ -2490,12 +2538,22 @@ window.reservatTageszeitGeladen =
 
 /* Ende zentrale Tageszeitsteuerung laden */
 /* =========================================================
+ZENTRALE BELEUCHTUNGSSTEUERUNG LADEN
+========================================================= */
+
+window.reservatBeleuchtungGeladen =
+    importScripts(
+        "Daten/Systeme/ReservatBeleuchtung.js?v=1"
+    );
+
+/* Ende zentrale Beleuchtungssteuerung laden */
+/* =========================================================
 ZENTRALE SOUNDVERWALTUNG LADEN
 ========================================================= */
 
 window.reservatSoundGeladen =
     importScripts(
-        "Daten/Sounds/ReservatSound.js?v=3"
+        "Daten/Sounds/ReservatSound.js?v=4"
     );
 
 /* Ende zentrale Soundverwaltung laden */
@@ -2873,12 +2931,47 @@ function () {
     const tageszeit =
         window.reservatTageszeitBestimmen();
 
-    const grafiken =
+    let grafiken =
         tageszeit === "nacht" && karte.nacht
             ? karte.nacht
             : karte;
 
-    /* Ende Grafikauswahl */
+    /* Ende tageszeitabhängige Grafikauswahl */
+
+    /* -----------------------------------
+       Tiertreff: Raumlicht aus Disco-Drehbuch
+
+       Nur ein laufender Song mit Lichtprofil
+       "dunkel" verwendet die dunklen Ebenen.
+       ----------------------------------- */
+
+    if (
+        position.karte === "tiertreff_innen" &&
+        karte.discoDunkel &&
+        typeof window.tiertreffDiscoAktuellerSong === "function" &&
+        typeof window.tiertreffDiscoRaumlichtBestimmen === "function"
+    ) {
+
+        const song =
+            window.tiertreffDiscoAktuellerSong();
+
+        if (song) {
+
+            const licht =
+                window.tiertreffDiscoRaumlichtBestimmen(
+                    song.songId,
+                    song.positionSekunden
+                );
+
+            if (licht === "dunkel") {
+                grafiken = karte.discoDunkel;
+            }
+
+        }
+
+    }
+
+    /* Ende Disco-Raumlicht */
 
 
     /* -----------------------------------
@@ -2995,7 +3088,8 @@ function () {
 						(
 							sonderfeld.typ === "npc_dialog" ||
 							sonderfeld.typ === "info_objekt" ||
-							sonderfeld.typ === "zeitungskiste"
+							sonderfeld.typ === "zeitungskiste" ||
+							sonderfeld.typ === "musikbox"
 						) &&
 						Array.isArray(
 							sonderfeld.position
@@ -3041,15 +3135,73 @@ function () {
             grafik.className =
                 "reservat-npc";
 
-            grafik.src =
-                sonderfeld.grafik;
+			/* -----------------------------------
+			   Musikbox-Grafik abhängig vom Raumlicht
+
+			   Dunkle Neon-Grafik nur bei aktiver
+			   Disco-Abdunklung verwenden.
+			   ----------------------------------- */
+
+			let objektGrafik = sonderfeld.grafik;
+
+			if (
+				sonderfeld.typ === "musikbox" &&
+				sonderfeld.grafikDisco &&
+				typeof window.tiertreffDiscoAktuellerSong === "function" &&
+				typeof window.tiertreffDiscoRaumlichtBestimmen === "function"
+			) {
+
+				const song =
+					window.tiertreffDiscoAktuellerSong();
+
+				if (song) {
+
+					const raumlicht =
+						window.tiertreffDiscoRaumlichtBestimmen(
+							song.songId,
+							song.positionSekunden
+						);
+
+					if (raumlicht === "dunkel") {
+						objektGrafik = sonderfeld.grafikDisco;
+					}
+
+				}
+
+			}
+
+			grafik.src = objektGrafik;
+
+			/* Ende Musikbox-Grafikwechsel */
+			/* -----------------------------------
+			   Musikbox während eines Songs animieren
+
+			   Unabhängig vom Raumlicht und davon,
+			   ob der Spieler seinen Sound aktiviert hat.
+			   ----------------------------------- */
+
+			if (
+				sonderfeld.typ === "musikbox" &&
+				typeof window.tiertreffDiscoAktuellerSong === "function" &&
+				window.tiertreffDiscoAktuellerSong() !== null
+			) {
+
+				grafik.classList.add("song-musikbox-aktiv");
+
+			}
+
+			/* Ende Musikbox-Wackelsteuerung */
+
+			/* Objekttyp für die spätere Hervorhebung kennzeichnen */
 
 			grafik.alt =
 				sonderfeld.npc ||
 				sonderfeld.infoId ||
 				(sonderfeld.typ === "zeitungskiste"
 					? "zeitungskiste"
-					: "NPC");
+					: sonderfeld.typ === "musikbox"
+						? "musikbox"
+						: "NPC");
 
 
             /*
@@ -3135,12 +3287,51 @@ function () {
             }
 
             /* Ende Nachtabdunklung Zeitungskiste */
+			/* -----------------------------------
+			   Disco-Beleuchtung der Memory-Ruhmestafel
+			   ----------------------------------- */
+
+			if (sonderfeld.infoId === "memory_rangliste") {
+
+				grafik.style.filter =
+					"brightness(" +
+					window.reservatBeleuchtung.helligkeitBestimmen(
+						position.karte
+					) +
+					")";
+
+			}
+
+			/* Ende Beleuchtung Memory-Ruhmestafel */
+			/* -----------------------------------
+			   Beleuchtung der Nordstrand-Infotafel
+
+			   Nachts wird die Tafel entsprechend
+			   der allgemeinen Grundhelligkeit
+			   abgedunkelt.
+			   ----------------------------------- */
+
+			if (sonderfeld.infoId === "changelog_nordstrand") {
+
+				grafik.style.filter =
+					"brightness(" +
+					window.reservatBeleuchtung.helligkeitBestimmen(
+						position.karte
+					) +
+					")";
+
+			}
+
+			/* Ende Beleuchtung Nordstrand-Infotafel */
 
 			grafik.style.pointerEvents =
 				"none";
 
+			/* Musikbox und Infotafeln vor Kartenebene 3 anzeigen */
+
 			grafik.style.zIndex =
-				sonderfeld.typ === "info_objekt"
+				sonderfeld.typ === "info_objekt" ||
+				sonderfeld.typ === "musikbox"
 					? "45"
 					: "25";
 
@@ -3156,6 +3347,42 @@ if (reservatZoomEbene) {
         grafik
     );
 }
+
+/* -----------------------------------
+   Notenbereich für die Musikbox
+
+   Liegt unabhängig von der wackelnden
+   Grafik auf derselben Kartenposition.
+   Wird beim Neuaufbau mit entfernt.
+   ----------------------------------- */
+
+if (
+    sonderfeld.typ === "musikbox" &&
+    reservatZoomEbene
+) {
+
+    const notenBereich =
+        document.createElement("div");
+
+    notenBereich.className =
+        "reservat-npc song-noten-bereich";
+
+    notenBereich.style.position = "absolute";
+
+    notenBereich.style.left = grafik.style.left;
+    notenBereich.style.top = grafik.style.top;
+
+    notenBereich.style.width = grafik.style.width;
+    notenBereich.style.height = grafik.style.height;
+
+    notenBereich.style.zIndex = "46";
+    notenBereich.style.pointerEvents = "none";
+
+    reservatZoomEbene.appendChild(notenBereich);
+
+}
+
+/* Ende Musikbox-Notenbereich */
 
         }
     );
@@ -3390,6 +3617,15 @@ npcGrafiken.forEach(
 
             grafik.style.filter = "brightness(0.3)";
 
+        } else if (grafik.alt === "memory_rangliste") {
+
+            grafik.style.filter =
+                "brightness(" +
+                window.reservatBeleuchtung.helligkeitBestimmen(
+                    window.aktuelleSpielerPosition.karte
+                ) +
+                ")";
+
         } else {
 
             grafik.style.filter = "none";
@@ -3406,9 +3642,10 @@ if (
     sonderfeld &&
     sonderfeld.trigger === "nachbar_aktion" &&
     (
-        sonderfeld.typ === "npc_dialog" ||
-        sonderfeld.typ === "info_objekt" ||
-        sonderfeld.typ === "zeitungskiste"
+			sonderfeld.typ === "npc_dialog" ||
+			sonderfeld.typ === "info_objekt" ||
+			sonderfeld.typ === "zeitungskiste" ||
+			sonderfeld.typ === "musikbox"
     )
 ) {
 
@@ -3421,25 +3658,54 @@ if (
                     sonderfeld.typ === "info_objekt" &&
                     grafik.alt === sonderfeld.infoId
                 ) ||
-                (
-                    sonderfeld.typ === "zeitungskiste" &&
-                    grafik.alt === "zeitungskiste"
-                )
+				(
+					sonderfeld.typ === "zeitungskiste" &&
+					grafik.alt === "zeitungskiste"
+				) ||
+				(
+					sonderfeld.typ === "musikbox" &&
+					grafik.alt === "musikbox"
+				)
             ) {
 
 
-                /* Vorhandene Nachtabdunklung erhalten */
+			/* -----------------------------------
+			   Grundbeleuchtung bei Hervorhebung erhalten
 
-                const grundFilter =
-                    grafik.alt === "zeitungskiste" &&
-                    window.reservatTageszeitBestimmen() === "nacht"
-                        ? "brightness(0.3) "
-                        : "";
+			   Zeitungskiste: bisherige Nachtabdunklung
+			   Ruhmestafel: zentrale Beleuchtungssteuerung
+			   Andere Objekte: unverändert
+			   ----------------------------------- */
 
-                grafik.style.filter =
-                    grundFilter +
-                    "drop-shadow(0 0 6px white) " +
-                    "drop-shadow(0 0 10px white)";
+			let grundFilter = "";
+
+			if (
+				grafik.alt === "zeitungskiste" &&
+				window.reservatTageszeitBestimmen() === "nacht"
+			) {
+
+				grundFilter = "brightness(0.3) ";
+
+			} else if (grafik.alt === "memory_rangliste") {
+
+				const helligkeit =
+					window.reservatBeleuchtung.helligkeitBestimmen(
+						window.aktuelleSpielerPosition.karte
+					);
+
+				grundFilter =
+					"brightness(" + helligkeit + ") ";
+
+			}
+
+			/* Hervorhebung zusätzlich anwenden */
+
+			grafik.style.filter =
+				grundFilter +
+				"drop-shadow(0 0 6px white) " +
+				"drop-shadow(0 0 10px white)";
+
+			/* Ende Grundbeleuchtung bei Hervorhebung */
 
 
             }
@@ -3678,7 +3944,20 @@ async function () {
                 break;
 
             /* Ende Zeitungskiste öffnen */
+            /* -----------------------------------
+            Musikbox-Dialog öffnen
 
+            Die eigentliche Dialogsteuerung
+            befindet sich in TiertreffMusikboxDialog.js.
+            ----------------------------------- */
+
+            case "musikbox":
+
+                window.tiertreffMusikboxDialogOeffnen();
+
+                break;
+
+            /* Ende Musikbox-Dialog öffnen */
             /* -----------------------------------
             Twine-Passagenwechsel ausführen
             ----------------------------------- */
@@ -7644,6 +7923,30 @@ async function (sonderfeld) {
 
 
     /* -----------------------------------
+       Tiertreff – Disco beim Verlassen beenden
+
+       Beim Wechsel aus dem Tiertreff werden
+       Musik und Lichteffekte lokal beendet.
+
+       Der gemeinsame Firebase-Song läuft
+       für andere Spieler unverändert weiter.
+       ----------------------------------- */
+
+    if (
+        window.aktuelleSpielerPosition?.karte === "tiertreff_innen" &&
+        sonderfeld.zielKarte !== "tiertreff_innen"
+    ) {
+
+        if (
+            typeof window.tiertreffDiscoSongStoppen === "function"
+        ) {
+            window.tiertreffDiscoSongStoppen();
+        }
+    }
+
+    /* Ende Tiertreff – Disco beim Verlassen */
+
+    /* -----------------------------------
     Neue Position nach Firebase schreiben
     ----------------------------------- */
 
@@ -7675,6 +7978,8 @@ async function (sonderfeld) {
         );
 
     } /* Ende Firebase-Schreibversuch */
+
+
 
 }; /* Ende ortswechselAusfuehren */
 
@@ -9796,6 +10101,55 @@ function (ordenName) {
         vorhanden
             ? ordenSpruch.vorhanden
             : ordenSpruch.fehlt;
+			
+    /* -----------------------------------
+       MUSIKBOX – ADMINISTRATOR-NOTSTOPP
+
+       Zerflixt kann mit seinem Resilienzorden
+       einen laufenden Song im Tiertreff stoppen.
+
+       Außerhalb des Tiertreffs bleibt die
+       bisherige Ordenfunktion unverändert.
+
+       Firebase prüft die Berechtigung
+       zusätzlich über die Datenbankregeln.
+       ----------------------------------- */
+
+    if (
+        ordenName === "resilienz" &&
+        vorhanden &&
+        window.firebaseAuth?.currentUser?.uid ===
+            "wkKQBlUrAec7PXIp0yafXROMLiA2" &&
+        window.aktuelleSpielerPosition?.karte ===
+            "tiertreff_innen"
+    ) {
+
+        /* Administrator-Stopp ausführen */
+
+        window.tiertreffMusikboxFirebaseAdminStoppen()
+            .then(function (gestoppt) {
+
+                if (gestoppt) {
+
+                    ereignisText.textContent =
+                        "Musikbox: Song gestoppt!";
+                }
+
+            })
+            .catch(function (fehler) {
+
+                console.error(
+                    "Resilienzorden: Musikbox-Notstopp fehlgeschlagen:",
+                    fehler
+                );
+
+            });
+
+        return;
+    }
+
+    /* Ende Musikbox – Administrator-Notstopp */
+
 			    /* -----------------------------------
 				Resilienz-Feuerwerk bei Nacht
 				----------------------------------- */
@@ -9983,6 +10337,58 @@ $(document).on(
 );
 
 /* Ende Feuerwerk Listener starten */
+
+/* =========================================================
+MUSIKBOX – FIREBASE-LISTENER AUTOMATISCH STARTEN
+
+Beim Betreten des Spielfelds wird der
+gemeinsame Musikbox-Zustand beobachtet.
+
+Der Listener läuft auch außerhalb des
+Tiertreffs, damit Songstarts und Stopps
+empfangen werden können.
+
+Die Wiedergabe selbst bleibt auf den
+Tiertreff beschränkt.
+
+Mehrfachstarts verhindert die vorhandene
+Musikbox-Firebase-Steuerung.
+========================================================= */
+
+$(document).on(
+    ":passageend",
+    async function () {
+
+        /* Nur beim Spielfeld starten */
+
+        if (SugarCube.State.passage !== "Spielfeld") {
+            return;
+        }
+
+        /* Auf Firebase warten */
+
+        await window.firebaseBereit;
+
+        /* Prüfen, ob Spielfeld noch geöffnet ist */
+
+        if (SugarCube.State.passage !== "Spielfeld") {
+            return;
+        }
+
+        /* Musikbox-Listener starten */
+
+        if (
+            typeof window.tiertreffMusikboxFirebaseListenerStarten ===
+            "function"
+        ) {
+            window.tiertreffMusikboxFirebaseListenerStarten();
+        }
+
+    }
+);
+
+/* Ende Musikbox – Firebase-Listener automatisch starten */
+
 /* =========================================================
 RESERVAT - BETRETEN ALS AKTIVITÄT MELDEN
 ========================================================= */
@@ -10283,6 +10689,32 @@ if (
 }
 
 /* Ende Dauersounds fortsetzen */
+/* -----------------------------------
+Musikbox nach Sound-EIN synchronisieren
+
+Die Musikbox berechnet ihre Position
+anhand des ursprünglichen Songstarts.
+----------------------------------- */
+
+if (
+    window.reservatSoundAktiv === true &&
+    typeof window.tiertreffDiscoNachSoundEin ===
+        "function"
+) {
+
+    window.tiertreffDiscoNachSoundEin()
+        .catch(function (fehler) {
+
+            console.warn(
+                "Tiertreff-Disco: Wiedereinstieg fehlgeschlagen.",
+                fehler
+            );
+
+        });
+
+}
+
+/* Ende Musikbox nach Sound-EIN */
 
 /* Ende laufende Sounds stoppen */
             /* Ende Zustand übernehmen */
@@ -11995,6 +12427,41 @@ window.firebaseOnValue(
 
 
             /* -----------------------------------
+               MUSIKBOX – WIEDEREINSTIEG
+
+               Nur beim tatsächlichen Betreten
+               des Tiertreffs prüfen, ob bereits
+               ein gemeinsamer Song läuft.
+
+               Normale Avatarbewegungen lösen
+               keinen erneuten Wiedereinstieg aus.
+               ----------------------------------- */
+
+            if (
+                eigenePosition.karte === "tiertreff_innen" &&
+                vorherigePosition?.karte !== "tiertreff_innen"
+            ) {
+
+                if (
+                    typeof window.tiertreffMusikboxFirebaseWiedereinstieg ===
+                    "function"
+                ) {
+
+                    window.tiertreffMusikboxFirebaseWiedereinstieg()
+                        .catch(function (fehler) {
+
+                            console.error(
+                                "Musikbox: Wiedereinstieg beim Kartenwechsel fehlgeschlagen:",
+                                fehler
+                            );
+
+                        });
+                }
+            }
+
+            /* Ende Musikbox – Wiedereinstieg */
+
+            /* -----------------------------------
             Umgebungsgeräusche bei Positionswechsel
             aktualisieren
             ----------------------------------- */
@@ -12052,6 +12519,52 @@ window.firebaseOnValue(
                         );
 
                         /* Ende Hintergrundmusik */
+						/* -----------------------------------
+Musikbox beim Kartenwechsel aktualisieren
+
+Außerhalb des Tiertreffs lokal pausieren.
+Beim Betreten an aktueller Stelle fortsetzen.
+----------------------------------- */
+
+if (
+    soundKarte === "tiertreff_innen" &&
+    vorherigePosition?.karte !== "tiertreff_innen"
+) {
+
+    if (
+        typeof window.tiertreffDiscoNachSoundEin ===
+        "function"
+    ) {
+
+        window.tiertreffDiscoNachSoundEin()
+            .catch(function (fehler) {
+
+                console.warn(
+                    "Tiertreff-Disco: Wiedereinstieg fehlgeschlagen.",
+                    fehler
+                );
+
+            });
+
+    }
+
+} else if (
+    vorherigePosition?.karte === "tiertreff_innen" &&
+    soundKarte !== "tiertreff_innen"
+) {
+
+    if (
+        typeof window.tiertreffDiscoLokalPausieren ===
+        "function"
+    ) {
+
+        window.tiertreffDiscoLokalPausieren();
+
+    }
+
+}
+
+/* Ende Musikbox bei Kartenwechsel */
                     }
                 ).catch(
                     function (fehler) {
@@ -12664,20 +13177,66 @@ if (
         Avatar wieder normal dargestellt.
         ----------------------------------- */
 
+        /* -----------------------------------
+           Zentrale Spielerbeleuchtung
+
+           Helligkeit wird vom allgemeinen
+           Reservat-Beleuchtungssystem bestimmt.
+           ----------------------------------- */
+
+
+        /* Normale Raumbeleuchtung ermitteln */
+
+        const grundHelligkeit =
+            window.reservatBeleuchtung
+                ?.lichtquellenHelligkeitBestimmen(
+                    position.karte,
+                    position.x,
+                    position.y
+                ) ?? 1;
+
+        /* Disco-Aufhellung bei Bedarf ergänzen */
+
+        const spielerHelligkeit =
+            typeof window.tiertreffDiscoHelligkeitErgaenzen
+                === "function"
+                ? window.tiertreffDiscoHelligkeitErgaenzen(
+                    canvas,
+                    grundHelligkeit
+                )
+                : grundHelligkeit;
+
+
+        /* Ende zentrale Spielerbeleuchtung */
+
+
+        /* -----------------------------------
+           Avatar oder Statue darstellen
+
+           Bei Statuen bleiben Graustufen
+           und Transparenz erhalten.
+           ----------------------------------- */
+
         if (
             !istVerbunden &&
             idleZustand !== "unbekannt"
         ) {
 
             canvas.style.filter =
-                "grayscale(1) brightness(0.75)";
+                "grayscale(1) brightness(" +
+                (0.75 * spielerHelligkeit) +
+                ")";
 
             canvas.style.opacity =
                 "0.75";
 
         } else {
 
-            canvas.style.filter = "";
+            canvas.style.filter =
+                "brightness(" +
+                spielerHelligkeit +
+                ")";
+
             canvas.style.opacity = "";
 
         } /* Ende Avatar / Statue */

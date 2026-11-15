@@ -2442,7 +2442,7 @@ cursor: pointer;
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.459";
+window.multiplayerTestVersion = "0.46";
 
 /* Ende Testversion */
 /* =========================================================
@@ -13538,6 +13538,79 @@ melden
 await window.reservatAktivitaetMelden();
 
 /* Ende Aktivität nach Bewegung */
+
+
+/* -----------------------------------
+   Musikbox nach Bewegung prüfen
+
+   Nur im Tiertreff.
+   Keine erneuten Starts bei laufender Musik.
+   Maximal eine Prüfung gleichzeitig.
+   Höchstens eine Prüfung alle 3 Sekunden.
+   ----------------------------------- */
+
+if (
+    window.aktuelleSpielerPosition?.karte === "tiertreff_innen" &&
+    window.reservatSoundAktiv === true &&
+    typeof window.tiertreffMusikboxFirebaseWiedereinstieg === "function"
+) {
+
+    const jetzt = Date.now();
+
+    if (
+        !window.musikboxBewegungsPruefungLaeuft &&
+        (
+            !window.musikboxLetzteBewegungsPruefung ||
+            jetzt - window.musikboxLetzteBewegungsPruefung >= 3000
+        )
+    ) {
+
+        window.musikboxLetzteBewegungsPruefung = jetzt;
+
+        const lokalerSong =
+            typeof window.tiertreffDiscoAktuellerSong === "function"
+                ? window.tiertreffDiscoAktuellerSong()
+                : null;
+
+        window.musikboxBewegungsPruefungLaeuft = true;
+
+        try {
+
+            if (lokalerSong) {
+
+                /* Vorhandenen Song nur bei Bedarf fortsetzen */
+
+                if (
+                    typeof window.tiertreffDiscoNachSoundEin === "function"
+                ) {
+                    await window.tiertreffDiscoNachSoundEin();
+                }
+
+            } else {
+
+                /* Kein lokaler Song: Firebase-Zustand prüfen */
+
+                await window.tiertreffMusikboxFirebaseWiedereinstieg();
+
+            }
+
+        } catch (fehler) {
+
+            console.warn(
+                "Musikbox: Bewegungs-Wiedereinstieg fehlgeschlagen:",
+                fehler
+            );
+
+        } finally {
+
+            window.musikboxBewegungsPruefungLaeuft = false;
+
+        }
+    }
+}
+
+/* Ende Musikbox nach Bewegung */
+
     } catch (fehler) {
 
         console.error(

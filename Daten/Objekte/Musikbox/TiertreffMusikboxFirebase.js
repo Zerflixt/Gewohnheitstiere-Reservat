@@ -23,6 +23,102 @@ bestehenden story-javascript.js verwendet.
         "realtime/tiertreff/musikbox";
 
     /* -----------------------------------------
+       MUSIKBOX – FIREBASE-ZEITSYNCHRONISATION
+
+       Firebase liefert die geschätzte Abweichung
+       zwischen Browseruhr und Serverzeit.
+
+       Der Offset wird automatisch aktualisiert.
+       Noch keine Änderung der Songsteuerung.
+       ----------------------------------------- */
+
+    let musikboxServerZeitOffset = 0;
+    let musikboxServerZeitBereit = false;
+	
+    let musikboxZeitListenerGestartet = false;
+
+
+    window.tiertreffMusikboxServerZeitStarten =
+        function () {
+
+            /* Zeitlistener nur einmal starten */
+
+            if (musikboxZeitListenerGestartet) {
+                return true;
+            }
+
+            if (
+                !window.firebaseDatabase ||
+                typeof window.firebaseRef !== "function" ||
+                typeof window.firebaseOnValue !== "function"
+            ) {
+                console.warn(
+                    "Musikbox: Firebase für Zeitsynchronisation nicht bereit."
+                );
+                return false;
+            }
+
+            musikboxZeitListenerGestartet = true;
+
+            /* Firebase-Systempfad */
+
+            const zeitRef = window.firebaseRef(
+                window.firebaseDatabase,
+                "/.info/serverTimeOffset"
+            );
+
+
+            window.firebaseOnValue(
+                zeitRef,
+                function (snapshot) {
+
+                    const offset = snapshot.val();
+
+                    if (typeof offset !== "number") {
+                        return;
+                    }
+
+                    musikboxServerZeitOffset = offset;
+                    musikboxServerZeitBereit = true;
+
+                    /* Songlistener erst mit gültiger Firebase-Zeit starten */
+
+                    if (musikboxListenerAbmelden === null) {
+                        window.tiertreffMusikboxFirebaseListenerStarten();
+                    }
+
+                    console.log(
+                        "Musikbox: Firebase-Zeit synchronisiert.",
+                        "Abweichung:",
+                        offset,
+                        "ms"
+                    );
+                },
+                function (fehler) {
+
+                    console.error(
+                        "Musikbox: Zeitsynchronisation fehlgeschlagen:",
+                        fehler
+                    );
+                }
+            );
+
+            return true;
+        };
+
+    window.tiertreffMusikboxServerZeit =
+        function () {
+
+            if (!musikboxServerZeitBereit) {
+                return null;
+            }
+
+            return Date.now() + musikboxServerZeitOffset;
+        };
+
+    /* Ende Musikbox – Firebase-Zeitsynchronisation */
+
+    /* -----------------------------------------
        Firebase-Verbindung prüfen
        ----------------------------------------- */
 
@@ -174,7 +270,21 @@ bestehenden story-javascript.js verwendet.
                     musikboxRef
                 ).key;
 
-                const startzeit = Date.now();
+                
+                const aktuelleFirebaseZeit =
+                    window.tiertreffMusikboxServerZeit();
+
+                if (aktuelleFirebaseZeit === null) {
+                    console.warn(
+                        "Musikbox: Firebase-Zeit noch nicht bereit."
+                    );
+                    return false;
+                }
+
+                /* Drei Sekunden stummer Vorlauf */
+
+                const startzeit = aktuelleFirebaseZeit + 3000;
+
 
                 const neuerZustand = {
                     songId: songId,
@@ -198,7 +308,7 @@ bestehenden story-javascript.js verwendet.
                             if (
                                 bisher &&
                                 bisher.status === "started" &&
-                                bisher.endetUm > startzeit
+                                bisher.endetUm > aktuelleFirebaseZeit
                             ) {
                                 return;
                             }
@@ -283,6 +393,13 @@ bestehenden story-javascript.js verwendet.
                 return false;
             }
 
+            if (window.tiertreffMusikboxServerZeit() === null) {
+                console.warn(
+                    "Musikbox: Firebase-Zeit noch nicht bereit."
+                );
+                return false;
+            }
+
             try {
 
                 const musikboxRef = window.firebaseRef(
@@ -302,7 +419,7 @@ bestehenden story-javascript.js verwendet.
                             if (
                                 !bisher ||
                                 bisher.status !== "started" ||
-                                bisher.endetUm <= Date.now()
+                                bisher.endetUm <= window.tiertreffMusikboxServerZeit()
                             ) {
                                 return;
                             }
@@ -379,10 +496,16 @@ bestehenden story-javascript.js verwendet.
             return false;
         }
 
-        return (
-            zustand.startzeit <= Date.now() &&
-            zustand.endetUm > Date.now()
-        );
+
+        const aktuelleFirebaseZeit =
+            window.tiertreffMusikboxServerZeit();
+
+        if (aktuelleFirebaseZeit === null) {
+            return false;
+        }
+
+        return zustand.endetUm > aktuelleFirebaseZeit;
+
     }
 
     /* Ende Firebase-Song prüfen */
@@ -527,6 +650,43 @@ bestehenden story-javascript.js verwendet.
 
             /* Gemeinsame Wiedergabe starten */
 
+            /* -----------------------------------------
+               Stummer Vorlauf bis zur Firebase-Startzeit
+
+               Keine Musik und keine Disco-Animation.
+               Nach der Wartezeit Zustand erneut prüfen.
+               ----------------------------------------- */
+
+            const wartezeit = Math.max(
+                0,
+                aktuell.startzeit -
+                    window.tiertreffMusikboxServerZeit()
+            );
+
+            if (wartezeit > 0) {
+
+                await new Promise(function (resolve) {
+                    setTimeout(resolve, wartezeit);
+                });
+
+                /* Nach dem Warten erneut prüfen */
+
+                const neuerSnapshot =
+                    await window.firebaseGet(musikboxRef);
+
+                const neuerZustand = neuerSnapshot.val();
+
+                if (
+                    !musikboxSongIstAktiv(neuerZustand) ||
+                    neuerZustand.startId !== zustand.startId ||
+                    window.aktuelleSpielerPosition?.karte !==
+                        "tiertreff_innen"
+                ) {
+                    return false;
+                }
+            }
+
+
             const gestartet =
                 await window.tiertreffDiscoSongAbspielen(
                     aktuell.songId,
@@ -654,6 +814,15 @@ bestehenden story-javascript.js verwendet.
                 return false;
             }
 
+            /* Firebase-Zeitsynchronisation starten */
+
+
+            if (!musikboxServerZeitBereit) {
+                window.tiertreffMusikboxServerZeitStarten();
+                return true;
+            }
+
+
             /* Doppelten Listener verhindern */
 
             if (musikboxListenerAbmelden !== null) {
@@ -735,15 +904,63 @@ bestehenden story-javascript.js verwendet.
 
                         if (songLaeuft) {
 
+
                             musikboxFirebaseSongWiedergeben(zustand)
-                                .then(function (gestartet) {
+                                .then(async function (gestartet) {
 
                                     if (gestartet) {
                                         console.log(
                                             "Musikbox-Firebase: Wiedergabe gestartet:",
                                             zustand.songId
                                         );
+                                        return;
                                     }
+
+                                    /* -----------------------------------------
+                                       Einmaliger Wiederholungsversuch
+
+                                       Nur derselbe, weiterhin aktive Song
+                                       darf erneut gestartet werden.
+                                       ----------------------------------------- */
+
+                                    console.warn(
+                                        "Musikbox-Firebase: Start fehlgeschlagen, prüfe erneut:",
+                                        zustand.songId
+                                    );
+
+                                    await new Promise(function (resolve) {
+                                        setTimeout(resolve, 1000);
+                                    });
+
+                                    const pruefRef = window.firebaseRef(
+                                        window.firebaseDatabase,
+                                        MUSIKBOX_PFAD
+                                    );
+
+                                    const pruefSnapshot =
+                                        await window.firebaseGet(pruefRef);
+
+                                    const pruefZustand =
+                                        pruefSnapshot.val();
+
+                                    if (
+                                        !musikboxSongIstAktiv(pruefZustand) ||
+                                        pruefZustand.startId !== zustand.startId ||
+                                        window.aktuelleSpielerPosition?.karte !==
+                                            "tiertreff_innen"
+                                    ) {
+                                        return;
+                                    }
+
+                                    const zweiterVersuch =
+                                        await musikboxFirebaseSongWiedergeben(
+                                            pruefZustand
+                                        );
+
+                                    console.log(
+                                        "Musikbox-Firebase: Zweiter Startversuch:",
+                                        zweiterVersuch
+                                    );
 
                                 })
                                 .catch(function (fehler) {
@@ -754,6 +971,7 @@ bestehenden story-javascript.js verwendet.
                                     );
 
                                 });
+
                         }
 
                         return;

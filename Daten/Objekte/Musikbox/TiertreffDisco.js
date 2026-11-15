@@ -1651,15 +1651,29 @@
         
         /* Firebase-Startzeit oder bisherigen lokalen Start verwenden */
 
+
+        /* Gemeinsame Firebase-Zeit für die Songposition */
+
+        const aktuelleFirebaseZeit =
+            typeof window.tiertreffMusikboxServerZeit === "function"
+                ? window.tiertreffMusikboxServerZeit()
+                : null;
+
+        const gemeinsameJetztZeit =
+            aktuelleFirebaseZeit !== null
+                ? aktuelleFirebaseZeit
+                : Date.now();
+
         const gemeinsamerStartzeitpunkt =
             typeof firebaseStartzeit === "number"
                 ? firebaseStartzeit
-                : Date.now();
+                : gemeinsameJetztZeit;
 
         const startpositionSekunden = Math.max(
             0,
-            (Date.now() - gemeinsamerStartzeitpunkt) / 1000
+            (gemeinsameJetztZeit - gemeinsamerStartzeitpunkt) / 1000
         );
+
 
         audio.currentTime = startpositionSekunden;
 

@@ -1,0 +1,270 @@
+
+/* =========================================================
+   GEWOHNHEITSTIERE-RESERVAT
+   SONG-ANIMATIONEN
+
+   Animationen für laufende Musik:
+   - Musikbox-Bewegung
+   - Musiknoten (später)
+   - Lichtkegel (später)
+
+   ========================================================= */
+
+
+/* ---------------------------------------------------------
+   Musikbox: Dezentes rhythmisches Wackeln
+
+   Nur aktiv, wenn die Klasse
+   song-musikbox-aktiv gesetzt ist.
+
+   Die Bewegung bleibt bewusst klein.
+   --------------------------------------------------------- */
+
+
+.song-musikbox-aktiv {
+    transform-origin: center bottom;
+    animation: song-musikbox-wackeln 6.7s linear infinite;
+}
+
+@keyframes song-musikbox-wackeln {
+
+    0%   { transform: rotate(0deg); }
+    5%   { transform: rotate(-1.2deg); }
+    9%   { transform: rotate(0.5deg); }
+    14%  { transform: rotate(1.8deg); }
+    19%  { transform: rotate(-0.4deg); }
+    25%  { transform: rotate(-1.6deg); }
+    30%  { transform: rotate(0deg); }
+    35%  { transform: rotate(0.3deg); }
+    41%  { transform: rotate(1.1deg); }
+    46%  { transform: rotate(-1.9deg); }
+    52%  { transform: rotate(-0.7deg); }
+    57%  { transform: rotate(1.5deg); }
+    63%  { transform: rotate(0.2deg); }
+    69%  { transform: rotate(-1.3deg); }
+    74%  { transform: rotate(0deg); }
+    81%  { transform: rotate(1.7deg); }
+    86%  { transform: rotate(-0.6deg); }
+    92%  { transform: rotate(0.8deg); }
+    97%  { transform: rotate(-0.3deg); }
+    100% { transform: rotate(0deg); }
+
+}
+
+/* Ende Musikbox-Wackelanimation */
+
+/* =========================================================
+   SONG-ANIMATION: AUFSTEIGENDE MUSIKNOTEN
+
+   Jede Note erhält später per JavaScript:
+   - eine zufällige Farbe
+   - eine zufällige Größe
+   - eine individuelle Flugbahn
+   - eine musikabhängige Flugdauer
+
+   ========================================================= */
+
+/* Behälter für die fliegenden Musiknoten */
+
+.song-noten-bereich {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+
+    pointer-events: none;
+    overflow: visible;
+}
+
+/* Einzelne Musiknote */
+
+.song-note {
+    position: absolute;
+    left: 50%;
+    top: 10%;
+
+    color: var(--noten-farbe, #ff66cc);
+    font-size: var(--noten-groesse, 24px);
+
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+
+    pointer-events: none;
+    user-select: none;
+
+    opacity: 0;
+
+    animation:
+        song-note-flug
+        var(--noten-dauer, 2.5s)
+        ease-out
+        forwards;
+}
+
+/* Individuelle Flugbewegung */
+
+@keyframes song-note-flug {
+
+    0% {
+        opacity: 0;
+        transform:
+            translate(0, 0)
+            rotate(0deg)
+            scale(0.7);
+    }
+
+    12% {
+        opacity: 1;
+    }
+
+    75% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        transform:
+            translate(
+                var(--noten-flug-x, 20px),
+                var(--noten-flug-y, -100px)
+            )
+            rotate(var(--noten-drehung, 15deg))
+            scale(1);
+    }
+
+}
+
+/* Ende aufsteigende Musiknoten */
+
+/* =========================================================
+   DISCO-LICHTER AUF DER TANZFLÄCHE
+
+   Farbige, weiche Lichtflecken.
+   Die Bewegung wird später ergänzt.
+
+   ========================================================= */
+
+/* Gemeinsamer Bereich über der Tanzfläche */
+
+.song-licht-bereich {
+    position: absolute;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 20;
+}
+
+/* Einzelner Lichtfleck */
+
+.song-lichtfleck {
+    position: absolute;
+    width: 38%;
+    height: 38%;
+    border-radius: 50%;
+
+    background: radial-gradient(
+        ellipse at center,
+        var(--licht-farbe, rgba(255, 70, 200, 0.45)) 0%,
+        transparent 72%
+    );
+
+    mix-blend-mode: screen;
+    pointer-events: none;
+    will-change: transform;
+}
+
+/* Vier unterschiedliche Ausgangspositionen */
+
+.song-lichtfleck:nth-child(1) {
+    left: 5%;
+    top: 8%;
+    --licht-farbe: rgba(255, 60, 190, 0.50);
+}
+
+.song-lichtfleck:nth-child(2) {
+    left: 52%;
+    top: 12%;
+    --licht-farbe: rgba(0, 220, 255, 0.50);
+}
+
+.song-lichtfleck:nth-child(3) {
+    left: 15%;
+    top: 55%;
+    --licht-farbe: rgba(170, 90, 255, 0.50);
+}
+
+.song-lichtfleck:nth-child(4) {
+    left: 55%;
+    top: 58%;
+    --licht-farbe: rgba(255, 220, 40, 0.50);
+}
+
+/* Ende Disco-Lichtflecken */
+
+/* =========================================================
+   DISCO-LICHTER: WANDERNDE LICHTFLECKEN
+
+   Vier unabhängige Bewegungen.
+   Weiche Richtungswechsel.
+   Unterschiedliche Laufzeiten verhindern
+   eine gleichmäßige Wiederholung.
+
+   ========================================================= */
+
+/* Pink */
+
+.song-lichtfleck:nth-child(1) {
+    animation: disco-licht-pink 8.3s ease-in-out infinite alternate;
+}
+
+@keyframes disco-licht-pink {
+    0%   { transform: translate(0%, 0%); }
+    35%  { transform: translate(55%, 30%); }
+    70%  { transform: translate(20%, 90%); }
+    100% { transform: translate(85%, 55%); }
+}
+
+/* Türkis */
+
+.song-lichtfleck:nth-child(2) {
+    animation: disco-licht-tuerkis 10.7s ease-in-out infinite alternate;
+}
+
+@keyframes disco-licht-tuerkis {
+    0%   { transform: translate(0%, 0%); }
+    30%  { transform: translate(-65%, 45%); }
+    65%  { transform: translate(-25%, 95%); }
+    100% { transform: translate(-90%, 15%); }
+}
+
+/* Violett */
+
+.song-lichtfleck:nth-child(3) {
+    animation: disco-licht-violett 9.1s ease-in-out infinite alternate;
+}
+
+@keyframes disco-licht-violett {
+    0%   { transform: translate(0%, 0%); }
+    40%  { transform: translate(70%, -65%); }
+    75%  { transform: translate(95%, -20%); }
+    100% { transform: translate(30%, -95%); }
+}
+
+/* Gelb */
+
+.song-lichtfleck:nth-child(4) {
+    animation: disco-licht-gelb 11.9s ease-in-out infinite alternate;
+}
+
+@keyframes disco-licht-gelb {
+    0%   { transform: translate(0%, 0%); }
+    25%  { transform: translate(-70%, -30%); }
+    60%  { transform: translate(-20%, -90%); }
+    100% { transform: translate(-95%, -55%); }
+}
+
+/* Ende wandernde Disco-Lichter */
+
+
+
+

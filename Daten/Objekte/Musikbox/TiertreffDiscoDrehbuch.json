@@ -1,0 +1,67 @@
+
+{
+    "version": 1,
+    "songs": {
+        "gewohnheitstiere": {
+            "titel": "Gewohnheitstiere",
+            "datei": "Daten/Sounds/Musik/Gewohnheitstiere_Opus_96k.ogg",
+            "bpm": 86,
+            "dauer": "2:27",
+            "effekte": [
+                {
+                    "zeit": 0,
+                    "typ": "raumlicht",
+                    "zustand": "dunkel"
+                },
+                {
+                    "zeit": 0,
+                    "typ": "spielerlicht",
+                    "helligkeit": 0.35
+                },
+                {
+                    "zeit": 0,
+                    "typ": "rankingtafel",
+                    "helligkeit": 0.35
+                },
+                {
+                    "zeit": 0,
+                    "typ": "discolichter",
+                    "aktion": "start"
+                },
+                {
+                    "zeit": 0,
+                    "typ": "noten",
+                    "aktion": "start"
+                },
+                {
+                    "zeit": 0,
+                    "typ": "musikboxWackeln",
+                    "aktion": "start"
+                }
+            ]
+        },
+        "bibliothek": {
+            "titel": "Bibliotheksmusik",
+            "datei": "Daten/Sounds/Musik/Bibliothek_Hintergrundmusik_001.ogg",
+            "bpm": null,
+            "dauer": "1:34",
+            "effekte": [
+                {
+                    "zeit": 0,
+                    "typ": "raumlicht",
+                    "zustand": "normal"
+                },
+                {
+                    "zeit": 0,
+                    "typ": "noten",
+                    "aktion": "start"
+                },
+                {
+                    "zeit": 0,
+                    "typ": "musikboxWackeln",
+                    "aktion": "start"
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,372 @@
+/* =========================================================
+   TIERTREFF – MAGISCHE MUSIKBOX
+   Dialoggestaltung
+
+   Version 0.01
+   ========================================================= */
+
+
+/* ---------------------------------------------------------
+   Overlay über dem gesamten Reservat
+   --------------------------------------------------------- */
+
+/* ---------------------------------------------------------
+   Musikbox-Overlay über dem Spielfeld
+
+   Positionierung wie bei den NPC-Dialogen:
+   relativ zum Spielfeld statt zum Browserfenster.
+   --------------------------------------------------------- */
+
+#musikbox-overlay {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0, 0, 0, 0.65);
+
+    z-index: 10000;
+    box-sizing: border-box;
+}
+
+/* Ende Musikbox-Overlay */
+
+
+/* ---------------------------------------------------------
+   Quadratisches Dialogfenster
+   --------------------------------------------------------- */
+
+/* ---------------------------------------------------------
+   Musikbox-Dialog – Größe relativ zum Spielfeld
+
+   Der Dialog füllt maximal 94 % des Spielfelds.
+   Die quadratische Hintergrundgrafik bleibt erhalten.
+   --------------------------------------------------------- */
+
+#musikbox-dialog {
+    position: relative;
+
+    width: 94%;
+    aspect-ratio: 1 / 1;
+
+    flex-shrink: 0;
+    box-sizing: border-box;
+
+    container-type: inline-size;
+}
+
+/* Ende Musikbox-Dialoggröße */
+
+
+/* ---------------------------------------------------------
+   Hintergrundgrafik
+   --------------------------------------------------------- */
+
+#musikbox-hintergrund {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    pointer-events: none;
+    user-select: none;
+}
+/* ---------------------------------------------------------
+   Musikbox – Spaltenüberschriften
+
+   Titel linksbündig,
+   BPM und Dauer mittig.
+   --------------------------------------------------------- */
+
+#musikbox-songkopf {
+    position: absolute;
+
+    /* Gleiche Rahmenhöhe wie die Songzeile */
+    left: 16%;
+    top: 36%;
+    width: 68%;
+    height: 8%;
+
+    background-image:
+        url("Dialog/Songzeile_Normal.png");
+
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+
+    display: grid;
+    grid-template-columns: 60% 18% 22%;
+    align-items: center;
+
+    color: #e8c878;
+    font-family: Georgia, serif;
+    font-weight: bold;
+    font-size: 2.8cqw;
+
+    z-index: 2;
+    box-sizing: border-box;
+}
+
+/* Titel etwas weiter nach rechts */
+
+#musikbox-songkopf span:first-child {
+    text-align: left;
+    padding-left: 4%;
+}
+
+/* BPM leicht nach rechts verschieben */
+
+#musikbox-songkopf span:nth-child(2) {
+    text-align: center;
+    transform: translateX(calc(2cqw + 2px));
+}
+
+/* Dauer bleibt unverändert zentriert */
+
+#musikbox-songkopf span:nth-child(3) {
+    text-align: center;
+}
+
+/* Ende Musikbox-Spaltenüberschriften */
+/* ---------------------------------------------------------
+   Musikbox – vorausgewählter Song
+
+   Die Songzeile verwendet die vorbereitete
+   Aktiv-Grafik. Der Titel bleibt HTML-Text.
+   --------------------------------------------------------- */
+
+#musikbox-songzeile {
+    position: absolute;
+
+    /* Platz für die Spaltenüberschriften freihalten */
+    left: 16%;
+    top: 44.5%;
+    width: 68%;
+    height: 8%;
+
+    /* Gleiche Spaltenaufteilung wie die Überschriften */
+    display: grid;
+    grid-template-columns: 60% 18% 22%;
+    align-items: center;
+
+    background-image:
+        url("Dialog/Songzeile_Aktiv.png");
+
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+
+    z-index: 2;
+    box-sizing: border-box;
+}
+
+/* ---------------------------------------------------------
+   Songdaten – gemeinsame Schriftgestaltung
+   --------------------------------------------------------- */
+
+#musikbox-songtitel,
+#musikbox-songbpm,
+#musikbox-songdauer {
+    color: #fff4d2;
+    font-family: Georgia, serif;
+    font-weight: bold;
+    font-size: 3.5cqw;
+    text-shadow: 1px 2px 3px #000;
+    white-space: nowrap;
+}
+/* BPM-Wert genauso verschieben wie die Überschrift */
+
+#musikbox-songbpm {
+    transform: translateX(calc(2cqw + 2px));
+}
+/* Titel linksbündig mit Innenabstand */
+
+#musikbox-songtitel {
+    text-align: left;
+    padding-left: 4%;
+}
+
+/* BPM und Dauer mittig */
+
+#musikbox-songbpm,
+#musikbox-songdauer {
+    text-align: center;
+}
+/* BPM-Wert etwas nach rechts verschieben */
+
+#musikbox-songbpm {
+    transform: translateX(1cqw);
+}
+
+/* Ende Songdaten-Gestaltung */
+
+/* Ende Musikbox-Songauswahl */
+/* ---------------------------------------------------------
+   Musikbox – Button "Song starten"
+
+   Vorbereitete Buttongrafik mit HTML-Beschriftung.
+   Noch keine Abspielfunktion.
+   --------------------------------------------------------- */
+
+#musikbox-song-starten {
+    position: absolute;
+
+    /* Mittig unter der Songzeile,
+       mit Platz für spätere Auswahlpfeile */
+    left: 34%;
+    top: 55%;
+    width: 32%;
+    height: 9%;
+
+    background-image:
+        url("Dialog/Button_Song_Starten_Leer.png");
+
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+
+    border: none;
+
+    /* Text vom Play-Symbol abrücken
+       und leicht nach oben verschieben */
+    padding: 0 0 4px 6%;
+    box-sizing: border-box;
+
+    color: #fff4d2;
+    font-family: Georgia, serif;
+    font-weight: bold;
+    font-size: 3cqw;
+    text-shadow: 1px 1px 2px #000;
+
+    cursor: pointer;
+    z-index: 2;
+}
+
+/* Ende Button "Song starten" */
+/* ---------------------------------------------------------
+   Musikbox – Songauswahl-Pfeile
+
+   Links und rechts neben "Song starten".
+   Die Grafiken bleiben proportional.
+   --------------------------------------------------------- */
+
+#musikbox-song-zurueck,
+#musikbox-song-weiter {
+    position: absolute;
+
+    top: 55.3%;
+    width: 10.8%;
+    height: 8.4%;
+
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+
+    border: none;
+    padding: 0;
+
+    cursor: pointer;
+    z-index: 2;
+}
+
+/* Vorheriger Song */
+
+#musikbox-song-zurueck {
+    left: 21%;
+
+    background-image:
+        url("Dialog/Button_Song_Zurueck.png");
+}
+
+/* Nächster Song */
+
+#musikbox-song-weiter {
+    right: 21%;
+
+    background-image:
+        url("Dialog/Button_Song_Weiter.png");
+}
+
+/* Ende Songauswahl-Pfeile */
+/* ---------------------------------------------------------
+   Schließen-Button
+   --------------------------------------------------------- */
+
+#musikbox-schliessen {
+    position: absolute;
+
+    /* Linker Button in der unteren Bedienleiste */
+    left: 16%;
+    top: 81%;
+    width: 19%;
+    height: 9%;
+
+    /* Vorhandene Buttongrafik */
+    background-image:
+        url("Dialog/Button_Schliessen_Leer.png");
+
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+
+    border: none;
+    padding: 0;
+
+    color: #fff4d2;
+    font-family: Georgia, serif;
+    font-weight: bold;
+    font-size: 3cqw;
+    text-shadow: 1px 1px 2px #000;
+
+    cursor: pointer;
+    z-index: 2;
+}
+
+/* Ende Schließen-Button */
+/* ---------------------------------------------------------
+   Musikbox – Tanz-Button
+
+   Vorbereitung für das spätere Tanzspiel.
+   Noch ohne Beschriftung und Funktion.
+   --------------------------------------------------------- */
+
+#musikbox-tanzen {
+    position: absolute;
+
+    /* Rechter Button auf der unteren Holzleiste */
+    left: 65%;
+    top: 81%;
+    width: 19%;
+    height: 9%;
+
+    background-image:
+        url("Dialog/Button_Tanzen_Inaktiv_Leer.png");
+
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+
+    border: none;
+    padding: 0;
+
+    opacity: 1;
+    cursor: default;
+    z-index: 2;
+}
+
+/* Ende Tanz-Button */
+/* Ende Musikbox-Dialog Grundgestaltung */

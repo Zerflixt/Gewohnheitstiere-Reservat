@@ -2442,7 +2442,7 @@ cursor: pointer;
 TESTVERSION
 ========================================================= */
 
-window.multiplayerTestVersion = "0.46";
+window.multiplayerTestVersion = "0.462";
 
 /* Ende Testversion */
 /* =========================================================
@@ -2471,7 +2471,7 @@ MUSIKBOX-DIALOG – STYLESHEET LADEN
 
 window.tiertreffMusikboxDialogCssGeladen =
     importStyles(
-        "Daten/Objekte/Musikbox/TiertreffMusikboxDialog.css?v=1"
+        "Daten/Objekte/Musikbox/TiertreffMusikboxDialog.css?v=2"
     );
 
 /* Ende Musikbox-Dialog – Stylesheet laden */
@@ -2481,7 +2481,7 @@ MUSIKBOX-DIALOG – JAVASCRIPT LADEN
 
 window.tiertreffMusikboxDialogJsGeladen =
     importScripts(
-        "Daten/Objekte/Musikbox/TiertreffMusikboxDialog.js?v=1"
+        "Daten/Objekte/Musikbox/TiertreffMusikboxDialog.js?v=2"
     );
 
 /* Ende Musikbox-Dialog – JavaScript laden */
@@ -2491,7 +2491,7 @@ TIERTREFF – DISCO-STEUERUNG LADEN
 
 window.tiertreffDiscoJsGeladen =
     importScripts(
-        "Daten/Objekte/Musikbox/TiertreffDisco.js?v=2"
+        "Daten/Objekte/Musikbox/TiertreffDisco.js?v=3"
     );
 
 /* Ende Tiertreff – Disco-Steuerung laden */
@@ -12420,10 +12420,30 @@ window.firebaseOnValue(
                 y: eigenePosition.y
             };
 
-            window.kartenNameAnzeigen();
-            window.kartenGrafikAktualisieren();
-            window.npcGrafikenAktualisieren();
-            window.kontextAktionAktualisieren();
+
+window.kartenNameAnzeigen();
+window.kartenGrafikAktualisieren();
+
+/* -----------------------------------
+   Stationäre Grafiken nur beim
+   Kartenwechsel neu aufbauen.
+
+   Bei normalen Spielerbewegungen
+   bleiben Musikbox, Musiknoten und
+   laufende CSS-Animationen erhalten.
+   ----------------------------------- */
+
+if (
+    vorherigePosition?.karte !==
+    eigenePosition.karte
+) {
+    window.npcGrafikenAktualisieren();
+}
+
+/* Ende NPC-Aktualisierung */
+
+window.kontextAktionAktualisieren();
+
 
 
             /* -----------------------------------

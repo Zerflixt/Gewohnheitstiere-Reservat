@@ -23,6 +23,7 @@
        ----------------------------------------- */
 
     const SONG_REIHENFOLGE = [
+		"schritt_fuer_schritt",
         "gewohnheitstiere",
         "bibliothek"
     ];

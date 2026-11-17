@@ -62,6 +62,20 @@
                     "aktion": "start"
                 }
             ]
+
+        },
+        "schritt_fuer_schritt": {
+            "titel": "Schritt für Schritt",
+            "datei": "Daten/Sounds/Musik/Schritt_fuer_Schritt_Ogg_96k.ogg",
+            "bpm": 190,
+            "dauer": "2:14",
+            "effekte": [
+                {
+                    "zeit": 0,
+                    "typ": "raumlicht",
+                    "zustand": "dunkel"
+                }
+            ]
         }
     }
 }

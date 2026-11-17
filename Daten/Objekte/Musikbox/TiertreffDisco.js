@@ -25,7 +25,7 @@
        Noch keine automatische Wiederholung.
        ----------------------------------------- */
 
-    function musiknoteErzeugen() {
+    function musiknoteErzeugen(symbolVorgabe = null) {
 
         const bereich = document.querySelector(
             ".song-noten-bereich"
@@ -53,8 +53,29 @@
 
         note.className = "song-note";
 
+        /* ROCKMUSIKBOX – Symbol wählbar
+
+           Ohne Vorgabe bleiben die bisherigen
+           zufälligen Musiknoten unverändert.
+
+           Für den Rocksong kann ein Pfotensymbol
+           übergeben werden.
+        */
+
         note.textContent =
+            symbolVorgabe ||
             symbole[Math.floor(Math.random() * symbole.length)];
+
+        /* Textdarstellung bevorzugen,
+           damit die CSS-Farbe verwendet wird. */
+
+        if (symbolVorgabe) {
+            note.style.fontVariantEmoji = "text";
+            note.style.fontFamily =
+                '"Segoe UI Symbol", Arial, sans-serif';
+        }
+
+        /* Ende Symbolauswahl */
 
         note.style.setProperty(
             "--noten-farbe",
@@ -178,7 +199,22 @@
                     musiknotenStoppen();
                     return;
                 }
+                /* -----------------------------------------
+                   ROCKMUSIKBOX
 
+                   Beim Rocksong übernimmt die
+                   Rockshow-Animationsschleife den
+                   rhythmischen Notenausstoß.
+
+                   Alle anderen Songs behalten
+                   ihre bisherige Zufallssteuerung.
+                   ----------------------------------------- */
+
+                if (aktiverSongId === "schritt_fuer_schritt") {
+                    return;
+                }
+
+                /* Ende Rockmusikbox-Sonderfall */
                 /* Aktuelle Songposition ermitteln */
 
                 const position =
@@ -1750,6 +1786,29 @@
         /* Ende Musiknotenstart */
 
         /* -----------------------------------------
+           ROCKSHOW – AUTOMATISCHER START
+
+           Nur für "Schritt für Schritt".
+
+           Gilt sowohl für einen neuen Songstart
+           als auch für den Wiedereinstieg
+           in einen bereits laufenden Song.
+
+           Die Rockshow verwendet anschließend
+           automatisch die aktuelle Songzeit.
+           ----------------------------------------- */
+
+        if (
+            songId === "schritt_fuer_schritt" &&
+            typeof window.tiertreffRockshowLichterTest ===
+                "function"
+        ) {
+            window.tiertreffRockshowLichterTest();
+        }
+
+        /* Ende automatischer Rockshow-Start */
+
+        /* -----------------------------------------
            Disco-Lichter beim Songstart aktivieren
 
            Lichtflecken auf der Tanzfläche anlegen,
@@ -1810,6 +1869,24 @@
                 /* Musiknoten beim Songende stoppen */
 
                 musiknotenStoppen();
+
+                /* -----------------------------------------
+                   ROCKSHOW – AUTOMATISCHER STOPP
+
+                   Entfernt beim Songende oder lokalen
+                   Stopp alle Rockshow-Effekte:
+                   Lichtkegel, Satelliten, Nebel
+                   und Bodenbeleuchtung.
+                   ----------------------------------------- */
+
+                if (
+                    typeof window.tiertreffRockshowLichterEntfernen ===
+                        "function"
+                ) {
+                    window.tiertreffRockshowLichterEntfernen();
+                }
+
+                /* Ende automatischer Rockshow-Stopp */
 
                 /* -----------------------------------------
                    Disco-Beleuchtung beim Songende beenden
@@ -2385,5 +2462,1440 @@
        ----------------------------------------- */
 
     statusSetzen("IDLE");
+
+    /* =========================================================
+       ROCKSHOW – SCHRITT FÜR SCHRITT
+       =========================================================
+
+       Spezialeffekte ausschließlich für den Song
+       "Schritt für Schritt".
+
+       Geplante Funktionen:
+       - Rhythmusgesteuerte Lichtgruppen im gesamten Raum
+       - Umlaufende Discolichter um die Avatare
+       - Extreme Avatar-Leuchteffekte
+       - Rhythmische Musikboxsprünge
+       - Große Musiknotenschwärme
+       - Nebel und besondere Rock-Höhepunkte
+
+       Die vorhandenen Disco-Effekte der anderen Songs
+       bleiben unverändert.
+
+       ========================================================= */
+
+    /* -----------------------------------------
+       ROCKSHOW: Lichtgruppen vorbereiten
+
+       Fünf Gruppen mit jeweils vier Lichtern.
+       Alle Lichter liegen über der gesamten Karte.
+
+       Zunächst nur ein Sichttest.
+       Noch keine automatische Aktivierung.
+       ----------------------------------------- */
+
+    
+    /* =========================================================
+       ROCKSHOW – RHYTHMISCHE LICHTCHOREOGRAFIE
+
+       Ausschließlich für "Schritt für Schritt".
+       Fünf Gruppen mit jeweils vier Lichtflecken.
+
+       Die Positionen werden aus der Songzeit
+       berechnet. Kein zusätzlicher Firebase-Timer.
+
+       Version: erster Lichtshow-Gesamttest
+       ========================================================= */
+
+   
+    /* =========================================================
+       ROCKSHOW 2.0 – SCHRITT FÜR SCHRITT
+
+       Vier Hauptscheinwerfer mit Satelliten.
+       Lichtstrahlen aus den vier Raumecken.
+       Songabhängige Bewegungen und Nebel.
+
+       Nur manueller Test – andere Songs bleiben
+       unverändert.
+       ========================================================= */
+
+    
+    /* =========================================================
+       ROCKSHOW 2.0 – SCHRITT FÜR SCHRITT
+
+       Vier Hauptscheinwerfer mit Satelliten.
+       Lichtstrahlen aus den vier Raumecken.
+       Songabhängige Bewegungen und Nebel.
+
+       Nur manueller Test – andere Songs bleiben
+       unverändert.
+       ========================================================= */
+
+    let rockshowAnimation = null;
+    let rockshowBereich = null;
+
+    /* =========================================================
+       ROCKMUSIKBOX 1.0 – SCHRITT FÜR SCHRITT
+
+       Rhythmische Noten und Pfoten
+       Rhythmische Musikboxbewegung
+
+       Ausschließlich für schritt_fuer_schritt.
+
+       Die Rockshow ruft diese Funktionen auf.
+       Kein zusätzlicher Timer.
+       ========================================================= */
+
+    const ROCKBOX_BPM = 190;
+
+    /* Hier können wir später den Beat exakt
+       auf die Musik verschieben. */
+
+    const ROCKBOX_BEATVERSATZ = 0;
+
+    const ROCKBOX_BEATDAUER = 60 / ROCKBOX_BPM;
+
+    /* Gesangsstellen mit Wolfspfoten */
+
+    const ROCKBOX_PFOTENZEITEN = [
+        [30, 40],
+        [88, 98]
+    ];
+
+    let rockboxLetzterBeat = null;
+    let rockboxLetzteGrafik = null;
+
+    /* -----------------------------------------
+       Pfotenzeit erkennen
+       ----------------------------------------- */
+
+    function rockboxIstPfotenzeit(t) {
+
+        return ROCKBOX_PFOTENZEITEN.some(
+            function (fenster) {
+                return t >= fenster[0] &&
+                       t < fenster[1];
+            }
+        );
+    }
+
+    /* -----------------------------------------
+       Musikboxgrafik finden
+
+       Die Grafik kann beim Kartenaufbau
+       neu erzeugt werden.
+       ----------------------------------------- */
+
+    function rockboxGrafikFinden() {
+
+        return document.querySelector(
+            '#reservatZoomEbene img.song-musikbox-aktiv[alt="musikbox"]'
+        );
+    }
+
+    /* -----------------------------------------
+       Bewegung zurücksetzen
+
+       Entfernt nur unsere Inline-Animation.
+       Die normale CSS-Animation bleibt erhalten.
+       ----------------------------------------- */
+
+    function rockboxBewegungZuruecksetzen() {
+
+        if (rockboxLetzteGrafik) {
+
+            rockboxLetzteGrafik.style.removeProperty(
+                "animation"
+            );
+
+            rockboxLetzteGrafik.style.removeProperty(
+                "transform"
+            );
+
+            rockboxLetzteGrafik.style.removeProperty(
+                "transform-origin"
+            );
+        }
+
+        rockboxLetzteGrafik = null;
+    }
+
+    /* -----------------------------------------
+       Gesamten Rockbox-Zustand zurücksetzen
+       ----------------------------------------- */
+
+    function rockboxZuruecksetzen() {
+
+        rockboxLetzterBeat = null;
+        rockboxBewegungZuruecksetzen();
+    }
+
+    /* =========================================================
+       ROCKSHOW – HÜPFENDE AVATARE
+
+       Alle sichtbaren Tiere hüpfen synchron
+       zur Rockmusikbox.
+
+       Keine Firebase-Änderungen.
+       Keine Veränderung der Spielerposition.
+       Kein zusätzlicher Timer.
+       ========================================================= */
+
+    function rockAvatareZuruecksetzen() {
+
+        const avatare =
+            window.avatarNachUid || {};
+
+        for (const canvas of Object.values(avatare)) {
+
+            if (!canvas) continue;
+
+            canvas.style.removeProperty("transform");
+            canvas.style.removeProperty("transform-origin");
+        }
+    }
+
+
+    function rockAvatareAktualisieren(t, szene) {
+
+        const avatare =
+            window.avatarNachUid || {};
+
+        /* Sprunghöhe je nach Songphase */
+
+        let hoehe = 5;
+
+        if (szene === "intro") hoehe = 2;
+        if (szene === "aufbau") hoehe = 6;
+        if (szene === "solo") hoehe = 15;
+        if (szene === "verspielt") hoehe = 7;
+
+        if (
+            szene === "weiss1" ||
+            szene === "weiss2"
+        ) {
+            hoehe = 8;
+        }
+
+        if (szene === "outro") hoehe = 3;
+
+        /* -----------------------------------------
+           Individuelle, dauerhafte Abweichungen
+
+           Werden einmal pro Avatar vergeben.
+           ----------------------------------------- */
+
+        for (const canvas of Object.values(avatare)) {
+
+            if (
+                !canvas ||
+                !canvas.isConnected ||
+                canvas.parentElement?.id !==
+                    "reservatZoomEbene"
+            ) {
+                continue;
+            }
+
+            if (!canvas.rockTanzWerte) {
+
+                canvas.rockTanzWerte = {
+                    zeit: (Math.random() - 0.5) * 0.10,
+                    hoehe: 0.85 + Math.random() * 0.30,
+                    neigung: 0.7 + Math.random() * 0.60,
+                    richtung: Math.random() < 0.5 ? -1 : 1
+                };
+            }
+
+            const werte = canvas.rockTanzWerte;
+
+            /* Individuelle Beatposition */
+
+            const beatPosition =
+                (t + werte.zeit - ROCKBOX_BEATVERSATZ) /
+                ROCKBOX_BEATDAUER;
+
+            const phase =
+                ((beatPosition % 1) + 1) % 1;
+
+            const sprung =
+                Math.pow(
+                    Math.sin(Math.PI * phase),
+                    2
+                );
+
+            /* Individuelle Sprunghöhe */
+
+            const y =
+                -sprung * hoehe * werte.hoehe;
+
+            /* Individuelle Kippbewegung */
+
+            const neigung =
+                Math.sin(beatPosition * Math.PI) *
+                (szene === "solo" ? 5 : 2) *
+                werte.neigung *
+                werte.richtung;
+
+            canvas.style.transformOrigin =
+                "center bottom";
+
+            canvas.style.transform =
+                "translateY(" +
+                y.toFixed(2) +
+                "px) rotate(" +
+                neigung.toFixed(2) +
+                "deg)";
+        }
+    }
+
+
+    /* Ende hüpfende Avatare */
+
+    /* -----------------------------------------
+       Notenmenge bestimmen
+       ----------------------------------------- */
+
+    function rockboxNotenmenge(szene) {
+
+        switch (szene) {
+
+            case "intro":
+                return 1;
+
+            case "aufbau":
+            case "gesang":
+                return 2;
+
+            case "solo":
+                return 6;
+
+            case "verspielt":
+                return 3;
+
+            case "weiss1":
+            case "weiss2":
+                return 4;
+
+            case "outro":
+                return 1;
+
+            default:
+                return 2;
+        }
+    }
+
+    /* -----------------------------------------
+       Noten auf einem Beat ausstoßen
+       ----------------------------------------- */
+
+    function rockboxBeatAusloesen(t, szene) {
+
+        const anzahl =
+            rockboxNotenmenge(szene);
+
+        const pfoten =
+            rockboxIstPfotenzeit(t);
+
+        for (let i = 0; i < anzahl; i++) {
+
+            musiknoteErzeugen(
+                pfoten ? "🐾︎" : null
+            );
+        }
+    }
+
+    /* -----------------------------------------
+       Musikboxbewegung berechnen
+
+       Eine Wellenbewegung pro Beat.
+
+       Die Bewegung ist vollständig von
+       der Songzeit abhängig. Dadurch bleibt
+       sie auch beim Wiedereinstieg synchron.
+       ----------------------------------------- */
+
+    function rockboxBewegung(t, szene) {
+
+        const grafik = rockboxGrafikFinden();
+
+        if (!grafik) {
+            rockboxBewegungZuruecksetzen();
+            return;
+        }
+
+        if (rockboxLetzteGrafik !== grafik) {
+
+            rockboxBewegungZuruecksetzen();
+
+            rockboxLetzteGrafik = grafik;
+        }
+
+        /* Die normale Wackelanimation nur
+           für diese Rockshow übersteuern. */
+
+        grafik.style.animation = "none";
+
+        grafik.style.transformOrigin =
+            "center bottom";
+
+        const beatPosition =
+            (t - ROCKBOX_BEATVERSATZ) /
+            ROCKBOX_BEATDAUER;
+
+        const phase =
+            ((beatPosition % 1) + 1) % 1;
+
+        /* Sprungbogen:
+           Beginn und Ende auf dem Boden. */
+
+        const sprung =
+            Math.pow(
+                Math.sin(Math.PI * phase),
+                2
+            );
+
+        /* Seitliche Kippbewegung */
+
+        const kippung =
+            Math.sin(beatPosition * Math.PI);
+
+        let sprungHoehe = 3;
+        let winkel = 2;
+        let vergroesserung = 0.025;
+
+        if (szene === "intro") {
+            sprungHoehe = 1.5;
+            winkel = 1.2;
+        }
+
+        if (szene === "aufbau") {
+            sprungHoehe = 5;
+            winkel = 3;
+        }
+
+        if (szene === "solo") {
+            sprungHoehe = 13;
+            winkel = 9;
+            vergroesserung = 0.08;
+        }
+
+        if (szene === "verspielt") {
+            sprungHoehe = 4;
+            winkel = 4;
+        }
+
+        if (
+            szene === "weiss1" ||
+            szene === "weiss2"
+        ) {
+            sprungHoehe = 10;
+            winkel = 6;
+            vergroesserung = 0.12;
+        }
+
+        if (szene === "outro") {
+            sprungHoehe = 2;
+            winkel = 1;
+        }
+
+        /* Bewegung in Prozent der eigenen
+           Bildhöhe, damit sie beim Zoom
+           passend mitskaliert. */
+
+        const y =
+            -sprung * sprungHoehe;
+
+        const drehen =
+            kippung * winkel;
+
+        const skalierung =
+            1 + sprung * vergroesserung;
+
+        grafik.style.transform =
+            "translateY(" + y.toFixed(2) + "%) " +
+            "rotate(" + drehen.toFixed(2) + "deg) " +
+            "scale(" + skalierung.toFixed(3) + ")";
+    }
+
+    /* -----------------------------------------
+       Zentrale Rockbox-Aktualisierung
+
+       Wird aus der vorhandenen Rockshow-
+       Animationsschleife aufgerufen.
+       ----------------------------------------- */
+
+    function rockboxAktualisieren(t, szene) {
+
+        if (
+            aktiverSongId !== "schritt_fuer_schritt" ||
+            window.aktuelleSpielerPosition?.karte !==
+                "tiertreff_innen"
+        ) {
+            rockboxZuruecksetzen();
+            return;
+        }
+
+        const beat =
+            Math.floor(
+                (t - ROCKBOX_BEATVERSATZ) /
+                ROCKBOX_BEATDAUER
+            );
+
+        /* Beim ersten Aufruf nicht alle
+           bereits vergangenen Beats nachholen. */
+
+        if (rockboxLetzterBeat === null) {
+            rockboxLetzterBeat = beat - 1;
+        }
+
+        /* Pro Beat höchstens eine Notensalve.
+
+           Bei Verzögerungen werden vergangene
+           Beats übersprungen, statt dutzende
+           Noten nachträglich auszustoßen. */
+
+        if (beat > rockboxLetzterBeat) {
+
+            rockboxLetzterBeat = beat;
+
+            rockboxBeatAusloesen(t, szene);
+        }
+
+        /* Rücksprung oder neuer Songstart */
+
+        if (beat < rockboxLetzterBeat) {
+            rockboxLetzterBeat = beat;
+        }
+
+        rockboxBewegung(t, szene);
+		        /* Avatare synchron zur Musikbox bewegen */
+
+        rockAvatareAktualisieren(t, szene);
+    }
+
+    /* Ende Rockmusikbox 1.0 */
+
+    const ROCK_BPM = 190;
+    const ROCK_BEAT = 60 / ROCK_BPM;
+
+    const ROCK_FARBEN = [
+        [255, 55, 110],
+        [40, 215, 255],
+        [185, 75, 255],
+        [255, 195, 40]
+    ];
+
+    const ROCK_ECKEN = [
+        [1, 1],
+        [99, 1],
+        [1, 99],
+        [99, 99]
+    ];
+
+    const rockClamp = (x, a, b) =>
+        Math.max(a, Math.min(b, x));
+
+    const rockMix = (a, b, f) =>
+        a + (b - a) * rockClamp(f, 0, 1);
+
+    const rockSmooth = x => {
+        x = rockClamp(x, 0, 1);
+        return x * x * (3 - 2 * x);
+    };
+
+    /* -----------------------------------------
+       Musikalische Abschnitte
+
+       Die Solo-Endzeiten sind vorläufig.
+       ----------------------------------------- */
+
+    function rockshowSzene(t) {
+
+        if (t < 10) return "intro";
+        if (t < 30) return "gesang";
+        if (t < 46.8) return "aufbau";
+        if (t < 69) return "solo";
+        if (t < 85) return "gesang";
+        if (t < 90.5) return "weiss1";
+        if (t < 103.5) return "verspielt";
+        if (t < 111) return "weiss2";
+        if (t < 125) return "solo";
+        return "outro";
+    }
+
+    /* -----------------------------------------
+       SVG-Hilfsfunktionen
+       ----------------------------------------- */
+
+    const ROCK_SVG_NS =
+        "http://www.w3.org/2000/svg";
+
+    function rockSvgElement(name, parent, attrs = {}) {
+
+        const el = document.createElementNS(
+            ROCK_SVG_NS, name
+        );
+
+        Object.entries(attrs).forEach(([key, value]) => {
+            el.setAttribute(key, value);
+        });
+
+        parent.appendChild(el);
+        return el;
+    }
+
+    /* -----------------------------------------
+       Hauptlichtposition
+
+       Intro: Tanzflächenkanten
+       Gesang: Tanzfläche
+       Solo: gesamter Raum
+       ----------------------------------------- */
+
+    function rockshowZentrum(g, t, szene) {
+
+        const links = g % 2 === 0;
+        const oben = g < 2;
+
+        const basisX = links ? 32 : 72;
+        const basisY = oben ? 67 : 83;
+
+        const langsam = {
+            x: basisX + 3 * Math.sin(t * 0.65 + g),
+            y: basisY + 8 * Math.sin(t * 0.85 + g)
+        };
+
+        const tanz = {
+            x: 52 + 20 * Math.cos(t * 0.37 + g * 1.57),
+            y: 73 + 14 * Math.sin(t * 0.43 + g * 1.57)
+        };
+
+        const wild = {
+            x: 50 + 43 * Math.sin(t * 1.45 + g * 1.7),
+            y: 50 + 42 * Math.cos(t * 1.18 + g * 2.1)
+        };
+
+        if (szene === "intro") return langsam;
+
+        if (szene === "solo") return wild;
+
+        if (szene === "outro") {
+            return langsam;
+        }
+
+        /* Übergänge weich ineinanderführen */
+
+        let f = rockSmooth((t - 10) / 3);
+
+        let x = rockMix(langsam.x, tanz.x, f);
+        let y = rockMix(langsam.y, tanz.y, f);
+
+        /* Ausbruch ins erste Solo */
+
+		if (t >= 46.8 && t < 69) {
+			f = rockSmooth((t - 46.8) / 1.3);
+            x = rockMix(tanz.x, wild.x, f);
+            y = rockMix(tanz.y, wild.y, f);
+        }
+
+        /* Rückkehr nach erstem Solo */
+
+        if (t >= 69 && t < 72) {
+            f = rockSmooth((t - 69) / 3);
+            x = rockMix(wild.x, tanz.x, f);
+            y = rockMix(wild.y, tanz.y, f);
+        }
+
+        /* Rückkehr nach zweitem Solo */
+
+        if (t >= 125 && t < 128) {
+            f = rockSmooth((t - 125) / 3);
+            x = rockMix(wild.x, langsam.x, f);
+            y = rockMix(wild.y, langsam.y, f);
+        }
+
+        return { x, y };
+    }
+
+    /* -----------------------------------------
+       Weißer Lichtausbruch
+
+       Zusammenziehen, aufblasen, zerspringen.
+       ----------------------------------------- */
+
+    function rockshowWeiss(t) {
+
+        let start = -1;
+        let dauer = 0;
+
+        if (t >= 85 && t < 90.5) {
+            start = 85;
+            dauer = 5.5;
+        }
+
+        if (t >= 103.5 && t < 111) {
+            start = 103.5;
+            dauer = 7.5;
+        }
+
+        if (start < 0) {
+            return { sammlung: 0, weiss: 0, radius: 0 };
+        }
+
+        const p = (t - start) / dauer;
+
+        const sammlung =
+            p < 0.36
+                ? rockSmooth(p / 0.36)
+                : p < 0.80
+                    ? 1
+                    : 1 - rockSmooth((p - 0.80) / 0.20);
+
+        const weiss =
+            rockSmooth((p - 0.20) / 0.20) *
+            (1 - rockSmooth((p - 0.82) / 0.18));
+
+        const radius =
+            5 + 34 * rockSmooth((p - 0.32) / 0.48);
+
+        return { sammlung, weiss, radius };
+    }
+
+    /* -----------------------------------------
+       Rockshow entfernen
+       ----------------------------------------- */
+
+    function rockshowStoppen() {
+        /* Rockmusikbox ebenfalls zurücksetzen */
+
+        rockboxZuruecksetzen();
+		        /* Alle Avatare wieder normal darstellen */
+
+        rockAvatareZuruecksetzen();
+        if (rockshowAnimation !== null) {
+            cancelAnimationFrame(rockshowAnimation);
+            rockshowAnimation = null;
+        }
+
+        rockshowBereich?.remove();
+        rockshowBereich = null;
+    }
+
+    /* -----------------------------------------
+       Lichtanlage erzeugen
+       ----------------------------------------- */
+
+    function rockshowLichterErzeugen() {
+
+        const zoomEbene =
+            document.getElementById("reservatZoomEbene");
+
+        if (
+            !zoomEbene ||
+            window.aktuelleSpielerPosition?.karte !==
+                "tiertreff_innen"
+        ) {
+            return false;
+        }
+
+        rockshowStoppen();
+
+        const bereich = document.createElement("div");
+
+        bereich.className = "rockshow-lichter";
+
+        Object.assign(bereich.style, {
+            position: "absolute",
+            inset: "0",
+            pointerEvents: "none",
+            overflow: "hidden",
+            zIndex: "9998"
+        });
+
+        zoomEbene.appendChild(bereich);
+        rockshowBereich = bereich;
+
+        /* =====================================================
+           ROCKSHOW 2.1 – ECHTE BODENAUFHELLUNG
+
+           Die beiden hellen Kartenebenen werden
+           zusätzlich über die dunkle Karte gelegt.
+
+           Eine gemeinsame, bewegliche Maske macht
+           sie nur unter den Scheinwerfern sichtbar.
+           ===================================================== */
+
+        const rockKarte =
+            window.reservatKarten?.tiertreff_innen;
+
+        const rockHelleEbenen = [];
+
+        if (rockKarte?.ebene1 && rockKarte?.ebene3) {
+
+            const lichtKartenBereich =
+                document.createElement("div");
+
+            lichtKartenBereich.className =
+                "rockshow-bodenlicht";
+
+            Object.assign(lichtKartenBereich.style, {
+                position: "absolute",
+                inset: "0",
+                pointerEvents: "none",
+                overflow: "hidden",
+                zIndex: "0"
+            });
+
+            [rockKarte.ebene1, rockKarte.ebene3]
+                .forEach(function (bild, index) {
+
+                    const ebene =
+                        document.createElement("div");
+
+                    Object.assign(ebene.style, {
+                        position: "absolute",
+                        inset: "0",
+                        backgroundImage:
+                            'url("' + bild + '")',
+                        backgroundSize: "100% 100%",
+                        backgroundPosition: "center",
+                        backgroundRepeat: "no-repeat",
+                        opacity: "0.95"
+                    });
+
+                    lichtKartenBereich.appendChild(ebene);
+                    rockHelleEbenen.push(ebene);
+                });
+
+            bereich.appendChild(lichtKartenBereich);
+        }
+
+        /* Ende Rockshow-Bodenaufhellung */
+
+        const svg = rockSvgElement("svg", bereich, {
+            viewBox: "0 0 100 100",
+            preserveAspectRatio: "none",
+            width: "100%",
+            height: "100%"
+        });
+
+        svg.style.position = "absolute";
+        svg.style.inset = "0";
+        svg.style.overflow = "hidden";
+
+        const defs = rockSvgElement("defs", svg);
+
+        /* =====================================================
+           ROCKSHOW 2.1 – WEICHE LICHTKEGEL
+           ===================================================== */
+
+        const strahlFilter = rockSvgElement(
+            "filter", defs, {
+                id: "rockshow-strahlweich",
+                x: "-35%",
+                y: "-35%",
+                width: "170%",
+                height: "170%"
+            }
+        );
+
+        rockSvgElement(
+            "feGaussianBlur", strahlFilter, {
+                stdDeviation: "1.15"
+            }
+        );
+
+        const nebelFilter = rockSvgElement(
+            "filter", defs, {
+                id: "rockshow-nebelweich",
+                x: "-50%",
+                y: "-50%",
+                width: "200%",
+                height: "200%"
+            }
+        );
+
+        rockSvgElement(
+            "feGaussianBlur", nebelFilter, {
+                stdDeviation: "5"
+            }
+        );
+
+        /* Ende weiche Lichtkegel */
+
+        /* Weiche Farbverläufe */
+
+        ROCK_FARBEN.forEach((farbe, i) => {
+
+            const gradient = rockSvgElement(
+                "radialGradient", defs,
+                { id: "rocklicht-" + i }
+            );
+
+            [
+                ["0%", 0.95],
+                ["25%", 0.75],
+                ["65%", 0.25],
+                ["100%", 0]
+            ].forEach(([offset, opacity]) => {
+
+                rockSvgElement("stop", gradient, {
+                    offset,
+                    "stop-color":
+                        "rgb(" + farbe.join(",") + ")",
+                    "stop-opacity": opacity
+                });
+            });
+        });
+
+        const weissGradient = rockSvgElement(
+            "radialGradient", defs,
+            { id: "rocklicht-weiss" }
+        );
+
+        [
+            ["0%", 1],
+            ["45%", 0.95],
+            ["75%", 0.5],
+            ["100%", 0]
+        ].forEach(([offset, opacity]) => {
+
+            rockSvgElement("stop", weissGradient, {
+                offset,
+                "stop-color": "#ffffff",
+                "stop-opacity": opacity
+            });
+        });
+
+
+        /* =====================================================
+           ROCKSHOW 2.1 – LEBENDIGER DISCONEBEL
+
+           Neun unterschiedlich große Schwaden.
+           Aufbau ab Sekunde 0.
+           Volle Intensität ab Sekunde 30.
+           ===================================================== */
+
+        const nebel = [];
+
+        for (let i = 0; i < 9; i++) {
+
+            const links = i % 2 === 0;
+
+            const startX = links ? -15 : 115;
+            const startY = 12 + (i * 17) % 85;
+
+            const el = rockSvgElement(
+                "ellipse", svg, {
+                    cx: startX,
+                    cy: startY,
+                    rx: 18 + (i * 7) % 20,
+                    ry: 9 + (i * 5) % 13,
+                    fill: i % 3 === 0
+                        ? "#c6c9df"
+                        : "#8795bb",
+                    opacity: 0,
+                    filter: "url(#rockshow-nebelweich)"
+                }
+            );
+
+            nebel.push({
+                element: el,
+                startX,
+                startY,
+                links,
+                phase: i * 1.73,
+                tempo: 0.07 + (i % 4) * 0.035,
+                staerke: 0.65 + (i % 3) * 0.17
+            });
+        }
+
+        /* Ende lebendiger Disconebel */
+
+
+
+        /* -----------------------------------------
+           Vier Formationen
+
+           Je Hauptlicht drei Satelliten
+           und sechs winzige Funken.
+           ----------------------------------------- */
+
+        const gruppen = [];
+
+        for (let g = 0; g < 4; g++) {
+
+            const farbe = ROCK_FARBEN[g];
+            const rgb = "rgb(" + farbe.join(",") + ")";
+
+            const lichter = [];
+
+            for (let n = 0; n < 10; n++) {
+
+                /* Sichtbarer Lichtkegel */
+
+
+                /* Weicher äußerer Lichtkegel */
+
+                const strahl = rockSvgElement(
+                    "path", svg, {
+                        fill: rgb,
+                        opacity: 0,
+                        filter: "url(#rockshow-strahlweich)"
+                    }
+                );
+
+
+                /* Auftreffpunkt auf Boden */
+
+                const fleck = rockSvgElement(
+                    "ellipse", svg, {
+                        fill: "url(#rocklicht-" + g + ")",
+                        opacity: 0
+                    }
+                );
+
+                fleck.style.mixBlendMode =
+                    "color-dodge";
+
+                lichter.push({ strahl, fleck });
+            }
+
+            gruppen.push(lichter);
+        }
+
+        /* Weißer Lichtausbruch liegt darüber */
+
+        const weiss = rockSvgElement(
+            "circle", svg, {
+                cx: 50,
+                cy: 55,
+                r: 0,
+                fill: "url(#rocklicht-weiss)",
+                opacity: 0
+            }
+        );
+
+        weiss.style.mixBlendMode = "screen";
+
+        /* -----------------------------------------
+           Animationsschleife
+           ----------------------------------------- */
+
+        const testStart = performance.now();
+        let letzterFrame = 0;
+
+
+        function animieren(zeit) {
+
+            /* -----------------------------------------
+               ROCKSHOW – SICHERHEIT BEI KARTENWECHSEL
+
+               Sobald der Spieler den Tiertreff
+               verlässt, wird die gesamte Rockshow
+               einschließlich aller Licht- und
+               Nebelebenen entfernt.
+               ----------------------------------------- */
+
+            if (
+                !bereich.isConnected ||
+                window.aktuelleSpielerPosition?.karte !==
+                    "tiertreff_innen"
+            ) {
+                rockshowStoppen();
+                return;
+            }
+
+            /* Ende Kartenwechsel-Prüfung */
+
+            if (zeit - letzterFrame < 33) {
+
+                rockshowAnimation =
+                    requestAnimationFrame(animieren);
+                return;
+            }
+
+            letzterFrame = zeit;
+
+            const song =
+                window.tiertreffDiscoAktuellerSong?.();
+
+            if (
+                song &&
+                song.songId !== "schritt_fuer_schritt"
+            ) {
+                rockshowStoppen();
+                return;
+            }
+
+            const t = song
+                ? song.positionSekunden
+                : (zeit - testStart) / 1000;
+
+            if (t >= 134) {
+                rockshowStoppen();
+                return;
+            }
+
+            const szene = rockshowSzene(t);
+            const weissPhase = rockshowWeiss(t);
+            /* -----------------------------------------
+               ROCKMUSIKBOX 1.0
+
+               Noten, Pfoten und Musikboxbewegung
+               synchron zur bestehenden Rockshow.
+               ----------------------------------------- */
+
+            rockboxAktualisieren(t, szene);
+
+            /* Ende Rockmusikbox-Aktualisierung */
+            /* Beatimpuls */
+
+            const phase =
+                (t % ROCK_BEAT) / ROCK_BEAT;
+
+            const puls =
+                Math.pow(1 - phase, 2.5);
+
+            const solo = szene === "solo";
+            const verspielt = szene === "verspielt";
+
+            const kraft =
+                solo ? 1 :
+                szene === "intro" ? 0.45 :
+                szene === "outro" ? 0.35 :
+                0.75;
+
+
+            /* =================================================
+               ROCKSHOW 2.1 – NEBELBEWEGUNG
+
+               Bereits im Intro sichtbar.
+               Ab Sekunde 30 volle Intensität.
+               Unterschiedliche Driftbewegungen,
+               Verdichtungen und Geschwindigkeiten.
+               ================================================= */
+
+            const nebelStaerke =
+                rockSmooth(t / 30) *
+                (1 - rockSmooth((t - 125) / 9));
+
+            nebel.forEach(function (wolke, i) {
+
+                const el = wolke.element;
+
+                const drift =
+                    Math.sin(
+                        t * wolke.tempo +
+                        wolke.phase
+                    );
+
+                const quer =
+                    Math.sin(
+                        t * wolke.tempo * 0.63 +
+                        wolke.phase * 1.7
+                    );
+
+                const aufbau =
+                    rockSmooth(t / 30);
+
+                const x =
+                    wolke.startX +
+                    (wolke.links ? 1 : -1) *
+                    aufbau * (22 + i * 3) +
+                    drift * 13;
+
+                const y =
+                    wolke.startY +
+                    quer * 11;
+
+                const dichte =
+                    0.17 +
+                    0.09 * Math.sin(
+                        t * 0.22 + wolke.phase
+                    );
+
+                el.setAttribute("cx", x);
+                el.setAttribute("cy", y);
+
+                el.setAttribute(
+                    "opacity",
+                    Math.max(
+                        0,
+                        nebelStaerke *
+                        wolke.staerke *
+                        dichte
+                    ).toFixed(3)
+                );
+
+                el.setAttribute(
+                    "rx",
+                    18 + (i * 7) % 20 +
+                    4 * Math.sin(t * 0.12 + i)
+                );
+            });
+
+            /* Ende Nebelbewegung */
+
+
+            /* Vier Hauptformationen */
+
+            /* -----------------------------------------
+               Lichtmasken für die helle Karte sammeln
+               ----------------------------------------- */
+
+            const rockMasken = [];
+
+            /* Ende Maskenvorbereitung */
+
+
+            for (let g = 0; g < 4; g++) {
+
+                const zentrum =
+                    rockshowZentrum(g, t, szene);
+
+                const [ex, ey] = ROCK_ECKEN[g];
+
+                for (let n = 0; n < 10; n++) {
+
+                    const { strahl, fleck } =
+                        gruppen[g][n];
+
+                    const hauptlicht = n === 0;
+                    const funke = n >= 4;
+
+                    const sichtbar =
+                        hauptlicht ||
+                        (t >= 10 && !funke) ||
+                        (verspielt && funke);
+
+                    if (!sichtbar) {
+                        strahl.setAttribute("opacity", 0);
+                        fleck.setAttribute("opacity", 0);
+                        continue;
+                    }
+
+                    let x = zentrum.x;
+                    let y = zentrum.y;
+
+                    let radius = hauptlicht
+                        ? 8
+                        : funke ? 1.1 : 3.7;
+
+                    if (!hauptlicht) {
+
+                        const richtung =
+                            n % 2 ? 1 : -1;
+
+                        const tempo =
+                            verspielt ? 1.8 :
+                            solo ? 5.5 : 2.6;
+
+                        const winkel =
+                            t * tempo * richtung +
+                            n * 2.094 +
+                            g * 0.7;
+
+                        const beatAbstand =
+                            1 + puls * 0.35;
+
+                        const abstand =
+                            (funke ? 12 : 7) *
+                            beatAbstand *
+                            (solo ? 1.6 : 1);
+
+                        x += Math.cos(winkel) * abstand;
+                        y += Math.sin(winkel) * abstand;
+                    }
+
+                    /* Alle Lichter verschmelzen */
+
+                    x = rockMix(
+                        x, 50,
+                        weissPhase.sammlung
+                    );
+
+                    y = rockMix(
+                        y, 55,
+                        weissPhase.sammlung
+                    );
+
+                    const beatGroesse =
+                        1 + puls * kraft * 0.35;
+
+                    radius *= beatGroesse;
+
+                    const helligkeit =
+                        (hauptlicht ? 0.85 :
+                         funke ? 0.75 : 0.65) *
+                        (0.65 + puls * 0.35) *
+                        (1 - weissPhase.weiss * 0.75);
+
+                    /* Lichtfleck */
+
+                    fleck.setAttribute("cx", x);
+                    fleck.setAttribute("cy", y);
+                    fleck.setAttribute("rx", radius);
+                    fleck.setAttribute("ry", radius * 0.85);
+
+                    fleck.setAttribute(
+                        "opacity",
+                        helligkeit.toFixed(3)
+                    );
+
+                    /* ---------------------------------
+                       Lichtpunkt beleuchtet die Karte
+
+                       Weiche Maske mit hellem Zentrum
+                       und transparentem Außenrand.
+                       --------------------------------- */
+
+                    const maskenRadius =
+                        radius * (hauptlicht ? 1.25 : 1.1);
+
+                    const maskenKraft =
+                        rockClamp(
+                            helligkeit *
+                            (hauptlicht ? 1 : 0.75),
+                            0,
+                            1
+                        );
+
+                    rockMasken.push(
+                        "radial-gradient(" +
+                        "ellipse " +
+                        maskenRadius.toFixed(2) + "% " +
+                        (maskenRadius * 0.85).toFixed(2) +
+                        "% at " +
+                        x.toFixed(2) + "% " +
+                        y.toFixed(2) + "%, " +
+                        "rgba(0,0,0," +
+                        maskenKraft.toFixed(3) +
+                        ") 0%, " +
+                        "rgba(0,0,0," +
+                        (maskenKraft * 0.65).toFixed(3) +
+                        ") 40%, " +
+                        "transparent 100%)"
+                    );
+
+                    /* Ende Lichtmaske */
+
+                    /* Transparenter Lichtstrahl
+
+                       Funken benötigen keinen Strahl.
+                       Die anderen Strahlen enden
+                       am Auftreffpunkt.
+                    */
+
+                    if (funke) {
+                        strahl.setAttribute("opacity", 0);
+                        continue;
+                    }
+
+                    const dx = x - ex;
+                    const dy = y - ey;
+
+                    const laenge =
+                        Math.hypot(dx, dy) || 1;
+
+                    /* Kegelende orientiert sich
+                       am Radius des Lichtflecks. */
+
+                    const breite =
+                        radius * (hauptlicht ? 1.05 : 0.95);
+
+                    const nx = -dy / laenge * breite;
+                    const ny = dx / laenge * breite;
+
+                    const pfad =
+                        "M " + ex + " " + ey +
+                        " L " + (x + nx) + " " + (y + ny) +
+                        " Q " + x + " " + (y + breite) +
+                        " " + (x - nx) + " " + (y - ny) +
+                        " Z";
+
+                    strahl.setAttribute("d", pfad);
+
+                    strahl.setAttribute(
+                        "opacity",
+                        (
+                            (hauptlicht ? 0.12 : 0.07) *
+                            (0.7 + puls * 0.3) *
+                            (1 + nebelStaerke * 0.8)
+                        ).toFixed(3)
+                    );
+                }
+            }
+
+            /* =================================================
+               ROCKSHOW 2.1 – BODENBELEUCHTUNG ANWENDEN
+
+               Die helle Karte wird nur an den
+               beweglichen Lichtpunkten sichtbar.
+               ================================================= */
+
+            if (rockHelleEbenen.length) {
+
+                const maskenBild =
+                    rockMasken.join(", ");
+
+                rockHelleEbenen.forEach(function (ebene) {
+
+                    ebene.style.maskImage = maskenBild;
+
+                    ebene.style.webkitMaskImage =
+                        maskenBild;
+
+                    ebene.style.maskRepeat =
+                        "no-repeat";
+
+                    ebene.style.webkitMaskRepeat =
+                        "no-repeat";
+                });
+            }
+
+            /* Ende Bodenbeleuchtung */
+
+
+            /* Gleißender weißer Höhepunkt */
+
+            weiss.setAttribute(
+                "r",
+                weissPhase.radius
+            );
+
+            weiss.setAttribute(
+                "opacity",
+                weissPhase.weiss.toFixed(3)
+            );
+
+            rockshowAnimation =
+                requestAnimationFrame(animieren);
+        }
+
+        rockshowAnimation =
+            requestAnimationFrame(animieren);
+
+        return true;
+    }
+
+    /* -----------------------------------------
+       Manuelle Testfunktionen
+       ----------------------------------------- */
+
+    window.tiertreffRockshowLichterTest =
+        rockshowLichterErzeugen;
+
+    window.tiertreffRockshowLichterEntfernen =
+        rockshowStoppen;
+
+    /* Ende Rockshow-Lichtgruppen */
+
+
+
+
+
+    /* =========================================================
+       ENDE ROCKSHOW – SCHRITT FÜR SCHRITT
+       ========================================================= */
 
 })();

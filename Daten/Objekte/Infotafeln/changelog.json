@@ -1,6 +1,18 @@
 {
     "eintraege": [
 		{
+            "version": "0.462",
+            "datum": "2026-11-15",
+            "titel": "Neuer Song Schritt für Schritt",
+            "text": "Ein neuer Song mit bisschen Show"
+        },
+		{
+            "version": "0.459",
+            "datum": "2026-11-15",
+            "titel": "Songstart Bugfix",
+            "text": "Starten von Songs durch andere sollte nun sauber mitbekommen werden."
+        },
+		{
             "version": "0.458",
             "datum": "2026-11-15",
             "titel": "Musikbox",
